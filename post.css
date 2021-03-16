@@ -1,0 +1,21 @@
+
+@import "skeleton.css";
+
+.inline-left {
+	float: left;
+	padding-right: 48px;
+}
+.border {
+	border: 6px dashed var(--neut, #cccccc);
+}
+
+#feed {
+	padding: 0px;
+}
+
+.posts {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+	grid-template-rows: 1;
+	grid-gap: 18px 16px;
+}

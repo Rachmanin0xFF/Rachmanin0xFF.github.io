@@ -1,0 +1,74 @@
+.hvr-rotate {
+	display: inline-block;
+	vertical-align: middle;
+	-webkit-transform: perspective(1px) translateZ(0);
+	transform: perspective(1px) translateZ(0);
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+	-webkit-transition-duration: 0.3s;
+	transition-duration: 0.2s;
+	-webkit-transition-property: transform;
+	transition-property: transform;
+}
+.hvr-rotate:hover, .hvr-rotate:focus, .hvr-rotate:active {
+	cursor: pointer;
+	-webkit-animation-name: hvr-wobble;
+	animation-name: hvr-wobble;
+	-webkit-animation-duration: 0.5s;
+	animation-duration: 0.5s;
+	-webkit-animation-timing-function: ease-in-out;
+	animation-timing-function: ease-in-out;
+	-webkit-animation-iteration-count: 1;
+	animation-iteration-count: 1;
+}
+@keyframes hvr-wobble {
+	16.65% {
+		-webkit-transform: rotate(4deg);
+		transform: rotate(4deg);
+	}
+	33.3% {
+		-webkit-transform: rotate(-3deg);
+		transform: rotate(-3deg);
+	}
+	49.95% {
+		-webkit-transform: rotate(2deg);
+		transform: rotate(2deg);
+	}
+	66.6% {
+		-webkit-transform: rotate(-1deg);
+		transform: rotate(-1deg);
+	}
+	83.25% {
+		-webkit-transform: rotate(1deg);
+		transform: rotate(1deg);
+	}
+	100% {
+		-webkit-transform: rotate(0);
+		transform: rotate(0);
+	}
+}
+@-webkit-keyframes hvr-wobble {
+	16.65% {
+		-webkit-transform: rotate(8deg);
+		transform: rotate(8deg);
+	}
+	33.3% {
+		-webkit-transform: rotate(-6deg);
+		transform: rotate(-6deg);
+	}
+	49.95% {
+		-webkit-transform: rotate(4deg);
+		transform: rotate(4deg);
+	}
+	66.6% {
+		-webkit-transform: rotate(-2deg);
+		transform: rotate(-2deg);
+	}
+	83.25% {
+		-webkit-transform: rotate(1deg);
+		transform: rotate(1deg);
+	}
+	100% {
+		-webkit-transform: rotate(0);
+		transform: rotate(0);
+	}
+}
