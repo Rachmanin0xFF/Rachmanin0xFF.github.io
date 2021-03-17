@@ -1,6 +1,5 @@
 
-@import "font_data.css";
-@import "font_grab.css";
+@import "fonts.css";
 @import "animations.css";
 
 :root {
@@ -115,7 +114,7 @@ h1, h2, h3 {
 }
 
 h5 {
-	font-family: var(--f2, 'Inter'), 'Helvetica', sans-serif;
+	font-family: var(--f2, 'Manrope'), 'Helvetica', sans-serif;
 	font-weight: bold;
     font-style: normal;
 	font-size: 36px;
@@ -125,7 +124,12 @@ h5 {
 	padding-top: 60px;
 	padding-bottom: 40px;
 	margin-bottom: 20px;
+}
+
+h5 * {
 	color: var(--emph, #12e7b9);
+	position: relative;
+	z-index: 2000;
 }
 
 #sitename {
@@ -134,7 +138,7 @@ h5 {
 }
 
 h6 {
-	font-family: var(--f2, 'Inter'), 'Helvetica', sans-serif;
+	font-family: var(--f2, 'Manrope'), 'Helvetica', sans-serif;
 	font-weight: bold;
     font-style: normal;
 	font-size: 36px;
@@ -145,7 +149,7 @@ h6 {
 }
 
 .sb-big a, .sb-big{
-	font-family: var(--f2, 'Inter'), 'Helvetica', sans-serif;
+	font-family: var(--f2, 'Manrope'), 'Helvetica', sans-serif;
 	font-weight: bold;
     font-style: normal;
 	font-size: 36px;
@@ -187,7 +191,7 @@ h6 {
 	padding-right: 14px;
 	padding-top: 5px;
 	padding-bottom: 10px;
-	font-family: var(--f2, 'Inter'), 'Helvetica', sans-serif;
+	font-family: var(--f2, 'Manrope'), 'Helvetica', sans-serif;
 	font-size: 24px;
 	font-weight: bold;
 	line-height: normal;
@@ -211,7 +215,7 @@ h6 {
 	padding-top: 7px;
 	padding-bottom: 8px;
 	border: 1px dashed var(--neut, #050505);
-	font-family: var(--f2, 'Inter'), 'Helvetica', sans-serif;
+	font-family: var(--f2, 'Manrope'), 'Helvetica', sans-serif;
 	font-size: 24px;
 	font-weight: bold;
 	line-height: normal;
