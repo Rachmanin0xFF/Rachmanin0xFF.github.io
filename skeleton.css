@@ -7,7 +7,7 @@
 	--background: #f9f9f9;
 	--background-image-color: #f1f1f1;
 	--neut: #c2c2c2;
-	--background-image: url('./pars2.png');
+	--background-image: url('./pars2.jpg');
 	--text:   #050505;
 	--dark-disp: hidden;
 	--light-disp: visible;
@@ -20,7 +20,7 @@
 	--background: #24262b;
 	--background-image-color: #16171b; 
 	--neut: #556372;
-	--background-image: url('./pars2_invm.png');
+	--background-image: url('./pars2_invm.jpg');
 	--text: #dadae4;
 	--dark-disp: visible;
 	--light-disp: hidden;

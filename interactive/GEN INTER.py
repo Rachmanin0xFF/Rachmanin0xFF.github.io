@@ -44,7 +44,7 @@ def gen():
 					epp.close()
 					
 					image = Image.new('RGB', (256, 256))
-					image.save(path + '/thumb/' + f.split('/')[-1] + '.png', 'PNG')
+					image.save(path + '/thumb/' + f.split('/')[-1] + '.jpg', 'JPG')
 				except FileExistsError:
 					print(f.split('/')[-1] + 'description already exists')
 				
