@@ -1,15 +1,13 @@
 
 @import "skeleton.css";
 
-#foreground {
-	padding-left: 100px;
-}
+
 
 
 .arts {
 	display: grid;
-	grid-template-columns: repeat(4, minmax(128px, 208px));
-	grid-auto-rows: repeat(3, minmax(128px, 208px));
+	grid-template-columns: repeat(4, minmax(32px, 208px));
+	grid-auto-rows: repeat(3, minmax(32px, 208px));
 	grid-gap: 10px;
 }
 

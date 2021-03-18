@@ -249,7 +249,7 @@ h6 {
 	top: 0;
 	bottom: 0;
 	display: grid;
-	grid-template-columns: minmax(200px,5%) minmax(500px, 1280px) minmax(120px,5%);
+	grid-template-columns: minmax(200px,5%) minmax(100px, 1280px) minmax(120px,5%);
 	grid-template-rows: 120px auto auto;
 }
 
@@ -332,8 +332,8 @@ h6 {
 
 .arts {
 	display: grid;
-	grid-template-columns: repeat(3, minmax(128px, 508px));
-	grid-auto-rows: repeat(3, minmax(128px, 508px));
+	grid-template-columns: repeat(3, minmax(64px, 508px));
+	grid-auto-rows: repeat(3, minmax(64px, 508px));
 	grid-gap: 10px;
 }
 
@@ -362,10 +362,13 @@ h6 {
 	#sidebar {
 		grid-row: 2;
 		height: 100px;
-		padding-top: auto;
-		padding-bottom: auto;
+		padding-top: 15vw;
 		padding-left: 5%;
 		padding-right: 5%;
+	}
+	#sketchcanvas {
+		width: 80vw;
+		height: 70vh;
 	}
 	.teepee, #spikes{
 		display: none;
@@ -396,11 +399,14 @@ h6 {
 		max-width: 11.7vw;
 		max-height: 11.7vw;
 	}
+	.posts {
+		grid-template-columns: repeat(auto-fill, minmax(256px, 1fr));
+	}
 	#sitename {
 		padding-left: 11.7vw;
 	}
 	body {
-		font-size: 4vw;
+		font-size: 3vw;
 	}
 	.date, .tags {
 		font-size: 3.25vw;

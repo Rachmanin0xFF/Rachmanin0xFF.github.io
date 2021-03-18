@@ -19,3 +19,11 @@
 	grid-template-rows: 1;
 	grid-gap: 18px 16px;
 }
+
+@media all and (max-width: 1040px) {
+	.inline-left {
+		float: none;
+		display: block;
+		padding-bottom: 1em;
+	}
+}
