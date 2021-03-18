@@ -364,8 +364,8 @@ h6 {
 		height: 100px;
 		padding-top: auto;
 		padding-bottom: auto;
-		padding-left: 10%;
-		padding-right: 10%;
+		padding-left: 5%;
+		padding-right: 5%;
 	}
 	.teepee, #spikes{
 		display: none;
@@ -380,6 +380,8 @@ h6 {
 	#foreground {
 		grid-row: 3;
 		border: none;
+		padding-left: 10vw;
+		padding-right: 10vw;
 	}
 	#sidebar >* {
 		display: flex;
@@ -398,16 +400,16 @@ h6 {
 		padding-left: 11.7vw;
 	}
 	body {
-		font-size: 3vw;
+		font-size: 4vw;
 	}
 	.date, .tags {
-		font-size: 2vw;
+		font-size: 3.25vw;
 	}
 	h1, h5, h6, .sb-big a, .sb-big {
-		font-size: 5vw;
+		font-size: 7vw;
 	}
 	h2, h3, .button, .button2 {
-		font-size: 4vw;
+		font-size: 6vw;
 	}
 }
 

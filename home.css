@@ -82,3 +82,22 @@
 	text-decoration: none;
 	font-size: 20px;
 }
+
+@media all and (max-width: 1040px) {
+	.articlepreview a:link{
+		color: var(--text, #000000);
+		text-decoration: none;
+		font-size: 6vw;
+	}
+	.articlepreview a:visited{
+		color: var(--text, #050505);
+		text-decoration: none;
+		font-size: 6vw;
+	}
+	
+	.articlepreview a:hover{
+		color: var(--emph, #12e7b9);
+		text-decoration: none;
+		font-size: 6vw;
+	}
+}
