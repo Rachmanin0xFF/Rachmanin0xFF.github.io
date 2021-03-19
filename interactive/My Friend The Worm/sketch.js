@@ -57,7 +57,7 @@ function preload() {
 * setup :
 */
 function setup() {
-    createCanvas(innerWidth, innerHeight);
+    createCanvas(512, 512);
     background(0);
     smooth();
     noodle = new Strand();
