@@ -11,7 +11,7 @@ let noodle;
 let myfont;
 
 function preload() {
-    myfont = loadFont('DK Lemon Yellow Sun.otf');
+    myfont = loadFont('../../My Friend The Worm/DK Lemon Yellow Sun.otf');
 }
 
 /**
