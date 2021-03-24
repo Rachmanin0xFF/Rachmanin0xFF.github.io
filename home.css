@@ -2,8 +2,6 @@
 @import "skeleton.css";
 
 
-
-
 .arts {
 	display: grid;
 	grid-template-columns: repeat(4, minmax(32px, 208px));
@@ -27,6 +25,7 @@
 	height: 100px;
 	width: 100px;
 	padding-right: 16px;
+	filter: var(--imfilter, none);
 }
 
 .artpreview:first-child {

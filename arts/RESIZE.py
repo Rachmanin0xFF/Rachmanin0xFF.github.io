@@ -58,7 +58,10 @@ def resize():
 				
 				try:
 					epp = open("/".join(f.split('/')[:-1]) + '/descs/' + f.split('/')[-1] + '.md', 'x')
-					epp.write('---\ntitle: ' + f.split('/')[-1] + '\ndescription: This is about page\nlayout: artpage.hbs\nartpath: ' + f.split('/')[-1] + e + '\ndate: ' + datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d') + '\n---\n')
+					try:
+						epp.write('---\ntitle: ' + f.split('/')[-1] + '\ndescription: This is about page\nlayout: artpage.hbs\nartpath: ' + f.split('/')[-1] + e + '\ndate: ' + datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d') + '\n---\n')
+					except NameError:
+						epp.write('---\ntitle: ' + f.split('/')[-1] + '\ndescription: This is about page\nlayout: artpage.hbs\nartpath: ' + f.split('/')[-1] + e + '\n---\n')
 					epp.close()
 				except FileExistsError:
 					print(f.split('/')[-1] + 'description already exists')

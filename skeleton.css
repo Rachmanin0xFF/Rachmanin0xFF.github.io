@@ -13,6 +13,7 @@
 	--light-disp: visible;
 	--f2: 'Manrope';
 	--f2s: 36px;
+	--imfilter: none;
 }
 
 :root[color-mode="dark"] {
@@ -24,6 +25,7 @@
 	--text: #dadae4;
 	--dark-disp: visible;
 	--light-disp: hidden;
+	--imfilter: invert(1);
 }
 
 ::selection {
