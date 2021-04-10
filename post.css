@@ -13,11 +13,40 @@
 	padding: 0px;
 }
 
+p {
+	padding-top: 1.5em;
+}
+
 .posts {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 	grid-template-rows: 1;
 	grid-gap: 18px 16px;
+}
+
+h1 {
+	margin-top: 0.5em;
+}
+
+.postim {
+	display: block;
+	max-width: 100%;
+	max-height: 80vh;
+	margin-left: auto;
+	margin-right: auto;
+	padding-bottom: 0.5em;
+}
+
+.imblock {
+	text-align: center;
+	display: block;
+	max-width: 100%;
+	max-height: 80vh;
+	margin-left: auto;
+	margin-right: auto;
+	padding-bottom: 4em;
+	font-size: 75%;
+	font-style: italic;
 }
 
 @media all and (max-width: 1040px) {
@@ -26,4 +55,9 @@
 		display: block;
 		padding-bottom: 1em;
 	}
+}
+
+a {
+	color: var(--text, #12e7b9);
+	text-decoration: none;
 }
