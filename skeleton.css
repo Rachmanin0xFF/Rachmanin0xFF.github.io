@@ -55,7 +55,7 @@ body {
 	color: var(--text, #050505);
 
 	font-family: 'Inter', 'Helvetica', sans-serif;
-	font-size: 20px;
+	font-size: 16px;
 	width:100%;
 }
 
@@ -247,11 +247,11 @@ h6 {
 	margin: 0;
 	padding: 0;
 	margin: auto;
-	width: 90%;
+	width: 80%;
 	top: 0;
 	bottom: 0;
 	display: grid;
-	grid-template-columns: minmax(200px,5%) minmax(100px, 1280px) minmax(120px,5%);
+	grid-template-columns: minmax(200px,200px) minmax(100px, 1024px) minmax(0px,0%);
 	grid-template-rows: 120px auto auto;
 }
 
@@ -308,7 +308,7 @@ h6 {
 
 .posts {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
 	grid-template-rows: 1;
 	grid-gap: 18px 16px;
 }
