@@ -14485,8 +14485,7 @@ done.
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="First-Impressions">First Impressions<a class="anchor-link" href="#First-Impressions">&#182;</a></h3><p>NOTE: If you don't want to bother installing the libraries required to run this notebook, you can view the network <a href="grph.html">here</a>.</p>
-<p>Let's see what we're working with:</p>
+<h3 id="First-Impressions">First Impressions<a class="anchor-link" href="#First-Impressions">&#182;</a></h3><p>Let's see what we're working with:</p>
 <p><img src="full_network_img_2.png"></p>
 <p>Neat!</p>
 <p>Nodes are courses, edges are relationships between them. Colors are based on departament codes. Obviously it's a <a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">DAG</a> even though the directions aren't visible here. We've got a lot of isolated vertices, plenty of small components, and one massive one. The dense cluster on the left is an interesting anomaly. We'll explore that later. For now we need to find a way to handle the logical operators in these prerequisite lists -- stuff like <code>(MTH0000 and MTH0001) or MTH0002</code>.</p>
@@ -14820,7 +14819,7 @@ Let's introduce an order of operations:</p>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Second-Impressions">Second Impressions<a class="anchor-link" href="#Second-Impressions">&#182;</a></h3><p>NOTE: If you don't want to bother installing the libraries required to run this notebook, you can view the network <a href="grph_pdag.html">here</a>. Be sure to enable physics.</p>
+<h3 id="Second-Impressions">Second Impressions<a class="anchor-link" href="#Second-Impressions">&#182;</a></h3><p>NOTE: If you don't want to bother installing the libraries required to run this notebook, you can view the network <a href="grph.html">here</a>.</p>
 <p>The network (this time of just prerequisites) has roughly the same large-scale structure:</p>
 <p><img src="prereq_pdag_broad.png" width=500px></p>
 <p>But if we zoom in, we can see there's a lot more going on at small scales.</p>
@@ -15230,7 +15229,8 @@ Name: 2, dtype: object
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Graduation-Requirement-Network">Graduation Requirement Network<a class="anchor-link" href="#Graduation-Requirement-Network">&#182;</a></h3><p>That was easier than I expected. My physics major CAPP report has been turned into a network:</p>
+<h3 id="Graduation-Requirement-Network">Graduation Requirement Network<a class="anchor-link" href="#Graduation-Requirement-Network">&#182;</a></h3><p>NOTE: If you don't want to bother installing the libraries required to run this notebook, you can view the network <a href="grph_pdag.html">here</a>. Be sure to enable physics.</p>
+<p>That was easier than I expected. My physics major CAPP report has been turned into a network:</p>
 <p><img src="physics_network.png" width=500px></img></p>
 <p>However, this network isn't very helpful. It is currently:</p>
 <ul>
