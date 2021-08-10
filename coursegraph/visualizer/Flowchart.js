@@ -351,7 +351,7 @@ class Flowchart {
         textStyle(BOLD);
         fill(20, 20, 60);
         textSize(100);
-        text('CAPP Report Visualizer', 0, -510);
+        text('CAPP Report Visualizer (WIP)', 0, -510);
         textSize(64);
         text('Semesters', 0, -180);
         let h = 0;
