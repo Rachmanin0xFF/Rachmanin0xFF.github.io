@@ -22,53 +22,37 @@
 }
 @keyframes hvr-wobble {
 	16.65% {
-		-webkit-transform: rotate(4deg);
-		transform: rotate(4deg);
+		-webkit-transform: scale(1.1);
+		transform: scale(1.1);
 	}
 	33.3% {
-		-webkit-transform: rotate(-3deg);
-		transform: rotate(-3deg);
+		-webkit-transform: scale(0.93);
+		transform: scale(0.93);
 	}
 	49.95% {
-		-webkit-transform: rotate(2deg);
-		transform: rotate(2deg);
+		-webkit-transform: scale(1.03);
+		transform: scale(1.03);
 	}
 	66.6% {
-		-webkit-transform: rotate(-1deg);
-		transform: rotate(-1deg);
-	}
-	83.25% {
-		-webkit-transform: rotate(1deg);
-		transform: rotate(1deg);
-	}
-	100% {
-		-webkit-transform: rotate(0);
-		transform: rotate(0);
+		-webkit-transform: scale(1);
+		transform: scale(1);
 	}
 }
 @-webkit-keyframes hvr-wobble {
 	16.65% {
-		-webkit-transform: rotate(8deg);
-		transform: rotate(8deg);
+		-webkit-transform: scale(1.1);
+		transform: scale(1.1);
 	}
 	33.3% {
-		-webkit-transform: rotate(-6deg);
-		transform: rotate(-6deg);
+		-webkit-transform: scale(0.93);
+		transform: scale(0.93);
 	}
 	49.95% {
-		-webkit-transform: rotate(4deg);
-		transform: rotate(4deg);
+		-webkit-transform: scale(1.03);
+		transform: scale(1.03);
 	}
 	66.6% {
-		-webkit-transform: rotate(-2deg);
-		transform: rotate(-2deg);
-	}
-	83.25% {
-		-webkit-transform: rotate(1deg);
-		transform: rotate(1deg);
-	}
-	100% {
-		-webkit-transform: rotate(0);
-		transform: rotate(0);
+		-webkit-transform: scale(1);
+		transform: scale(1);
 	}
 }

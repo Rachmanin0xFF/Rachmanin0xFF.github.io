@@ -50,7 +50,7 @@ def resize():
 				
 				imResize.paste(nos, mask=nos)
 				
-				imResize = imResize.quantize(5, method=1)
+				imResize = imResize.quantize(50, method=1)
 				imResize = imResize.convert('RGB')
 				imResize.save("/".join(f.split('/')[:-1]) + '/thumb/' + f.split('/')[-1] + '_thumb.jpg', 'JPEG', quality=90)
 				

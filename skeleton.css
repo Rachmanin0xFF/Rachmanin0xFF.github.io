@@ -4,14 +4,13 @@
 
 :root {
 	--emph: #32d1b7;
-	--background: #f9f9f9;
-	--background-image-color: #f1f1f1;
+	--background: #fcfcfc;
+	--background-image-color: #fdfdfd;
 	--neut: #c2c2c2;
-	--background-image: url('./pars2.jpg');
 	--text:   #050505;
 	--dark-disp: hidden;
 	--light-disp: visible;
-	--f2: 'Manrope';
+	--f2: 'Space Mono';
 	--f2s: 36px;
 	--imfilter: none;
 }
@@ -19,9 +18,8 @@
 :root[color-mode="dark"] {
 	--emph: #12e7b9;
 	--background: #24262b;
-	--background-image-color: #16171b; 
+	--background-image-color: #24262b; 
 	--neut: #556372;
-	--background-image: url('./pars2_invm.jpg');
 	--text: #dadae4;
 	--dark-disp: visible;
 	--light-disp: hidden;
@@ -54,7 +52,7 @@ html {
 body {
 	color: var(--text, #050505);
 
-	font-family: 'Inter', 'Helvetica', sans-serif;
+	font-family: 'Noto Serif', 'Times New Roman', serif;
 	font-size: 16px;
 	width:100%;
 }
@@ -89,6 +87,7 @@ p {
 }
 
 h1 {
+	font-family: var(--f2, 'Space Mono'), 'Helvetica', sans-serif;
     margin-top: 0px;
     margin-bottom: 0.5em;
     font-size: 36px;
@@ -96,15 +95,17 @@ h1 {
 
 h2 {
     font-size: 24px;
+	font-family: var(--f2, 'Space Mono'), 'Helvetica', sans-serif;
 }
 
-h1, h2 {
-    box-shadow: -97px 0 0 var(--background, #ffffff),
-				-100px 0 0 var(--text, #050505);
+h1, h2, h6 {
+    box-shadow: -47px 0 0 var(--background, #ffffff),
+				-50px 0 0 var(--emph, #12e7b9);
 }
 
 h3 {
 	margin-bottom: 0;
+	font-family: var(--f2, 'Space Mono'), 'Helvetica', sans-serif;
 	border-bottom: 0;
 	color: var(--emph, #12e7b9);
     font-size: 24px;
@@ -116,7 +117,7 @@ h1, h2, h3 {
 }
 
 h5 {
-	font-family: var(--f2, 'Manrope'), 'Helvetica', sans-serif;
+	font-family: var(--f2, 'Space Mono'), 'Helvetica', sans-serif;
 	font-weight: bold;
     font-style: normal;
 	font-size: var(--f2s, 36px);
@@ -139,7 +140,7 @@ h5 * {
 }
 
 h6 {
-	font-family: var(--f2, 'Manrope'), 'Helvetica', sans-serif;
+	font-family: var(--f2, 'Space Mono'), 'Helvetica', sans-serif;
 	font-weight: bold;
     font-style: normal;
 	font-size: 36px;
@@ -150,8 +151,8 @@ h6 {
 }
 
 .sb-big a, .sb-big{
-	font-family: var(--f2, 'Manrope'), 'Helvetica', sans-serif;
-	font-weight: bold;
+	font-family: var(--f2, 'Space Mono'), 'Helvetica', sans-serif;
+	font-weight: normal;
     font-style: normal;
 	font-size: 36px;
 	font-size: var(--f2s, 36px);
@@ -192,7 +193,7 @@ h6 {
 	padding-right: 14px;
 	padding-top: 5px;
 	padding-bottom: 10px;
-	font-family: var(--f2, 'Manrope'), 'Helvetica', sans-serif;
+	font-family: var(--f2, 'Space Mono'), 'Helvetica', sans-serif;
 	font-size: 24px;
 	font-weight: bold;
 	line-height: normal;
@@ -216,9 +217,9 @@ h6 {
 	padding-top: 7px;
 	padding-bottom: 8px;
 	border: 1px dashed var(--neut, #050505);
-	font-family: var(--f2, 'Manrope'), 'Helvetica', sans-serif;
+	font-family: var(--f2, 'Space Mono'), 'Helvetica', sans-serif;
 	font-size: 24px;
-	font-weight: bold;
+	font-weight: normal;
 	line-height: normal;
 	text-decoration: none;
 	display: inline-block;
@@ -239,7 +240,7 @@ h6 {
 	z-index: 100;
 	position: relative;
 
-	background-image: var(--background-image, url('sleepy.png'));
+	background-color: var(--background, #fdfdfd);
 	background-repeat: repeat;
 }
 
@@ -323,6 +324,7 @@ h6 {
 }
 
 .date, .tags {
+	font-family: var(--f2, 'Space Mono'), 'Helvetica', sans-serif;
 	color: var(--neut, #9e9e9e);
     font-size: 16px;
 }
@@ -414,7 +416,7 @@ h6 {
 		font-size: 3.25vw;
 	}
 	h1, h5, h6, .sb-big a, .sb-big {
-		font-size: 7vw;
+		font-size: var(--f2s, 36px);
 	}
 	h2, h3, .button, .button2 {
 		font-size: 6vw;
@@ -431,4 +433,8 @@ h6 {
 
 .sticky * {
 	box-shadow: none;
+}
+
+.hljs {
+	line-height: 1.2;
 }

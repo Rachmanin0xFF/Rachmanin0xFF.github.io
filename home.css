@@ -16,6 +16,10 @@
 	border: 1px dashed var(--neut, #cccccc);
 }
 
+.title {
+	font-family: var(--f2, 'Manrope'), 'Helvetica', sans-serif;
+}
+
 .noborder {
 	border: none;
 }
