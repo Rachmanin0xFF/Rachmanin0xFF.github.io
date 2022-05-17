@@ -57,8 +57,3 @@ h1 {
 		padding-bottom: 1em;
 	}
 }
-
-a {
-	color: var(--text, #12e7b9);
-	text-decoration: none;
-}
