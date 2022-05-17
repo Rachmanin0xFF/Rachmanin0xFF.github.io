@@ -2,6 +2,10 @@ if (localStorage.getItem("color-mode") === "dark" ||
    (window.matchMedia("(prefers-color-scheme: dark)").matches && !localStorage.getItem("color-mode"))
 ) {
 	document.documentElement.setAttribute("color-mode", "dark");
+	if(document.getElementById('lightmodehl')) {
+		document.getElementById('darkmodehl').removeAttribute('disabled');
+		document.getElementById('lightmodehl').disabled = true;
+	}
 }
 
 document.addEventListener("DOMContentLoaded", function(event) {
@@ -21,5 +25,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		var switchToTheme = ct === "dark" ? "light" : "dark"
 		document.documentElement.setAttribute("color-mode", switchToTheme);
 		localStorage.setItem("darkmodeon", switchToTheme);
+
+		if(document.getElementById('lightmodehl'))
+			if(switchToTheme=="light") {
+				document.getElementById('lightmodehl').removeAttribute('disabled');
+				document.getElementById('darkmodehl').disabled = true;
+			} else {
+				document.getElementById('darkmodehl').removeAttribute('disabled');
+				document.getElementById('lightmodehl').disabled = true;
+			}
 	}
 });

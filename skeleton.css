@@ -12,7 +12,6 @@
 	--light-disp: visible;
 	--f2: 'Space Mono';
 	--f2s: 36px;
-	--imfilter: none;
 }
 
 :root[color-mode="dark"] {
@@ -23,7 +22,6 @@
 	--text: #dadae4;
 	--dark-disp: visible;
 	--light-disp: hidden;
-	--imfilter: invert(1);
 }
 
 ::selection {
@@ -252,7 +250,7 @@ h6 {
 	top: 0;
 	bottom: 0;
 	display: grid;
-	grid-template-columns: minmax(200px,200px) minmax(100px, 1024px) minmax(0px,0%);
+	grid-template-columns: minmax(200px,200px) minmax(100px, 1096px) minmax(0px,0%);
 	grid-template-rows: 120px auto auto;
 }
 
