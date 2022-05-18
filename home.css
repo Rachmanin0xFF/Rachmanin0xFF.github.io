@@ -18,6 +18,7 @@
 
 .title {
 	font-family: var(--f2, 'Manrope'), 'Helvetica', sans-serif;
+	line-height: 1.6;
 }
 
 .noborder {
