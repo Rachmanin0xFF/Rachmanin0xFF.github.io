@@ -72,6 +72,11 @@ p a {
 	text-decoration-color: var(--emph, #12e7b9);
 }
 
+ul li a {
+	text-decoration: solid underline 3px;
+	text-decoration-color: var(--emph, #12e7b9);
+}
+
 a:hover {
 	text-decoration: none;
 	color: var(--emph, #12e7b9);
