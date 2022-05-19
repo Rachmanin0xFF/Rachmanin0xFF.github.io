@@ -369,6 +369,9 @@ h6 {
 }
 
 @media all and (max-width: 1040px) {
+	:root {
+		--f2s: 6vw;
+	}
 	#sidebar, #header, #foreground {
 		grid-column: 1 / 4;
 	}
@@ -388,7 +391,7 @@ h6 {
 	}
 	#not-background {
 		width: 100%;
-		grid-template-columns: auto auto auto;
+		grid-template-columns: 0 100% 0;
 	}
 	#header {
 		grid-row: 1;
@@ -419,7 +422,7 @@ h6 {
 		padding-left: 11.7vw;
 	}
 	body {
-		font-size: 3vw;
+		font-size: min(3vw, 16px);
 	}
 	.date, .tags {
 		font-size: 3.25vw;
