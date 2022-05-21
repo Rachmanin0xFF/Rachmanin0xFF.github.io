@@ -33,6 +33,24 @@ h1 {
 	margin-bottom: 2em;
 }
 
+.postimfull {
+	display: block;
+	max-width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 2em;
+}
+
+.imblock a {
+	text-decoration: solid underline 3px;
+	text-decoration-color: var(--emph, #12e7b9);
+}
+
+.imblockfull a {
+	text-decoration: solid underline 3px;
+	text-decoration-color: var(--emph, #12e7b9);
+}
+
 .imblock > .postim {
 	margin-bottom: 0.8em;
 }
@@ -41,7 +59,18 @@ h1 {
 	text-align: center;
 	display: block;
 	max-width: 100%;
-	max-height: 80vh;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 2em;
+	padding: 0px;
+	font-size: 75%;
+	font-style: italic;
+}
+
+.imblockfull {
+	text-align: center;
+	display: block;
+	max-width: 100%;
 	margin-left: auto;
 	margin-right: auto;
 	margin-bottom: 2em;
