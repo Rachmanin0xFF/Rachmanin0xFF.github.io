@@ -13,6 +13,13 @@ function setup() {
 	document.body.style.overflow = 'hidden';
 	mynetwork = new Network();
 	electron = color(244, 225, 117);
+	
+	let ZA = new Cpl(1, 1);
+	let ZB = new Cpl(1, 2);
+	let mat = [[c_zero(), ZA, ZB],
+				[ZA, c_zero(), c_infty()],
+				[ZB, c_infty(), c_zero()]]
+	get_equivalent_impedance(mat, 1, 2).print_self();
 }
 
 function set_canvas() {
@@ -41,14 +48,8 @@ function draw() {
 	mynetwork.update();
 	mynetwork.display();
 
-	if(mouseIsPressed) {
-		print(mynetwork.get_graph(7.0));
-	}
-
 	unset_canvas();
 }
-
-
 
 function windowResized() {
 	resizeCanvas(windowWidth, windowHeight);
