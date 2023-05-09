@@ -25,6 +25,12 @@ function c_infty() {
 function c_zero() {
     return new Cpl(0.0, 0.0);
 }
+function c_small() {
+    return new Cpl(0.00000001, 0.0);
+}
+function ciszero(z) {
+    return z.re===0 && z.im===0;
+}
 function cmod(x) {
     return sqrt(x.re*x.re+x.im*x.im)
 }
@@ -85,7 +91,7 @@ function Z_resistor(w, R) {
     return resistance(R);
 }
 function Z_wire() {
-    return c_zero();
+    return c_small();
 }
 function Z_open() {
     return c_infty();
@@ -93,6 +99,7 @@ function Z_open() {
 function parallel(Z_a, Z_b) {
     if(Z_a.re === Infinity) return Z_b;
     if(Z_b.re === Infinity) return Z_a;
+    if(ciszero(Z_a) || ciszero(Z_b)) return c_zero();
     return cdiv(cmult(Z_a, Z_b), cadd(Z_a, Z_b));
 }
 function series(Z_a, Z_b) {
@@ -104,8 +111,11 @@ function series(Z_a, Z_b) {
 
 function star_mesh_reduce(matrix, index) {
     let Z_inv_total = c_zero();
+    let zero_node = -1;
     for(let i = 0; i < matrix.length; i++) {
-        if(i != index) {
+        if(ciszero(matrix[i][index])) {
+            i = zero_node = i;
+        } else if(i != index) {
             Z_inv_total = cadd(Z_inv_total, cdiv(c_one(), matrix[i][index]));
         }
     }
@@ -114,7 +124,13 @@ function star_mesh_reduce(matrix, index) {
         if(i != index) {
             for(let j = 0; j < i; j++) {
                 if(j != index) {
-                    matrix_out[i][j] = parallel(cmult(cmult(matrix[j][index], matrix[i][index]), Z_inv_total), matrix[i][j]);
+                    if(zero_node == i) {
+                        matrix_out[i][j] = parallel(matrix[index][j], matrix[i][j]);
+                    } else if(zero_node == j) {
+                        matrix_out[i][j] = parallel(matrix[i][index], matrix[i][j]);
+                    } else {
+                        matrix_out[i][j] = parallel(cmult(cmult(matrix[j][index], matrix[i][index]), Z_inv_total), matrix[i][j]);
+                    }
                     matrix_out[j][i] = matrix_out[i][j];
                 }
             }

@@ -48,6 +48,11 @@ function draw() {
 	mynetwork.update();
 	mynetwork.display();
 
+	//get_equivalent_impedance(mynetwork.get_graph(1), mynetwork.V_IN, mynetwork.V_OUT).print_self();
+	
+	//for(let i = 0; i < 100; i++)
+	//print(abs(mynetwork.get_gain(i)));
+	//print(mynetwork.get_graph(1));
 	unset_canvas();
 }
 

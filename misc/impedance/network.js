@@ -52,7 +52,12 @@ class Edge {
 // Strictly for GUI. Fancy algos / number crunching should be done *outside* of this class.
 class Network {
     constructor() {
-        this.nodes = [new Node(200, 200), new Node(200, 400)];
+        //            GROUND              V_IN                V_OUT
+        this.nodes = [new Node(600, 600), new Node(200, 200), new Node(1000, 200)];
+        this.GROUND = 0;
+        this.V_IN = 1;
+        this.V_OUT = 2;
+        
         this.edges = [];
         this.p_mp = false; //pmousepressed
 
@@ -68,6 +73,16 @@ class Network {
             matrix[e.j][e.i] = matrix[e.i][e.j];
         }
         return matrix;
+    }
+
+    get_gain(w) {
+        let mat = this.get_graph(w);
+        let Z_in = get_equivalent_impedance(mat, this.V_IN, this.GROUND);
+        mat[this.GROUND][this.V_IN] = c_small();
+        mat[this.V_IN][this.GROUND] = c_small();
+        let Z_out = get_equivalent_impedance(mat, this.V_IN, this.V_OUT);
+        let gain = cdiv(Z_out, Z_in);
+        return gain;
     }
     // Updates GUI / drawing / circuit construction
     update() {
