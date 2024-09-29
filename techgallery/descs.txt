@@ -13,7 +13,7 @@ coursedependencies.png, The prerequisite / corequisite network for my school's a
 cubemail2.JPG, A flexible concept material I designed and 3D-printed.
 decompression bomb.png, Data from the James Webb Space Telescope is incredibly high-resolution, so much so that this happened while developing my @JWSTPhotoBot.
 dejong.png, A render of a Peter De Jong attractor.
-diffraction.png, A diffraction pattern formed by shining a laser through a bunch of small, anisotropically-distributed holes (think Poisson point sampling). Part of my senior optics lab.
+diffraction.png, A diffraction pattern formed by shining a laser through a bunch of small, anisotropically-distributed holes (think Poisson disc sampling). Part of my senior optics lab.
 dipoles.png, Field lines from dipoles!
 displayhack.png, Using custom character sets and a 74HC595 shift register to draw graphs on an LCD display.
 DLA_ALT.png, A simulation of diffusion-limited aggregation (DLA).

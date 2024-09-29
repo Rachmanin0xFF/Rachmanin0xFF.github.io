@@ -68,6 +68,18 @@
 	width: auto;
 }
 
+.galleryicon {
+	position: relative;
+	text-align: center;
+	color: white;
+}
+.centered {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
 .articlepreview a:link{
 	color: var(--text, #000000);
 	text-decoration: none;
