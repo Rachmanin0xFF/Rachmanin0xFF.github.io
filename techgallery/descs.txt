@@ -15,7 +15,7 @@ decompression bomb.png, Data from the James Webb Space Telescope is incredibly h
 dejong.png, A render of a Peter De Jong attractor.
 diffraction.png, A diffraction pattern formed by shining a laser through a bunch of small, anisotropically-distributed holes (think Poisson disc sampling). Part of my senior optics lab.
 dipoles.png, Field lines from dipoles!
-displayhack.png, Using custom character sets and a 74HC595 shift register to draw graphs on an LCD display.
+displayhack.png, Using custom character sets and a 74HC595 shift register to draw graphs on a LCD.
 DLA_ALT.png, A simulation of diffusion-limited aggregation (DLA).
 eigenheart.png, The vibrational eigenmodes of a heart shape.
 error diff strats.png, Error diffusion strategies! I might publish the processes for the bottom two someday. I'm not sure I'll keep the names, though. Also, I'm not sure this is a faithful representation of Ostromoukhov's technique.
