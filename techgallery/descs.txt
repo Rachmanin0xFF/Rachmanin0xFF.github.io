@@ -15,7 +15,7 @@ decompression bomb.png, Data from the James Webb Space Telescope is incredibly h
 dejong.png, A render of a Peter De Jong attractor.
 diffraction.png, A diffraction pattern formed by shining a laser through a bunch of small, anisotropically-distributed holes (think Poisson disc sampling). Part of my senior optics lab.
 dipoles.png, Field lines from dipoles!
-displayhack.png, Using custom character sets and a 74HC595 shift register to draw graphs on a LCD.
+displayhack.png, Using custom character sets and a 74HC595 shift register to draw graphs on an LCD display.
 DLA_ALT.png, A simulation of diffusion-limited aggregation (DLA).
 eigenheart.png, The vibrational eigenmodes of a heart shape.
 error diff strats.png, Error diffusion strategies! I might publish the processes for the bottom two someday. I'm not sure I'll keep the names, though. Also, I'm not sure this is a faithful representation of Ostromoukhov's technique.
@@ -43,7 +43,7 @@ kde for esr.png, A kernel density estimate for measurements of the magnetic fiel
 klein.png, A klein bottle with a confusing (but, in some sense, optimal) embedding!
 loghist.png, A histogram of waiting times between events in a scintillator detetor. The 'decays' peak is from muons decaying while inside the detector.
 LUT_golden.png, A lookup table (LUT) for use in a game engine I made.
-map_out.png, The output of a program I wrote to test out different map projections. I think this is an Eckert VI projection.
+map_out.png, The output of a program I wrote to learn about different map projections. I think this is an Eckert VI projection.
 MC 4-2.png, The output of a Monte Carlo simulation I created to explain the different features in a gamma spectrum we measured in a university lab.
 midlgert.png, A wallpaper-worthy render of the Lorentz system.
 minkowski_gjk.png, A screenshot of some software I wrote to visualize the Minkowski-GJK algorithm for determining whether two convex polygons are intersecting. I made this before a variety of excellent YouTube videos were available on the topic.
@@ -58,7 +58,7 @@ PID sim.png, A screenshot of software I wrote to simulate PID controllers acting
 play house.JPG, The interior of a school playhouse I helped design (unfurnished).
 poofed_chip.png, That time I broke a $1500 piece of equipment because one power cable fit into a slot that it really shouldn't have. Voltage regulator chips are not supposed to have bumps.
 portrait.png, A map of the nuclear decay network (decay paths between isotopes) with low branching ratio edges and some isotopes omitted. 
-pseudopixeltest.png, A fun rendering method for voxel data where you draw large *squares* at leach point. If you're not paying much attention, they look like cubes.
+pseudopixeltest.png, A fun rendering method for voxel data where you draw large *squares* at each point. If you're not paying much attention, they look like cubes.
 quadclient.png, Software me and some friends made in high school for PID tuning our quadcopter in a test stand. Please ignore the text in the bottom left (we were children).
 randomnetworks.png, Some sort of genetic algorithm-like neural netowrk thing trying to act as a controller.
 raymarching.png, My first time experimenting with raymarching signed distance fields (SDFs).

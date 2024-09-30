@@ -16,6 +16,10 @@
 	border: 1px dashed var(--neut, #cccccc);
 }
 
+.articlepreview:hover {
+	border: 1px dashed var(--emph, #12e7b9);
+}
+
 .title {
 	font-family: var(--fbody, 'Open Sans'), 'Helvetica', sans-serif;
 	line-height: 1.6;
@@ -25,7 +29,7 @@
 	border: none;
 }
 
-.articlepreview > img {
+.articlepreview > .articlepreviewimg {
 	float: left;
 	height: 100px;
 	width: 100px;
@@ -83,18 +87,33 @@
 .articlepreview a:link{
 	color: var(--text, #000000);
 	text-decoration: none;
-	font-size: 20px;
 }
 .articlepreview a:visited{
 	color: var(--text, #050505);
 	text-decoration: none;
-	font-size: 20px;
 }
 
-.articlepreview a:hover{
+.articlepreview:hover a {
 	color: var(--emph, #12e7b9);
-	text-decoration: none;
-	font-size: 20px;
+}
+
+.gallerybox {
+	width: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0 0 10px 10px var(--background, #fdfdfd) inset;
+	background: url("galleryiconlight.png");
+	background-size: 100% auto;
+}
+
+.gallerybox[color-mode="dark"] {
+	background: url("galleryicon.png");
+}
+
+
+.gallerybox:hover a {
+	color: var(--emph, #12e7b9);
 }
 
 @media all and (max-width: 1040px) {
@@ -103,7 +122,7 @@
 		text-decoration: none;
 		font-size: 3.5vw;
 	}
-	.articlepreview a:visited{
+	.articlepreview:not(.gallerybox) a:visited{
 		color: var(--text, #050505);
 		text-decoration: none;
 		font-size: 3.5vw;
@@ -114,4 +133,32 @@
 		text-decoration: none;
 		font-size: 3.5vw;
 	}
+}
+
+.gallerybox a {
+	text-shadow: 0 0 2px var(--background, #fdfdfd),
+	0 0 3px var(--background, #fdfdfd),
+	0 0 4px var(--background, #fdfdfd),
+	0 0 5px var(--background, #fdfdfd),
+	0 0 6px var(--background, #fdfdfd),
+	0 0 7px var(--background, #fdfdfd),
+	0 0 8px var(--background, #fdfdfd),
+	0 0 9px var(--background, #fdfdfd),
+	0 0 10px var(--background, #fdfdfd), 
+	0 0 10px var(--background, #fdfdfd), 
+	0 0 12px var(--background, #fdfdfd), 
+	0 0 12px var(--background, #fdfdfd), 
+	0 0 12px var(--background, #fdfdfd), 
+	0 0 15px var(--background, #fdfdfd), 
+	0 0 15px var(--background, #fdfdfd), 
+	0 0 15px var(--background, #fdfdfd), 
+	0 0 16px var(--background, #fdfdfd), 
+	0 0 16px var(--background, #fdfdfd), 
+	0 0 16px var(--background, #fdfdfd), 
+	0 0 16px var(--background, #fdfdfd), 
+	0 0 20px var(--background, #fdfdfd);
+	
+	font-size: 24px;
+	font-weight: bold;
+	
 }
