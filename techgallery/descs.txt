@@ -5,7 +5,7 @@ allcolors.jpg, Order sRGB color space with a 3D Hilbert curve, then wrap that li
 audioamp.jpg, A tight breadboard audio amplifier I made for a university class.
 automata.png, An output from my random cellular automata / PDE explorer.
 bifc2.png, A nice render of the bifurcation diagram of the logistic map. Currently my Zoom background.
-boxes.png, Take a box, then Bisect it along one of its axes. Bisect the resulting two boxes along the opposite axes. Repeat.
+boxes.png, The paths of many 'ants' marching in cardinal directions, each occasionally spawning more orthogonal ants.
 coasters.jpg, A few space-themed coasters I laser-engraved for my family.
 colorspaceapp.png, A tool I made to extract optimal quantization palettes from photos.
 control_window.png, An in-development screenshot of a Qt application I wrote to monitor and automate test equipment in my university's particle physics lab.
