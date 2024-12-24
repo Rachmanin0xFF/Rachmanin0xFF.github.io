@@ -1,4 +1,9 @@
+
+die("Dark mode is disabled until I feel like making it work properly with highlight.js :P")
+
 // Probably quite redundant, hehe
+// ^ what did I mean by this??? comment your code, past me :|
+//   gosh, I really forget how JS works
 
 function setDarkMode() {
 	document.documentElement.setAttribute("color-mode", "dark");
