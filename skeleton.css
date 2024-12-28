@@ -3,7 +3,7 @@
 @import "animations.css";
 
 :root {
-	--emph: #34d8bd;
+	--emph: #239f95;
 	--background: #fcfcfc;
 	--background-image-color: #fdfdfd;
 	--neut: #c2c2c2;
@@ -140,17 +140,7 @@ h5 * {
 	background: -webkit-linear-gradient(100deg, #9636f0, #12e7b9);
 	background: linear-gradient(
 		140deg,
-		hsl(167deg 86% 49%) 0%,
-		hsl(168deg 79% 52%) 19%,
-		hsl(170deg 76% 54%) 37%,
-		hsl(172deg 73% 55%) 53%,
-		hsl(174deg 71% 56%) 65%,
-		hsl(177deg 68% 57%) 74%,
-		hsl(180deg 66% 58%) 81%,
-		hsl(183deg 68% 60%) 86%,
-		hsl(186deg 72% 61%) 92%,
-		hsl(189deg 76% 63%) 96%,
-		hsl(192deg 81% 65%) 100%
+		#1fbbae, #22b0aa, #28a5a5, #2f9a9f, #368f97
 	  );
   	-webkit-background-clip: text;
 	background-clip: text;
@@ -240,7 +230,7 @@ h6 {
 	margin-right: 10px;
 	padding-top: 7px;
 	padding-bottom: 8px;
-	border: 1px dashed var(--neut, #050505);
+	border: 1px dotted var(--neut, #050505);
 	font-family: var(--f2, 'Atkinson Hyperlegible'), 'Helvetica', sans-serif;
 	font-size: 16px;
 	font-weight: normal;
@@ -394,8 +384,8 @@ h6 {
 		grid-row: 2;
 		height: 100px;
 		padding-top: 15vw;
-		padding-left: 5%;
-		padding-right: 5%;
+		padding-left: 10vw;
+		padding-right: 10vw;
 	}
 	#sketchcanvas {
 		width: 80vw;
@@ -434,7 +424,7 @@ h6 {
 		grid-template-columns: repeat(auto-fill, minmax(256px, 1fr));
 	}
 	#sitename {
-		padding-left: 11.7vw;
+		padding-left: 10vw;
 	}
 	body {
 		font-size: min(3vw, 16px);
