@@ -78,6 +78,20 @@ ul li a {
 	text-decoration-color: var(--emph, #12e7b9);
 }
 
+ul {
+	padding-bottom: 0.5em;
+}
+li {
+	padding-bottom: 0.5em;
+}
+
+p + ul {
+    margin-top: -1.5em;
+}
+p + ol {
+    margin-top: -1.5em;
+}
+
 a:hover {
 	text-decoration: none;
 	color: var(--emph, #12e7b9);
