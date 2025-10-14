@@ -1,0 +1,164 @@
+
+@import "skeleton.css";
+
+
+.arts {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(32px, 208px));
+	grid-auto-rows: repeat(3, minmax(32px, 208px));
+	grid-gap: 10px;
+}
+
+.articlepreview {
+	margin: 0;
+	min-height: 100px;
+	padding: 16px 0px 16px 0px;
+	/* border: 1px dashed var(--neut, #cccccc); */
+}
+
+.articlepreview:hover {
+	/* border: 1px dashed var(--emph, #12e7b9); */
+}
+
+.title {
+	font-family: var(--fbody, 'Open Sans'), 'Helvetica', sans-serif;
+	line-height: 1.6;
+}
+
+.noborder {
+	border: none;
+}
+
+.articlepreview > .articlepreviewimg {
+	float: left;
+	height: 100px;
+	width: 100px;
+	padding-right: 16px;
+	filter: var(--imfilter, none);
+}
+
+.artpreview:first-child {
+	grid-column: 2;
+	grid-row: 1 / 3;
+	object-fit: cover;
+	max-height: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+.artpreview:first-child img {
+	object-fit: fill;
+	margin-left: -50%;
+	height: 100%;
+	width: 200%;
+}
+
+.artpreview:nth-child(2) {
+	height: 100%;
+	max-height: 100%;
+	grid-column: 3 / 5;
+	grid-row: 1;
+	max-width: 100%;
+	width: 100%;
+	overflow: hidden;
+}
+.artpreview:nth-child(2) img {
+	margin-top: -50%;
+	object-fit: cover;
+	transform: translate(0, 25%);
+}
+
+.inline {
+	height: 1em;
+	width: auto;
+}
+
+.galleryicon {
+	position: relative;
+	text-align: center;
+	color: white;
+}
+.centered {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.articlepreview a:link{
+	color: var(--text, #000000);
+	text-decoration: none;
+}
+.articlepreview a:visited{
+	color: var(--text, #050505);
+	text-decoration: none;
+}
+
+.articlepreview:hover a {
+	color: var(--emph, #12e7b9);
+}
+
+.gallerybox {
+	width: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0 0 10px 10px var(--background, #fdfdfd) inset;
+	background: url("galleryiconlight.png");
+	background-size: 100% auto;
+}
+
+.gallerybox[color-mode="dark"] {
+	background: url("galleryicon.png");
+}
+
+
+.gallerybox:hover a {
+	color: var(--emph, #12e7b9);
+}
+
+@media all and (max-width: 1040px) {
+	.articlepreview a:link{
+		color: var(--text, #000000);
+		text-decoration: none;
+		font-size: 3.5vw;
+	}
+	.articlepreview:not(.gallerybox) a:visited{
+		color: var(--text, #050505);
+		text-decoration: none;
+		font-size: 3.5vw;
+	}
+	
+	.articlepreview a:hover{
+		color: var(--emph, #12e7b9);
+		text-decoration: none;
+		font-size: 3.5vw;
+	}
+}
+
+.gallerybox a {
+	text-shadow: 0 0 2px var(--background, #fdfdfd),
+	0 0 3px var(--background, #fdfdfd),
+	0 0 4px var(--background, #fdfdfd),
+	0 0 5px var(--background, #fdfdfd),
+	0 0 6px var(--background, #fdfdfd),
+	0 0 7px var(--background, #fdfdfd),
+	0 0 8px var(--background, #fdfdfd),
+	0 0 9px var(--background, #fdfdfd),
+	0 0 10px var(--background, #fdfdfd), 
+	0 0 10px var(--background, #fdfdfd), 
+	0 0 12px var(--background, #fdfdfd), 
+	0 0 12px var(--background, #fdfdfd), 
+	0 0 12px var(--background, #fdfdfd), 
+	0 0 15px var(--background, #fdfdfd), 
+	0 0 15px var(--background, #fdfdfd), 
+	0 0 15px var(--background, #fdfdfd), 
+	0 0 16px var(--background, #fdfdfd), 
+	0 0 16px var(--background, #fdfdfd), 
+	0 0 16px var(--background, #fdfdfd), 
+	0 0 16px var(--background, #fdfdfd), 
+	0 0 20px var(--background, #fdfdfd);
+	
+	font-size: 24px;
+	font-weight: bold;
+	
+}

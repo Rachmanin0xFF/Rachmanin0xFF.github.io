@@ -1,0 +1,3 @@
+python-markdown
+pymdown-extensions
+jinja2
