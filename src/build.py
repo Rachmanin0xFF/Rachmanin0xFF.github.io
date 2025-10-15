@@ -27,7 +27,12 @@ else:
 logger.info(f"Building to output directory: {OUTPUT_ROOT.resolve()}")
 TEMPLATE_ROOT = Path("templates")
 with open("config.yaml", "r") as f:
-    GLOBAL_CONTEXT = yaml.safe_load(f)
+    try:
+        GLOBAL_CONTEXT = yaml.safe_load(f)
+    except Exception as e:
+        logger.error(f"Error reading config.yaml: {e}")
+        logger.error(f"No config file found or file is malformed; exiting.")
+        sys.exit(1)
 
 template_env = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_ROOT))
 
