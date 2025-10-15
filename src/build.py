@@ -5,13 +5,25 @@ import jinja2
 import logging
 import yaml
 import coloredlogs
+import sys
+import argparse
 
-logger = logging.getLogger("build")
+script_name = sys.argv[0].split("/")[-1]
+
+parser = argparse.ArgumentParser(script_name)
+parser.add_argument("output", nargs='?', help="The directory to build to. Defaults to 'build'.", type=str, default="build")
+args = parser.parse_args()
+
+logger = logging.getLogger(script_name)
 logging.basicConfig(level=logging.INFO)
 coloredlogs.install(level='DEBUG', logger=logger)
 
 CONTENT_ROOT = Path("content")
-OUTPUT_ROOT = Path("../docs")
+if args.output:
+    OUTPUT_ROOT = Path("..") / Path(args.output)
+else:
+    OUTPUT_ROOT = Path("..") / Path("build")
+logger.info(f"Building to output directory: {OUTPUT_ROOT.resolve()}")
 TEMPLATE_ROOT = Path("templates")
 with open("config.yaml", "r") as f:
     GLOBAL_CONTEXT = yaml.safe_load(f)
