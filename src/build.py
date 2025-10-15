@@ -70,7 +70,7 @@ def render_directory(
                     "meta": cleaned_metadata,
                 }
             md.reset()
-    
+
     sorted_files = sorted(
         files.items(), key=lambda item: item[1]["meta"].get(sort_by), reverse=reverse
     )
@@ -78,10 +78,10 @@ def render_directory(
     for i in range(len(sorted_files) - 1):
         sorted_files[i][1]["meta"]["next"] = sorted_files[i + 1][0]
         sorted_files[i + 1][1]["meta"]["prev"] = sorted_files[i][0]
-    
+
     for filename, data in sorted_files:
         print(data["meta"])
-        #template = template_env.get_template(data["meta"]["layout"])
+        # template = template_env.get_template(data["meta"]["layout"])
         template = template_env.get_template("nothing.html")
         output_path = OUTPUT_ROOT / filename.with_suffix(".html")
         output_path.parent.mkdir(parents=True, exist_ok=True)
