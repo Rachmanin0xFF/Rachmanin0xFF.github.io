@@ -4,8 +4,11 @@ import shutil
 import jinja2
 import logging
 import yaml
+import coloredlogs
 
+logger = logging.getLogger("build")
 logging.basicConfig(level=logging.INFO)
+coloredlogs.install(level='DEBUG', logger=logger)
 
 CONTENT_ROOT = Path("content")
 OUTPUT_ROOT = Path("../docs")
@@ -35,7 +38,7 @@ def render_directory(
     """
     Recursively renders all matching files in the input directory.
     """
-    logging.debug(f"Rendering directory {input_directory} using pattern {pattern}")
+    logger.debug(f"Rendering directory {input_directory} using pattern {pattern}")
     if type(input_directory) is str:
         input_directory = Path(input_directory)
 
@@ -62,7 +65,7 @@ def render_directory(
             cleaned_metadata = {k: clean(v) for k, v in md.Meta.items()}
             relative_path = path.relative_to(CONTENT_ROOT)
             if not metadata_contains_required_fields(cleaned_metadata):
-                logging.warning(
+                logger.warning(
                     f"File {relative_path} is missing required metadata fields. Skipping!"
                 )
             else:
@@ -73,10 +76,10 @@ def render_directory(
             md.reset()
 
     if not files:
-        logging.info(f"No files found in {input_directory} matching pattern {pattern}")
+        logger.info(f"No files found in {input_directory} matching pattern {pattern}")
         return
 
-    logging.debug(f"Found {len(files)} files to render, sorting...")
+    logger.debug(f"Found {len(files)} files to render, sorting...")
     sorted_files = sorted(
         files.items(), key=lambda item: item[1]["meta"].get(sort_by), reverse=reverse
     )
@@ -90,12 +93,12 @@ def render_directory(
         try:
             template = template_env.get_template(data["meta"]["layout"])
         except jinja2.TemplateNotFound:
-            logging.error(
+            logger.error(
                 f"{filename} - template not found: {data['meta']['layout']}, skipping!"
             )
             continue
         except jinja2.TemplateError as e:
-            logging.error(
+            logger.error(
                 f"{filename} - template error in {data['meta']['layout']}: {e}, skipping!"
             )
             continue
@@ -120,7 +123,7 @@ def render_directory(
         try:
             shutil.copy2(path, output_path)
         except Exception as e:
-            logging.error(f"Error copying {path} to {output_path}: {e}")
+            logger.error(f"Error copying {path} to {output_path}: {e}")
 
 
 render_directory("posts")
