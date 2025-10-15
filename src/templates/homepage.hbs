@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no">
+
+  <meta name="HandheldFriendly" content="true"/>
+  <meta name="MobileOptimized" content="320"/>
+  <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
+
+
+  <title>Adam Lastowka - {{ title }}</title>
+  <meta name="description" content="Welcome to Adam's website!" />
+  <link rel="stylesheet" href="home.css">
+  <script defer src="scripts/darkmode.js"></script>
+
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+</head>
+
+<body>
+  <div id ="bkg">
+
+  <section id="not-background">
+
+    <section id="sidebar">
+      <div class="sticky">
+        <div class="sb-big onbkg hvr-rotate"><a href="./index.html">Home</a></div><br>
+        <div class="sb-big onbkg hvr-rotate"><a href="./about/index.html">About</a></div><br>
+        <div class="sb-big onbkg hvr-rotate"><a href="./qa/index.html">Q&A</a></div>
+        <!--<br><br><div id="dm-toggle" class="button sb-big hvr-rotate">Lights</button>-->
+      </div>
+    </section>
+
+    <section id="header">
+
+      <div class="null">
+        <div id="spikes" class="vector" alt=""></div>
+      </div>
+
+      <div id="sitename">
+        <h5>
+          <a href="./index.html">Adam<br>Lastowka</a>
+        </h5>
+      </div>
+
+      {{{contents}}}
+    </section>
+
+    <div id="foreground">
+
+      <section id="feed">
+
+        <h6>Articles</h6>
+        <section class="posts feed_item">
+            {{#each posts}}
+              {{#ifCond @index '<' 6}}
+                <div class = "articlepreview" onclick="location.href='./{{ toHTMLintag path }}';" style="cursor: pointer;">
+                  <img src="./articles/thumb/{{iconpath}}" class="articlepreviewimg">
+                  <div class="title"><a href="./{{ toHTML path }}">{{title}}</a></div>
+                  <div class="date">{{formatDate date}}</div>
+                </div>
+              {{/ifCond}}
+            {{/each}}
+        </section>
+        <div>
+          <a href="./articles/page/1/index.html" class = "button2">View All</a>
+        </div>
+
+        <br>
+        <h6>Project Image Gallery</h6>
+        <section class="feed_item">
+        <div class="articlepreview gallerybox" onclick="location.href='./techgallery/gallery/index.html';" style="cursor: pointer;">
+          <a href="./techgallery/gallery/index.html"> View Gallery</a>
+        </div>
+        </section>
+
+        <br>
+        <h6>Artwork</h6>
+        <section class="arts feed_item">
+            {{#each arts_desc}}
+              {{#ifCond @index '<' 6}}
+                <a href="./arts{{getPhotoPage artpath }}" class = "artpreview">
+                  <img src="./arts/{{getThumb artpath }}" alt="one of my arts">
+                </a>
+              {{/ifCond}}
+            {{/each}}
+        </section>
+
+        <div>
+          <a href="./arts/page/1/index.html" class = "button2">View All</a>
+        </div>
+
+        <br><br>
+        <h6>Audio</h6>
+        <section class="posts feed_item">
+          {{#each audio_desc}}
+            {{#ifCond @index '<' 4}}
+              <div class = "articlepreview" onclick="location.href='./{{ toHTMLintag path }}';" style="cursor: pointer;">
+                <a href="./{{toHTML path }}" class="title">{{title}}</a>
+                <div class="date">{{formatDate date}}</div>
+                <audio controls style="width: 90%;">
+                  <source src="./{{getAudio path}}" type="audio/mp3">
+                </audio>
+              </div>
+            {{/ifCond}}
+          {{/each}}
+        </section>
+        <div>
+          <a href="./audio/page/1/index.html" class = "button2">View All</a>
+        </div>
+
+      </section>
+
+      <div id="footer">
+        
+      </div>
+    </div>
+  </section>
+</div>
+
+</body>
+
+</html>

@@ -30,7 +30,6 @@ md = markdown.Markdown(
 
 def render_directory(
     input_directory: Path | str,
-    template_path: Path | str,
     pattern="**/*.md",
     reverse=True,
     sort_by="date",
@@ -40,8 +39,6 @@ def render_directory(
     """
     if type(input_directory) is str:
         input_directory = Path(input_directory)
-    if type(template_path) is str:
-        template_path = Path(template_path)
 
     input_directory = CONTENT_ROOT / input_directory
 
@@ -73,7 +70,7 @@ def render_directory(
                     "meta": cleaned_metadata,
                 }
             md.reset()
-
+    
     sorted_files = sorted(
         files.items(), key=lambda item: item[1]["meta"].get(sort_by), reverse=reverse
     )
@@ -81,9 +78,17 @@ def render_directory(
     for i in range(len(sorted_files) - 1):
         sorted_files[i][1]["meta"]["next"] = sorted_files[i + 1][0]
         sorted_files[i + 1][1]["meta"]["prev"] = sorted_files[i][0]
-
+    
     for filename, data in sorted_files:
         print(data["meta"])
+        #template = template_env.get_template(data["meta"]["layout"])
+        template = template_env.get_template("nothing.html")
+        output_path = OUTPUT_ROOT / filename.with_suffix(".html")
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(output_path, "x") as f:
+            print(output_path)
+            f.write(template.render(**GLOBAL_CONTEXT, **data))
 
 
-render_directory("posts", "post.html")
+render_directory("posts")
