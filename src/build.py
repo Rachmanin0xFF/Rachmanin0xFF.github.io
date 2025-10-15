@@ -7,6 +7,7 @@ import yaml
 import coloredlogs
 import sys
 import argparse
+import hashlib
 
 script_name = sys.argv[0].split("/")[-1]
 
@@ -126,12 +127,22 @@ def render_directory(
     # copy static files
     static_input = input_directory
     static_output = OUTPUT_ROOT / input_directory.relative_to(CONTENT_ROOT)
+    file_hash = lambda p: hashlib.sha256(open(p, "rb").read()).hexdigest()
+    
     for path in static_input.glob("**/*.*"):
         if path.suffix in [".md", ".markdown", ".mdx", ".html", ".htm"]:
             continue
         relative_path = path.relative_to(static_input)
         output_path = static_output / relative_path
         output_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        # copy iff content differs or file doesn't exist
+        if output_path.exists():
+            try:
+                if file_hash(path) == file_hash(output_path):
+                    continue
+            except Exception as e:
+                logger.warning(f"Hash comparison failed for {path} and {output_path}: {e}")
         try:
             shutil.copy2(path, output_path)
         except Exception as e:
