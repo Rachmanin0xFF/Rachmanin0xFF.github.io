@@ -12,3 +12,30 @@ Since then, [11ty](https://www.11ty.dev/) has gained a lot of traction, as well 
 
 Okay, so why not just do it myself??????
 that's what is happening here...
+
+
+## How to Build?
+
+I'm not sure why you want to build **my** website :woozy_face:, but here you go. It's just a little Python script...
+
+1. **Set up a virtual environment** (recommended):
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # For Windows users: .venv\Scripts\activate
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   pip install -r src/requirements.txt
+   ```
+
+3. **Build the site**:
+   ```bash
+   cd src
+   python build.py
+   ```
+   
+   By default, this builds to `docs`. You can specify a different output directory:
+   ```bash
+   python build.py my_test_build_folder
+   ```
