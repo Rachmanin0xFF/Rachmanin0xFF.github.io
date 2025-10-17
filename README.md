@@ -39,3 +39,7 @@ I'm not sure why you want to build ***my*** website :woozy_face:, but here you g
    ```bash
    python build.py my_test_build_folder
    ```
+
+There is also [a workflow](.github/workflows/build.yml) that will automatically run all of this on any pushes to the `master` branch.
+
+Possible TODO: Make other branches automatically deploy to their own folders some sort of draft directory on the website?
