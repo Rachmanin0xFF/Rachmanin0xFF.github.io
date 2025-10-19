@@ -1,6 +1,6 @@
 ---
 title: Understanding the Wronskian
-layout: post.hbs
+layout: post.html
 date: 2022-05-22
 tags: math
 iconpath: Wronskian.png

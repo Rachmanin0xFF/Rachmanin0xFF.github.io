@@ -1,6 +1,6 @@
 ---
 title: Upgrading Florida Tech's CAPP Reports (Part 1)
-layout: post.hbs
+layout: post.html
 date: 2022-05-16
 tags: cs, visualization, graphics, networks
 iconpath: Coursegraph.png
@@ -12,9 +12,7 @@ iconpath: Coursegraph.png
 
 Florida Tech's course catalog is pretty good. It's got nice hyperlinking, helpful popups, and a reliable search system. It even includes degree requirements for various majors. Let's see a screenshot:
 
-<div class="imblock">
-<img src="freshman_year.png" class="postim"></img>
-</div>
+![image](freshman_year.png)
 
 Cool! Not too hard to follow, and very nice and interactive.
 
@@ -22,18 +20,14 @@ But what if I want to check which of those degree requirements I'm meeting?
 
 Florida Tech's PAWS system for students has a handy tool just for that -- CAPP Reports (Curriculum, Advising, and Program Planning). Students can generate "reports" that tell them which requirements they need to meet / have met so far. Let's see how it looks:
 
-<div class="imblock">
-<img src="course_report.png" class="postim"></img>
-</div>
+![image](course_report.png)
 
 Bleh. And this is just what I could fit in a screenshot -- these tables go on for pages. They aren't linked to the course catalog, so while planning courses, you need to have multiple tabs open while switching back and forth, double-checking that you entered the CRN right.
 
 What I'd like to have is something like this:
 
-<div class="imblock">
-<img src="colorado.png" class="postim"></img>
+![image](colorado.png)
 Courtesy of the University of Colorado
-</div>
 
 ## The Solution
 Yes, I could just draw a flowchart for the Physics major. This would be simple and easy. Unfortunately, I am a computer programmer, and consequently duty-bound to automate any menial task I encounter.

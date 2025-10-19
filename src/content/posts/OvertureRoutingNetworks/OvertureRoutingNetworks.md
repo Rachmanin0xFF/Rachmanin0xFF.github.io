@@ -1,6 +1,6 @@
 ---
 title: Transportation Networks with Overture Maps Data (Notebook)
-layout: post.hbs
+layout: post.html
 date: 2024-12-23
 tags: cs, networks, gis
 iconpath: GIS.png
@@ -200,9 +200,7 @@ def display_with_lonboard(geo_data: gpd.GeoDataFrame,
 
 display_with_lonboard(non_binary_segments)
 </code></pre>
-<div class="imblock">
-<img src="lonboard1.png" class="postim"></img>
-</div>
+![image](lonboard1.png)
 
 *Note: you can try using `GeoDataFrame.explore()`, but [lonboard](https://developmentseed.org/lonboard/latest/) is more performant and won't crash your notebook when drawing >250k LineStrings.*
 
@@ -317,9 +315,7 @@ G = G.to_directed()
 G.remove_nodes_from(list(nx.isolates(G)))
 display_graph_with_lonboard(G)
 </code></pre>
-<div class="imblock">
-<img src="lonboard2.png" class="postim"></img>
-</div>
+![image](lonboard2.png)
 
 We've got a NetworkX graph now! This means we have access to [an incredible list](https://networkx.org/documentation/stable/reference/algorithms/index.html) of algorithms and statistics, as well as [OSMnx's utilities](https://osmnx.readthedocs.io/en/stable/user-reference.html). This includes exporting to OSM XML (`ox.io.save_graph_xml`), which could be handy for use with other routing engines (though we'd probably need to add a little more data, first).
 
@@ -368,9 +364,7 @@ display_with_lonboard(gpd.GeoDataFrame(path_data, crs="EPSG:4326"))
 Path length: 2.95km
 </code></pre>
 
-<div class="imblock">
-<img src="lonboard3.png" class="postim"></img>
-</div>
+![image](lonboard3.png)
 
 The routing here is still a little wonky, as expected, but not terrible! We're still a long way from using Overture's data with something like [Valhalla](https://github.com/valhalla/valhalla), but exploratory projects like these give a good feel for the schema's kinks and features.
 

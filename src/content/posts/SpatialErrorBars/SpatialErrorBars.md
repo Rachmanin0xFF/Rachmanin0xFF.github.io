@@ -1,15 +1,13 @@
 ---
 title: Make Your Averages Better-Than-Average
-layout: post.hbs
+layout: post.html
 date: 2025-04-16
 tags: math, stats, cs, gis
 iconpath: SpatialErrorBars.png
 ---
 
 Take a look at these two points:
-<div class="imblock">
-<img src="twopoints.png" class="postim"></img>
-</div>
+![image](twopoints.png)
 
 Think of these points as **repeated measurements of the same thing** — whether it's the coordinates of an ice cream shop in two different datasets, the orientation of a [relativistic jet](https://en.wikipedia.org/wiki/Astrophysical_jet) as inferred from two different telescopes, or my IQ and likability score from two different online quizzes.
 
@@ -19,9 +17,7 @@ Quick: how would you **combine** these two measurements? The red dataset says th
 3. Apply some sort of ad-hoc weighted average
 
 These methods aren't bad! Number 2 is often a good choice. But for this data, the 'best' merge location is actually right here, in green:
-<div class="imblock">
-<img src="twopoints_merge.png" class="postim"></img>
-</div>
+![image](twopoints_merge.png)
 
 Confused? Let's unpack this.
 
@@ -44,23 +40,17 @@ I'll use a [real-world](https://x.com/adamlastowka/status/1698148223603368314) e
 * Thermometer B: Measured 97.7°F with a standard deviation of 0.15°F
 
 If we plot two Gaussians (bell curves, a [very reasonable assumption](https://en.wikipedia.org/wiki/Central_limit_theorem) for our measurement error) with these properties, the graph looks like [this](https://www.desmos.com/calculator/zp2xhlhka3):
-<div class="imblock">
-<img src="twogauss.png" class="postim"></img>
-</div>
+![image](twogauss.png)
 
 Visually, the way to combine these measurements seems pretty obvious: look at where they overlap (this also lets you *validate* measurements, as we'll see later)! Formally, since these are probability densities of independent measurements, we can just *multiply them together*. After normalization, that gives us this curve, which is also a Gaussian (the product of two Gaussians is also a Gaussian):
-<div class="imblock">
-<img src="twogauss_merge.png" class="postim"></img>
-</div>
+![image](twogauss_merge.png)
 
-Which has a mean of 97.8°F and a standard deviation of 0.14°F. I'll write the formulae for the new mean (\\(\mu\\)) and standard deviation (\\(\sigma\\)) below (I won't bore you with the derivation):
+Which has a mean of 97.8°F and a standard deviation of 0.14°F. I'll write the formulae for the new mean ($ \mu $) and standard deviation ($ \sigma $) below (I won't bore you with the derivation):
 
-\\[
-\begin{align}
+$$ \begin{align}
 \mu_\textrm{combined}&=\frac{{\sigma_1}^2\mu_2 + {\sigma_2}^2\mu_1}{{\sigma_1}^2+{\sigma_2}^2} \\\\
 \sigma_\textrm{combined} &= \sqrt\frac{1}{1/{\sigma_1}^{2}+1/{\sigma_2}^{2}}
-\end{align}
-\\]
+\end{align} $$
 
 If you prefer code:
 <pre><code class="language-python">def combine_measurements_1D(meas_1, stdev_1, meas_2, stdev_2):
@@ -77,13 +67,9 @@ A few things about this strategy:
 
 ## Merging Measurements (2-D)
 Let's return to the two points from earlier:
-<div class="imblock">
-<img src="twopoints.png" class="postim"></img>
-</div>
+![image](twopoints.png)
 The key bit of information I left out earlier (apologies) is that these points *also* have error bars:
-<div class="imblock">
-<img src="twomultivar.png" class="postim"></img>
-</div>
+![image](twomultivar.png)
 
 The ellipses around each point represent confidence intervals (20%, 40%, 60%, 80%, 95%, and 99%). Interestingly, the point in the upper right has an *asymmetry* in its error: its y-coordinate is much more accurate than its x-coordinate. I can think of a few cases where this might happen (specifically in geospatial data, since that's what I've been up to lately):
 1. Oblique aerial imagery — flat features will appear 'squished' along one axis, so any error bars will do the same.
@@ -92,32 +78,24 @@ The ellipses around each point represent confidence intervals (20%, 40%, 60%, 80
 
 
 Actually, we got an easy case here: the direction of greatest/least uncertainty often *isn't even aligned* with the axes; we could've ended up with something like this:
-<div class="imblock">
-<img src="twomultivar_angle.png" class="postim"></img>
-</div>
+![image](twomultivar_angle.png)
 
 The 'full treatment' of this sort of error requires knowing not just the standard deviation in x and y, but also whether those uncertainties are correlated. Mathematically, we can accomplish this with a **covariance matrix**. This sounds scary, but it's just a list of four numbers that describe how your uncertainty is smeared out in space. Here are some examples:
-<div class="imblock">
-<img src="covariance_matrices.png" class="postim"></img>
-</div>
+![image](covariance_matrices.png)
 
 If you're someone who likes to learn by playing, check out [this](https://www.infinitecuriosity.org/vizgp/) somewhat-tangential-but-still-really-cool interactive demo.
 
 
 
 Again, to properly merge two measurements in 2D, we just multiply their distributions together:
-<div class="imblock">
-<img src="twomultivar_merge.png" class="postim"></img>
-</div>
+![image](twomultivar_merge.png)
 
-The math to recover the resulting (still Gaussian) blob is a little bit trickier; we'll need to know both the means \\(\mu_1, \mu_2\\) and the covariance matrices of both points \\( \Sigma_1, \Sigma_2 \\) (capital \\(\Sigma\\) instead of lowercase \\(\sigma\\)):
-\\[
-\begin{align}
+The math to recover the resulting (still Gaussian) blob is a little bit trickier; we'll need to know both the means $ \mu_1, \mu_2 $ and the covariance matrices of both points $ \Sigma_1, \Sigma_2 $ (capital $ \Sigma $ instead of lowercase $ \sigma $):
+$$ \begin{align}
 \mu_\textrm{combined} &= \Sigma_2(\Sigma_1 + \Sigma_2)^{-1}\mu_1 + \Sigma_1(\Sigma_1 + \Sigma_2)^{-1}\mu_2\\\\
 \Sigma_\textrm{combined}&=\Sigma_1(\Sigma_1 + \Sigma_2)^{-1}\Sigma_2
-\end{align}
-\\]
-Keep in mind that the \\(\Sigma\\) are matrices, the \\(\mu\\) are vectors, the products are matrix multiplications, and the inverses are matrix inverses. The equivalent Python (using numpy) is:
+\end{align} $$
+Keep in mind that the $ \Sigma $ are matrices, the $ \mu $ are vectors, the products are matrix multiplications, and the inverses are matrix inverses. The equivalent Python (using numpy) is:
 <pre><code class="language-python">import numpy as np
 def combine_measurements(meas_1, cov_1, meas_2, cov_2):
 	reusable_inverse = np.linalg.inv(cov_1 + cov_2)
@@ -162,7 +140,7 @@ This is simple; we just apply the 1-D procedure to each coordinate. With Numpy's
 </code></pre>
 
 ### Validating a Match (Chi-Squared Test)
-One of the most powerful features of error bars is that they let you confidently *reject* matches. If my thermometers had said (95±0.3)°F and (100±0.1)°F, I could state with extreme confidence (a one in \\(2.6\times10^{56}\\) chance of being incorrect) that either they were measuring different temperatures, or someone got their error bars *very* wrong. If you have standard deviations available, here are some functions for calculating frequentist match probabilities:
+One of the most powerful features of error bars is that they let you confidently *reject* matches. If my thermometers had said (95±0.3)°F and (100±0.1)°F, I could state with extreme confidence (a one in $ 2.6\times10^{56} $ chance of being incorrect) that either they were measuring different temperatures, or someone got their error bars *very* wrong. If you have standard deviations available, here are some functions for calculating frequentist match probabilities:
 <pre><code class="language-python">def get_agreement_2D(meas_1: np.array, stdev_1: float, meas_2: np.array, stdev_2: float):
 	'''
 	Returns a value [0, 1] indicating how well two data points 'agree' with each other.

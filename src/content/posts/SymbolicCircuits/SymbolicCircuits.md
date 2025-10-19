@@ -1,32 +1,29 @@
 ---
 title: Optimizing Simplification in Symbolic Circuit Analysis
-layout: post.hbs
+layout: post.html
 date: 2024-12-09
 tags: cs, ee, networks, math
 iconpath: SymbolicCircuits.png
 ---
-<div class="imblock">
-<img src="portrait.png" class="postim"></img>
-</div>
 
-Red lines are \\(1\Omega\\) resistors, blue lines are \\(1\textrm F\\) capacitors, and yellow lines are \\(1\textrm H\\) inductors. What's the equivalent impedance between nodes \\(A\\) and \\(B\\)?
+![Circuit portrait](portrait.png)
 
-This is a random [Watts-Strogatz graph](https://en.wikipedia.org/wiki/Watts%E2%80%93Strogatz_model) with 32 vertices, and it would be a mess to reduce by hand. Sure, you know there *is* an explicit expression for the impedance as a function of frequency \\(\omega\\), but it's huge, and you'd much rather give the circuit to a SPICE model and come back with the results of a frequency sweep.
+Red lines are $1\Omega$ resistors, blue lines are $ 1\textrm F $ capacitors, and yellow lines are $ 1\textrm H $ inductors. What's the equivalent impedance between nodes $ A $ and $ B $?
 
-That's fine, but there's something attractive about [symbolic circuit analysis](https://en.wikipedia.org/wiki/Symbolic_circuit_analysis), and exact, fully parameterized \\(s\\)-plane representations of filters are nice if you want to generate Bode plots and accurately identify poles and zeroes.
+This is a random [Watts-Strogatz graph](https://en.wikipedia.org/wiki/Watts%E2%80%93Strogatz_model) with 32 vertices, and it would be a mess to reduce by hand. Sure, you know there *is* an explicit expression for the impedance as a function of frequency $ \omega $, but it's huge, and you'd much rather give the circuit to a SPICE model and come back with the results of a frequency sweep.
+
+That's fine, but there's something attractive about [symbolic circuit analysis](https://en.wikipedia.org/wiki/Symbolic_circuit_analysis), and exact, fully parameterized $ s $-plane representations of filters are nice if you want to generate Bode plots and accurately identify poles and zeroes.
 
 Okay, maybe we perform a nodal/mesh analysis and throw everything in MATLAB to resolve the system with some ordinary method (e.g. Gauss-Jordan elimination). That'll work, right?
 
 Welcome to "how I spent my weekend".
 
 ### The Difficulty
-Spoiler alert: Here's an equivalent transfer function for 2 nodes in an 8-node network of random \\(1\Omega\\) resistors, \\(1H\\) inductors, and \\(1F\\) capacitors with an average degree of 4:
-\\[
-\frac{3s^{10} + 26s^9 + 77s^8 + 214s^7 + 353s^6 + 470s^5 + 436s^4 + 316s^3 + 154s^2 + 48s + 6}{5s^{10} + 35s^9 + 113s^8 + 298s^7 + 517s^6 + 677s^5 + 640s^4 + 457s^3 + 222s^2 + 65s + 9}
-\\]
+Spoiler alert: Here's an equivalent transfer function for 2 nodes in an 8-node network of random $ 1\Omega $ resistors, $ 1H $ inductors, and $ 1F $ capacitors with an average degree of 4:
+$$ \frac{3s^{10} + 26s^9 + 77s^8 + 214s^7 + 353s^6 + 470s^5 + 436s^4 + 316s^3 + 154s^2 + 48s + 6}{5s^{10} + 35s^9 + 113s^8 + 298s^7 + 517s^6 + 677s^5 + 640s^4 + 457s^3 + 222s^2 + 65s + 9} $$
 This is still a very obnoxious expression, and it's not an easy one to find.
 
-Transfer functions are rational functions. Any time we add two rational functions, we need to expand them, get their denominators in the same form, add them, and factor them again. If you *don't* factor them, the numbers in your expressions get ridiculously large very quickly, and all hope is lost, even for smaller (e.g. \\(N=16, E=32\\)) graphs.
+Transfer functions are rational functions. Any time we add two rational functions, we need to expand them, get their denominators in the same form, add them, and factor them again. If you *don't* factor them, the numbers in your expressions get ridiculously large very quickly, and all hope is lost, even for smaller (e.g. $ N=16, E=32 $) graphs.
 
 Unfortunately, factoring is expensive, especially when the size of your numbers is loosely proportional to the degree of your polynomial. This ends up being the bottleneck to our solver: working with huge rational expressions can be slow.
 
@@ -41,34 +38,28 @@ Because we want to be structurally-aware, we'll approach the problem from a netw
 First, though, a review of the transformations we'll use:
 
 ### The Toolkit
-We'll talk in terms of generalized s-plane impedance: resistors have impedance \\(R\\), inductors \\(sL\\), and capacitors \\(1/(sC)\\). This gives us the edge contraction rule for impedances in series, which we probably won't need:
-\\[
-Z_\textrm{series}=\sum_i Z_i
-\\]
+We'll talk in terms of generalized s-plane impedance: resistors have impedance $ R $, inductors $ sL $, and capacitors $ 1/(sC) $. This gives us the edge contraction rule for impedances in series, which we probably won't need:
+$$ Z_\textrm{series}=\sum_i Z_i $$
 The duplicate-edge removal rule for impedances in parallel:
-\\[
-Z_\textrm{parallel}=\left(\sum_i \frac{1}{Z_{i}}\right)^{-1}
-\\]
+$$Z_\textrm{parallel}=\left(\sum_i \frac{1}{Z_{i}}\right)^{-1}$$
+
 And the node-removal rule — the [**star-mesh transformation**](https://en.wikipedia.org/wiki/Star-mesh_transform) (switching to edge-set notation):
-\\[
-Z_{\\{i,j\\}\textrm{ (equiv. through node }k)}=Z_{\\{i,k\\}}Z_{\\{j,k\\}}\sum_{n\mid\\{k, n\\}\in E} \frac{1}{Z_{\\{k,n\\}}}
-\\]
-Where \\(E\\) is the edges in the network, \\(k\\) is the index of the node to remove, and \\(i\neq j\\). Note that when applied, a star-mesh transformation can leave behind dangling edges that should be removed with the parallel rule.
+$$Z_{\{i,j\}\textrm{ (equiv. through node }k)}=Z_{\{i,k\}}Z_{\{j,k\}}\sum_{n\mid\{k, n\}\in E} \frac{1}{Z_{\{k,n\}}}$$
+
+Where $E$ is the edges in the network, $k$ is the index of the node to remove, and $i\neq j$. Note that when applied, a star-mesh transformation can leave behind dangling edges that should be removed with the parallel rule.
 
 I'll also mention that the star-mesh transform is the same thing as [**Kron reduction**](https://en.wikipedia.org/wiki/Kron_reduction), the only difference being that Kron reduction acts on a Y-parameter matrix instead of a Z-parameter matrix. Both operations are closely related to the [Schur complement](https://en.wikipedia.org/wiki/Schur_complement), a quantity that naturally appears during block Gaussian elimination, which is, at some level, what we're doing when eliminating node(s).
 
 ### Reduction
 The annoying thing about the star-mesh transform is that it's (necessarily) a mess: it leaves behind a complete subgraph on the remaining nodes, meaning star-meshing at random will leave us with a near-complete graph. Let's forget out symbolic divide-and-conquer aspirations for a second and simply try to minimize edge count.
 
-When removing a node \\(k\\) with degree \\(d\\), the change in the number of edges \\(\Delta E_k\\) after a star-mesh transform is in the range:
-\\[
--d \leq \Delta E_k \leq \frac 12d(d-3)
-\\]
-\\(\Delta E_k\\) is greater when fewer of the targeted node's neighbors are connected to each other; the edges formed by the transform are already there. Specifically,
-\\[
-\Delta E_k = \frac{d(d-3)}2 - |\\{\textrm{edges connecting neighbors of node }k\\}|
-\\]
-To keep our graph sparse, we'd like to remove nodes with negative or small \\(\Delta E_k\\). This isn't easy to do perfectly: the number of possible reduction schemes for a graph with \\(N\\) nodes is just \\(N\\) factorial, and the availability of good moves in the future obviously depends on the move history.
+When removing a node $k$ with degree $d$, the change in the number of edges $\Delta E_k$ after a star-mesh transform is in the range:
+$$-d \leq \Delta E_k \leq \frac 12d(d-3)$$
+
+$\Delta E_k$ is greater when fewer of the targeted node's neighbors are connected to each other; the edges formed by the transform are already there. Specifically,
+$$\Delta E_k = \frac{d(d-3)}{2} - |\{\textrm{edges connecting neighbors of node }k\}|$$
+
+To keep our graph sparse, we'd like to remove nodes with negative or small $\Delta E_k$. This isn't easy to do perfectly: the number of possible reduction schemes for a graph with $ N $ nodes is just $ N $ factorial, and the availability of good moves in the future obviously depends on the move history.
 
 But, intuitively, I expect being greedy to get us pretty far. Let's try that first.
 ### Code
@@ -115,19 +106,15 @@ You can see the full source [on my GitHub](https://github.com/Rachmanin0xFF/impe
 </code></pre>
 The class is CAS-agnostic and can be used with anything with a Python binding. I settled on [Symbolica](https://symbolica.io/), which outperforms the alternative [SymPy](https://www.sympy.org/en/index.html) by over a thousand times (yes, that many — this is from profiling). The results check out against [Falstad's simulator](https://www.falstad.com/circuit/), but how elegantly does our greedy method perform?
 
-First, I'll show the reduction applied to the largest component of a Erdős–Rényi graph (\\(N=100, p=2.5/(N-1)\\)):
-<div class="imblock">
-<img src="graph_evolution.png" class="postim"></img>
-</div>
+First, I'll show the reduction applied to the largest component of a Erdős–Rényi graph ($N=100, p=2.5/(N-1)$):
+![Graph evolution](graph_evolution.png)
 
-You can see that the algorithm starts by removing the 'easy' leaf nodes and isolated cycles. The network grows denser until it reaches full connectedness at \\(n=5\\).
+You can see that the algorithm starts by removing the 'easy' leaf nodes and isolated cycles. The network grows denser until it reaches full connectedness at $n=5$.
 
 Let's convince ourselves that this approach is better than removing nodes at random. We'll count the number of edges (more edges = more number-crunching) on some denser Watts-Strogatz graphs (they don't have any 'freebie' nodes).
-<div class="imblock">
-<img src="edgelog.png" class="postim"></img>
-</div>
+![Edge log](edgelog.png)
 
-This looks good! Random removal reaches the complete graph limit (shown in gray) very quickly, while greedily minimizing \\(\Delta E\\) manages to keep the graph complexity down. However, this is not a guarantee, and for larger, more dense networks, the 'bump' at the end of the simplification grows. This is a question of 'how long can I delay the inevitable \\(N(N-1)/2\\)', and I suspect that improvements on this strategy will only find marginal gains. Additionally, *relative* performance increases with initial graph size because the 'random removal' hump grows even faster.
+This looks good! Random removal reaches the complete graph limit (shown in gray) very quickly, while greedily minimizing $\Delta E$ manages to keep the graph complexity down. However, this is not a guarantee, and for larger, more dense networks, the 'bump' at the end of the simplification grows. This is a question of 'how long can I delay the inevitable $N(N-1)/2$', and I suspect that improvements on this strategy will only find marginal gains. Additionally, *relative* performance increases with initial graph size because the 'random removal' hump grows even faster.
 
 *Note: as soon as the graph is near-complete, there's probably no downside to throwing it into a conventional solver. I don't do that here, though.*
 
@@ -139,31 +126,25 @@ Symbolica has a class specifically designed for handling rational expressions, a
     symbolica.N(0).to_rational_polynomial(),
     symbolica.S("s").to_rational_polynomial())
 </code></pre>
-Alright! How much does this kill our performance? Here's the simplification time on three Watts-Strogatz (\\(m=4, p=0.2\\)) graphs, with the initial edge transfer functions randomly selected from \\(\\{1, s, 1/s\\}\\) (resistors, inductors, and capacitors):
-<div class="imblock">
-<img src="redtimes.png" class="postim"></img>
-</div>
+Alright! How much does this kill our performance? Here's the simplification time on three Watts-Strogatz ($m=4, p=0.2$) graphs, with the initial edge transfer functions randomly selected from ${1, s, 1/s}$ (resistors, inductors, and capacitors):
+![Reduction times](redtimes.png)
 
 Uh-oh. This trend slows down a little, but it's still bad (y-axis is log-scaled):
-<div class="imblock">
-<img src="perfgraph1.png" class="postim"></img>
-</div>
+![Performance graph 1](perfgraph1.png)
 
 Of course, these figures are *very* dependent on the graph's structure. But the trend seems unlikely to change unless we're looking at a dead-simple graph.
 
-To be fair, we are able to compute transfer functions for 50-node networks where the final numerator and denominator are both dense, high-degree polynomials with terms like \\(51702905702907591023s^{49}\\). And we can do it in less than a second in Python. But is there still room for improvement?
+To be fair, we are able to compute transfer functions for 50-node networks where the final numerator and denominator are both dense, high-degree polynomials with terms like $ 51702905702907591023s^{49} $. And we can do it in less than a second in Python. But is there still room for improvement?
 ### Tweaks?
-There's no getting around the factorization bottleneck. Symbolica's performance is fantastic, but my profiling says it's still \\(O(n^2m^2)\\), where \\(m\\) is the degree of the input polynomials and \\(m\\) is the number of digits in their factors. Unfortunately for us, both \\(n\\) and \\(m\\) grow rapidly as our network shrinks. What if we try to minimize expression length while simplifying? Maybe there are still optimizations to be made?
+There's no getting around the factorization bottleneck. Symbolica's performance is fantastic, but my profiling says it's still $ O(n^2m^2) $, where $ m $ is the degree of the input polynomials and $ m $ is the number of digits in their factors. Unfortunately for us, both $ n $ and $ m $ grow rapidly as our network shrinks. What if we try to minimize expression length while simplifying? Maybe there are still optimizations to be made?
 
-I wrestled with this for a while, and I think the answer is 'no'. Greedily minimizing \\(\Delta E\\) seems to implicitly minimize expression complexity, as well. Here are some of the ways I've tried costing nodes:
+I wrestled with this for a while, and I think the answer is 'no'. Greedily minimizing $\Delta E$ seems to implicitly minimize expression complexity, as well. Here are some of the ways I've tried costing nodes:
 1. By the estimated complexity of the operations performed when removing them
 2. By the estimated total growth of expression length during removal
 3. By a new edge attribute that accumulates merge operations
 
 Sadly, none of these options were able to boost performance more than ~10%. If I make any headway here, I'll update this article, but for now, it seems like we're up against the wall. Nonetheless, it's important to remember that we're already beating 'random node removal' by a significant margin:
-<div class="imblock">
-<img src="perfgraph3.png" class="postim"></img>
-</div>
+![Performance graph](perfgraph3.png)
 
 ### The Network
 I started this post with a messy network and asked for the equivalent impedance between two of its nodes in symbolic form. Here's the answer, computed in 0.34 seconds:
@@ -174,8 +155,6 @@ F(s) =
 (21696+621808*s+8424704*s^2+75189300*s^3+501317064*s^4+2669913242*s^5+11827889794*s^6+44778896020*s^7+147660007455*s^8+430093449201*s^9+1118378802152*s^10+2617704342316*s^11+5551059650842*s^12+10720002858287*s^13+18930620635150*s^14+30669593192397*s^15+45702950778767*s^16+62767664433044*s^17+79564728419931*s^18+93182290462775*s^19+100884227367702*s^20+100986346149594*s^21+93444195711313*s^22+79877020212758*s^23+63012336526151*s^24+45807229399339*s^25+30628095477795*s^26+18790504530192*s^27+10546255544103*s^28+5395400097289*s^29+2504959039272*s^30+1049793305386*s^31+394542349634*s^32+131907886830*s^33+38838709831*s^34+9943046344*s^35+2176742910*s^36+398516178*s^37+59150934*s^38+6801540*s^39+563860*s^40+29624*s^41+728*s^42)
 ```
 And here's the magnitude of that, plotted along the imaginary axis (using Symbolica's `evaluate_complex()`):
-<div class="imblock">
-<img src="bodeplot.png" class="postim"></img>
-</div>
+![Bode plot](bodeplot.png)
 
 Mission accomplished!

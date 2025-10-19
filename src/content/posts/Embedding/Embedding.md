@@ -1,6 +1,6 @@
 ---
 title: Embedding the Shortest-Path Metric
-layout: post.hbs
+layout: post.html
 date: 2025-01-16
 tags: math, cs, networks
 iconpath: Embedding.png
@@ -18,10 +18,8 @@ Unfortunately, **making an accurate travel-time map is impossible**. In this pos
 ### Heuristics
 This isn't just a silly 'what if' question. Having the map I'm describing would mean we have a perfect heuristic for the [A*](https://en.wikipedia.org/wiki/A*_search_algorithm) search algorithm. In contrast, Euclidean distance is an [admissible heuristic](https://en.wikipedia.org/wiki/Admissible_heuristic), which is "a speedy, mostly-accurate way to estimate travel time *that never over-estimates it*".
 
-<div class="imblock">
-<img src="bad_route.png" class="postim"></img>
+![image](bad_route.png)
 Euclidean distance tends to consistently under-estimate actual travel distance.
-</div>
 
 There are many ways to calculate heuristics (e.g. [landmarks](https://www.graphhopper.com/blog/2017/08/14/flexible-routing-15-times-faster/)), but Euclidean distance is an attractive choice because of its low computational cost. Plus, transit data *already has* coordinates attached to it, which means no preprocessing is necessary. Because of this, some [state-of-the-art routing engines](https://github.com/valhalla/valhalla/tree/master/src/thor) still use A* for its flexibility despite the existence of other [attractive](https://en.wikipedia.org/wiki/Contraction_hierarchies) [options](https://en.wikipedia.org/wiki/Hub_labels).
 
@@ -34,15 +32,11 @@ When we say "make a travel-time map", we mean we want to find a way to [embed](h
 
 I'll illustrate how one might 'manually' make one of these embeddings in 2D:
 
-<div class="imblock">
-<img src="example.png" class="postim"></img>
-</div>
+![image](example.png)
 
 Now you try! Maybe this goes without saying, but be sure to only consider the **shortest paths** between any two points. We want the *minimum* travel time, not the one where we bounce back and forth between nodes a hundred times. Here's a graph; give it a shot!
 
-<div class="imblock">
-<img src="diy.png" class="postim"></img>
-</div>
+![image](diy.png)
 
 ...sorry, that was a mean example.
 
@@ -54,131 +48,117 @@ Still, how common are non-embeddable features? Can we isolate them? How do we nu
 
 It's math time. We'll make a few extremely generous assumptions:
 1. We have no one-way roads or turn restrictions.
-2. Distances between nodes are \\(> 0\\).
+2. Distances between nodes are $ > 0 $.
 3. Our road network has a single [connected component](https://en.wikipedia.org/wiki/Component_(graph_theory)).
 
 ### Metric Spaces
-The "minimum travel time" function is a **metric**. If we represent the nodes in our network as a finite set \\(A=\{a_1, a_2, \ldots, a_n\}\\), the shortest path between two nodes \\(x, y\in A\\) can be written as a function \\(d(x, y)\\).  We can call \\(d(x, y)\\) a "metric" if it satisfies:
-1. \\(d(x, y)\geq0\\)
-2. \\(d(x, y) = 0\iff x=y\\)
-3. \\(d(x, z)\leq d(x, z) + d(x, y)\\)
-4. \\(d(x, y) = d(y, x)\\)
+The "minimum travel time" function is a **metric**. If we represent the nodes in our network as a finite set $ A=\{a_1, a_2, \ldots, a_n\} $, the shortest path between two nodes $ x, y\in A $ can be written as a function $ d(x, y) $.  We can call $ d(x, y) $ a "metric" if it satisfies:
+1. $ d(x, y)\geq0 $
+2. $ d(x, y) = 0\iff x=y $
+3. $ d(x, z)\leq d(x, z) + d(x, y) $
+4. $ d(x, y) = d(y, x) $
 
-If \\(d(x, y)\\) *is* just the minimum travel time between nodes \\(x\\) and \\(y\\), then conditions 1, 2, and 3 are automatically satisfied. Meanwhile, condition 4 just asks whether the **distance matrix** \\(M_{ij}=d(a_i, a_j)\\) is symmetric, which is true if we don't have one-way roads. We now have a **[discrete metric space](https://en.wikipedia.org/wiki/Metric_space#Further_examples_and_applications)**.
+If $ d(x, y) $ *is* just the minimum travel time between nodes $ x $ and $ y $, then conditions 1, 2, and 3 are automatically satisfied. Meanwhile, condition 4 just asks whether the **distance matrix** $ M_{ij}=d(a_i, a_j) $ is symmetric, which is true if we don't have one-way roads. We now have a **[discrete metric space](https://en.wikipedia.org/wiki/Metric_space#Further_examples_and_applications)**.
 
-*Note: To actually find the values of \\(d(x, y)\\), we can use the [Floyd-Warshall algorithm](https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm) to fill in every non-diagonal entry in our distance matrix \\(M\\). This is obviously impractical at scale, but we're focused on theory for now.*
+*Note: To actually find the values of $ d(x, y) $, we can use the [Floyd-Warshall algorithm](https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm) to fill in every non-diagonal entry in our distance matrix $ M $. This is obviously impractical at scale, but we're focused on theory for now.*
 
 The task of "embedding a discrete metric space" is what motivates [distance geometry](https://en.wikipedia.org/wiki/Distance_geometry), which offers a couple equivalent ways to test whether or not something admits an isometric embedding. I don't want to turn this into [a textbook](https://convexoptimization.com/TOOLS/cutbook.pdf), so I'm going to sketch a few quick proofs that should elucidate some important points for us.
 
 ### A few lemmas about shortest-path isometric embeddings (with proofs)
 
 Symbols I'll use here include:
-* \\(\mathbf r_n\\): The embedding of node \\(a_n\\) into Euclidean space.
-* \\(P_n\\): A [linear graph / path graph](https://en.wikipedia.org/wiki/Path_graph); a chain of \\(n\\) nodes.
-* \\(C_n\\): A [cycle graph / circular graph](https://en.wikipedia.org/wiki/Cycle_graph); a ring of \\(n\\) nodes (no, not that kind of [ring](https://en.wikipedia.org/wiki/Ring_(mathematics))).
-* \\(K_{1, n}\\): A [star](https://en.wikipedia.org/wiki/Star_(graph_theory)); a single 'central' node connected to \\(n\\) other nodes.
+* $ \mathbf r_n $: The embedding of node $ a_n $ into Euclidean space.
+* $ P_n $: A [linear graph / path graph](https://en.wikipedia.org/wiki/Path_graph); a chain of $ n $ nodes.
+* $ C_n $: A [cycle graph / circular graph](https://en.wikipedia.org/wiki/Cycle_graph); a ring of $ n $ nodes (no, not that kind of [ring](https://en.wikipedia.org/wiki/Ring_(mathematics))).
+* $ K_{1, n} $: A [star](https://en.wikipedia.org/wiki/Star_(graph_theory)); a single 'central' node connected to $ n $ other nodes.
 
 Additionally, you should append each of these lemmas with **"when no shortcuts are present"**. Obviously, a complete graph contains many cycles, but the presence of shortcuts across these cycles means that the graph might still be able to be isometrically embedded.
 
 **Lemma 1: Linear graphs isometrically embed as straight lines.**
-* The embedding of \\(P_1\\) is a single point \\(\mathbf r_1\\) anywhere (trivial).
-* The embedding of \\(P_2\\) includes an additional point \\(\mathbf r_2\\) placed \\(d(a_1, a_2)\\) away from \\(\mathbf r_1\\).
-* The embedding of \\(P_n\\) includes an additional point \\(\mathbf r_n\\), placed \\(d(a_n, a_{n-1})\\) away from \\(\mathbf r_{n-1}\\), and \\(d(a_n, a_{n-2})\\) away from \\(\mathbf r_{n-2}\\). But by our metric and the structure of the graph, \\(d(a_n, a_{n-2})=d(a_n, a_{n-1})+d(a_{n-1},a_{n-2})\\), and the three points form a degenerate triangle, meaning \\(\mathbf r_n\\), \\(\mathbf r_{n-1}\\), and \\(\mathbf r_{n-2}\\) are colinear.
+* The embedding of $ P_1 $ is a single point $ \mathbf r_1 $ anywhere (trivial).
+* The embedding of $ P_2 $ includes an additional point $ \mathbf r_2 $ placed $ d(a_1, a_2) $ away from $ \mathbf r_1 $.
+* The embedding of $ P_n $ includes an additional point $ \mathbf r_n $, placed $ d(a_n, a_{n-1}) $ away from $ \mathbf r_{n-1} $, and $ d(a_n, a_{n-2}) $ away from $ \mathbf r_{n-2} $. But by our metric and the structure of the graph, $ d(a_n, a_{n-2})=d(a_n, a_{n-1})+d(a_{n-1},a_{n-2}) $, and the three points form a degenerate triangle, meaning $ \mathbf r_n $, $ \mathbf r_{n-1} $, and $ \mathbf r_{n-2} $ are colinear.
 The collinearity of all points in a path graph follows by induction.
 
 **Lemma 2: Isometric embeddings of linear graphs preserve node ordering.**
 Using the same symbols:
-* Let \\(x_n\\) be the projection of \\(\mathbf r_n\\) onto the line formed by all points in the embedding, and choose \\(x_1 > x_0\\). It should be clear that \\(d(a_i,a_j)=|x_i - x_j|\\).
-* We assume \\(x_{n-1} > x_{n-2}\\) . To show that \\(x_n > x_{n-1}\\) everywhere in the embedding, our metric says it must be the case that \\(|x_n - x_{n-2}| = x_{n-1}-x_{n-2} + |x_n - x_{n-1}|\\). If \\(x_{n}>x_{n-1}\\), this expression simplifies to \\(x_{n-1}=x_{n-2}\\), which contradicts \\(x_{n-1}>x_{n-2}\\). Because we assume points do not overlap, it must be the case that \\(x_n>x_{n-1}\\).
+* Let $ x_n $ be the projection of $ \mathbf r_n $ onto the line formed by all points in the embedding, and choose $ x_1 > x_0 $. It should be clear that $ d(a_i,a_j)=|x_i - x_j| $.
+* We assume $ x_{n-1} > x_{n-2} $ . To show that $ x_n > x_{n-1} $ everywhere in the embedding, our metric says it must be the case that $ |x_n - x_{n-2}| = x_{n-1}-x_{n-2} + |x_n - x_{n-1}| $. If $ x_{n}>x_{n-1} $, this expression simplifies to $ x_{n-1}=x_{n-2} $, which contradicts $ x_{n-1}>x_{n-2} $. Because we assume points do not overlap, it must be the case that $ x_n>x_{n-1} $.
 Again, preservation of order follows by induction.
 
 **Lemma 3: Cycles with more than 3 nodes are not isometrically embeddable.**
 By contradiction:
-* Assume we can isometrically embed \\(C_n\\) with the shortest-path metric. \\(C_n\\) contains \\(n\\) linear subgraphs of size \\(n-1\\), all equivalent to \\(P_{n-1}\\). We will index them with superscripts: \\(\{P_{n-1}^1, P_{n-1}^2,\cdots,P_{n-1}^n\}\\).
-* For \\(n>3\\), these linear subgraphs have overlapping segments, so they all must be colinear. Consequently, all points in the embedding of \\(C_n\\) must be colinear, and they share a common projection \\(\{x_1, x_2, \cdots, x_n\}\\).
-* The first node of \\(P_{n-1}^1\\) is embedded at \\(\mathbf r_0\\), and its last node is embedded at \\(\mathbf r_{n-2}\\). From the previous lemma, we know \\(x_1 < x_{n-1} \implies x_1 < x_3\\). But from the projection of \\(P^3_{n-1}\\), \\(x_3 < x_1\\), and we have a contradiction.
+* Assume we can isometrically embed $ C_n $ with the shortest-path metric. $ C_n $ contains $ n $ linear subgraphs of size $ n-1 $, all equivalent to $ P_{n-1} $. We will index them with superscripts: $ \{P_{n-1}^1, P_{n-1}^2,\cdots,P_{n-1}^n\} $.
+* For $ n>3 $, these linear subgraphs have overlapping segments, so they all must be colinear. Consequently, all points in the embedding of $ C_n $ must be colinear, and they share a common projection $ \{x_1, x_2, \cdots, x_n\} $.
+* The first node of $ P_{n-1}^1 $ is embedded at $ \mathbf r_0 $, and its last node is embedded at $ \mathbf r_{n-2} $. From the previous lemma, we know $ x_1 < x_{n-1} \implies x_1 < x_3 $. But from the projection of $ P^3_{n-1} $, $ x_3 < x_1 $, and we have a contradiction.
 
 **Lemma 4: Star graphs with more than 3 nodes are not isometrically embeddable.**
 Also by contradiction:
-* The \\((n+1)\\)-node star graph \\(K_{1,n}\\) contains \\(n(n-1)/2\\) unique copies of length-three linear graphs \\(P_3\\).
+* The $ (n+1) $-node star graph $ K_{1,n} $ contains $ n(n-1)/2 $ unique copies of length-three linear graphs $ P_3 $.
 * These linear graphs form a connected network of overlapping edges, so they must all be colinear.
 * Like before, we can 'hop around' these colinear subgraphs and display a contradiction. I'll leave this one as an exercise (*hint: odd numbers*).
 
 **Lemma 5: Denser topologies are isometrically embeddable under some very specific conditions.**
 Uh-oh, we've lost the ability to make concise arguments based on structure. I think we might need some heavier machinery. Strap in:
 ### Gram Matrices
-If we have an isometric embedding of \\(n\\) points \\(\phi:A\rightarrow\mathbb R^{n-1}\\) where \\(\phi(a\_i)=\mathbf{r}\_i\\), we can construct a matrix \\(G\\) of all possible dot products between the embedded points, \\(g_{ij}=\mathbf{r}_i\cdot\mathbf{r}_j\\). This matrix is called a a [Gram matrix](https://en.wikipedia.org/wiki/Gram_matrix).
+If we have an isometric embedding of $ n $ points $ \phi:A\rightarrow\mathbb R^{n-1} $ where $ \phi(a\_i)=\mathbf{r}\_i $, we can construct a matrix $ G $ of all possible dot products between the embedded points, $ g_{ij}=\mathbf{r}_i\cdot\mathbf{r}_j $. This matrix is called a a [Gram matrix](https://en.wikipedia.org/wiki/Gram_matrix).
 
 Gram matrices have a very nice property that will help us later, so I'd like to set up a correspondence (an invertible map) between them and the Euclidean distance matrices we've been working with. The reason we can't do this right away is that *translation preserves distances, but dot products don't*: Moving a set of points two meters to the right changes their dot products, but not the distances between them.
 
-To remedy this for now, we'll fix \\(\phi(a_1)=\mathbf{r}_1=\mathbf 0\\) (so \\(||\mathbf{r}_i||=||\mathbf{r}_i-\mathbf{r}_1||\\)), which will make the first row and column of our Gram matrix zero. We'll work with the nonzero \\((n-1)\times (n-1)\\) leading principal minor of the original Gram matrix from here on. Keep in mind that this new matrix still contains the 'distance form zero' information along its diagonal.
+To remedy this for now, we'll fix $ \phi(a_1)=\mathbf{r}_1=\mathbf 0 $ (so $ ||\mathbf{r}_i||=||\mathbf{r}_i-\mathbf{r}_1|| $), which will make the first row and column of our Gram matrix zero. We'll work with the nonzero $ (n-1)\times (n-1) $ leading principal minor of the original Gram matrix from here on. Keep in mind that this new matrix still contains the 'distance form zero' information along its diagonal.
 
 The correspondence between Gram matrices and distance matrices is given by the [polarization identity](https://en.wikipedia.org/wiki/Polarization_identity) (parallelogram rule):
-\\[
-\begin{align}
+$$ \begin{align}
 &G_{ij}=\mathbf{r}_i\cdot\mathbf{r}_j=\frac{1}{2}\left(||\mathbf{r}_i||^2+||\mathbf{r}_j||^2-||\mathbf{r}_i-\mathbf{r}_j||^2\right)\\
-\end{align}
-\\]
+\end{align} $$
 
 Which is an easily-derivable [property of any inner product space](https://en.wikipedia.org/wiki/Polarization_identity#Derivation). It is also invertible:
-\\[||\mathbf{r}\_i-\mathbf{r}\_j||=\sqrt{G_{ii}+G_{jj}-2G\_{ij}}\\]
+$$ ||\mathbf{r}\_i-\mathbf{r}\_j||=\sqrt{G_{ii}+G_{jj}-2G\_{ij}} $$
 
 This gives us the machinery to freely flicker back and forth between Gram matrices and distance matrices, but we still don't have a way to check if a matrix is a *valid* distance matrix.
 
 Thankfully, there's not much left to do. Gram matrices explicitly look like the outer product of a list of vectors with itself:
-\\[
-G=
+$$ G=
 \begin{bmatrix}
 (\mathbf{r}_2\cdot\mathbf{r}_2) & (\mathbf{r}_2\cdot\mathbf{r}_3) & \cdots & (\mathbf{r}_2\cdot\mathbf{r}_n) \\\\
 (\mathbf{r}_3\cdot\mathbf{r}_2) & (\mathbf{r}_3\cdot\mathbf{r}_3) & \cdots & (\mathbf{r}_3\cdot\mathbf{r}_n) \\\\
 \vdots & \vdots & \ddots & \vdots \\\\
 (\mathbf{r}_n\cdot\mathbf{r}_2) & (\mathbf{r}_n\cdot\mathbf{r}_3) & \cdots & (\mathbf{r}_n\cdot\mathbf{r}_n) 
 \end{bmatrix}
-=\begin{bmatrix}\mathbf{r}_2\\\\\mathbf{r}_3\\\\\vdots\\\\\mathbf{r}_n\end{bmatrix}\begin{bmatrix}\mathbf{r}_2&\mathbf{r}_3&\cdots&\mathbf{r}_n\end{bmatrix}=R^TR
-\\]
+=\begin{bmatrix}\mathbf{r}_2\\\\\mathbf{r}_3\\\\\vdots\\\\\mathbf{r}_n\end{bmatrix}\begin{bmatrix}\mathbf{r}_2&\mathbf{r}_3&\cdots&\mathbf{r}_n\end{bmatrix}=R^TR $$
 
-Conveniently, any Gram matrix can be written as the product of the matrix of embedding vectors times its transpose, \\(G=R^TR\\). This is equivalent to saying that \\(G\\) must be [positive semidefinite](https://en.wikipedia.org/wiki/Definite_matrix), and it turns out that this is a necessary and sufficient condition for having an embedding in \\(\mathbb R^n\\), assuming we don't have any sort of degeneracy.
+Conveniently, any Gram matrix can be written as the product of the matrix of embedding vectors times its transpose, $ G=R^TR $. This is equivalent to saying that $ G $ must be [positive semidefinite](https://en.wikipedia.org/wiki/Definite_matrix), and it turns out that this is a necessary and sufficient condition for having an embedding in $ \mathbb R^n $, assuming we don't have any sort of degeneracy.
 
 So, in sum, to test if a distance matrix is embeddable:
-1. Using the polarization identity, find dot products for all pairs of elements of \\(A\\) (but you'll need to choose a 'zero' somehow).
+1. Using the polarization identity, find dot products for all pairs of elements of $ A $ (but you'll need to choose a 'zero' somehow).
 2. Check whether the resulting Gram matrix is positive semidefinite.
 
-However, keep in mind that we've been working with general distance matrices. **Shortest-path matrices** are far rarer, and impose a complicated requirement on the distance matrix: let \\(j_1, j_2, \cdots, j_n\\), represent *any* sequence of matrix row/column indices. Then the following inequality must hold:
-\\[
-M_{ik} \leq M_{ij_1} + M_{j_n k} +\sum_{m=1}^{n-1} M_{j_mj_{m+1}}
-\\]
+However, keep in mind that we've been working with general distance matrices. **Shortest-path matrices** are far rarer, and impose a complicated requirement on the distance matrix: let $ j_1, j_2, \cdots, j_n $, represent *any* sequence of matrix row/column indices. Then the following inequality must hold:
+$$ M_{ik} \leq M_{ij_1} + M_{j_n k} +\sum_{m=1}^{n-1} M_{j_mj_{m+1}} $$
 This condition is not so easy to manipulate with the standard linear algebra toolbox, so I doubt that there's an easy way to form valid shortest-path matrices from arbitrary Gram matrices. But now, at least, we have a general way to *test* whether or not a distance matrix is embeddable: the positive-semidefiniteness of the Gram matrix.
 
 Let's dig a little deeper into this requirement:
 ### Decomposition
-A matrix \\(M\\) is positive-semidefinite if and only if:
-\\[
-\mathbf x \cdot (M\mathbf x) \geq 0
-\\]
-For all nonzero vectors \\(\mathbf x\\). This is usually written as \\(\mathbf x^T M \mathbf x > 0\\), but I think using the dot product makes the meaning clearer. If the dot product of two vectors is > 0, it means *they face the same way*, so \\(M\\) is positive-definite if and only if it rotates/scales vectors less than \\(90°\\). What kinds of matrices always end up flipping vectors? Answer: matrices with *negative eigenvalues*. The existence of negative eigenvalues is sufficient for positive-semidefiniteness.
+A matrix $ M $ is positive-semidefinite if and only if:
+$$ \mathbf x \cdot (M\mathbf x) \geq 0 $$
+For all nonzero vectors $ \mathbf x $. This is usually written as $ \mathbf x^T M \mathbf x > 0 $, but I think using the dot product makes the meaning clearer. If the dot product of two vectors is > 0, it means *they face the same way*, so $ M $ is positive-definite if and only if it rotates/scales vectors less than $ 90° $. What kinds of matrices always end up flipping vectors? Answer: matrices with *negative eigenvalues*. The existence of negative eigenvalues is sufficient for positive-semidefiniteness.
 
-This means to test if a network is embeddable, we need to find a [spectral decomposition](https://en.wikipedia.org/wiki/Eigendecomposition_of_a_matrix#Eigendecomposition_of_a_matrix) of its Gram matrix \\(G\\). Because \\(G\\) is symmetric, it can be decomposed with an orthogonal matrix of eigenvectors, \\(Q\\):
-\\[
-G = Q\Lambda Q^\dagger
-\\]
-Where \\(Q\\) holds \\(G\\)'s eigenvectors in its columns, and \\(\Lambda\\) is a diagonal matrix of \\(G\\)'s eigenvalues (in the same order). But if \\(\Lambda\\) is diagonal, it has a matrix square root \\(\Lambda^{1/2}\Lambda^{1/2}=\Lambda\\), which is simply \\({\Lambda^{1/2}}\_{ij}=\sqrt{\Lambda\_{ij}}\\). Because \\(\Lambda^{1/2}\\) is also diagonal, we can write:
-\\[
-G=Q\Lambda^{1/2}(Q\Lambda^{1/2})^T
-\\]
-Which means that if \\(G=R^TR\\), then \\(Q\Lambda^{1/2}\\) is a valid choice for \\(R\\). And remember, \\(R\\) was a matrix of embedded position vectors — we've found a valid embedding!
+This means to test if a network is embeddable, we need to find a [spectral decomposition](https://en.wikipedia.org/wiki/Eigendecomposition_of_a_matrix#Eigendecomposition_of_a_matrix) of its Gram matrix $ G $. Because $ G $ is symmetric, it can be decomposed with an orthogonal matrix of eigenvectors, $ Q $:
+$$ G = Q\Lambda Q^\dagger $$
+Where $ Q $ holds $ G $'s eigenvectors in its columns, and $ \Lambda $ is a diagonal matrix of $ G $'s eigenvalues (in the same order). But if $ \Lambda $ is diagonal, it has a matrix square root $ \Lambda^{1/2}\Lambda^{1/2}=\Lambda $, which is simply $ {\Lambda^{1/2}}\_{ij}=\sqrt{\Lambda\_{ij}} $. Because $ \Lambda^{1/2} $ is also diagonal, we can write:
+$$ G=Q\Lambda^{1/2}(Q\Lambda^{1/2})^T $$
+Which means that if $ G=R^TR $, then $ Q\Lambda^{1/2} $ is a valid choice for $ R $. And remember, $ R $ was a matrix of embedded position vectors — we've found a valid embedding!
 
 ### Multidimensional Scaling
 The steps described above are almost a description of classical (a.k.a. Torgerson) [multidimensional scaling](https://en.wikipedia.org/wiki/Multidimensional_scaling#Classical_multidimensional_scaling) (MDS), an excellent tool in the [dimensionality reduction](https://en.wikipedia.org/wiki/Dimensionality_reduction) shed. The only difference is that in MDS, only the *largest* eigenvalues/vectors are used, giving us a lower-dimensional embedding.
 
-Classical MDS is a concise way to say "principal component analysis (PCA) on the Gram matrix formed from the distance matrix". Given that PCA minimizes squared error, it's possible to show that classical MDS minimizes \\(\sum_{i<j}(||\mathbf r_i - \mathbf r_j|| - d(a_i, a_j))^2\\) (check [Torgerson's original 1952 paper](https://link.springer.com/article/10.1007/BF02288916)). In an embeddable Euclidean distance matrix, this quantity is zero, but MDS works with *any* metric — including our shortest-path metric.
+Classical MDS is a concise way to say "principal component analysis (PCA) on the Gram matrix formed from the distance matrix". Given that PCA minimizes squared error, it's possible to show that classical MDS minimizes $ \sum_{i<j}(||\mathbf r_i - \mathbf r_j|| - d(a_i, a_j))^2 $ (check [Torgerson's original 1952 paper](https://link.springer.com/article/10.1007/BF02288916)). In an embeddable Euclidean distance matrix, this quantity is zero, but MDS works with *any* metric — including our shortest-path metric.
 
 Let's give it a shot.
 
-Instead of 'centering' our embedding on \\(\mathbf r_1\\), it's common practice to **mean-center** the embedding so that \\(\sum_i \mathbf r_i=\mathbf 0\\). This centering [provides](https://math.stackexchange.com/questions/1882130/calculating-gramian-matrix-from-euclidean-distance-matrix) an elegant way to calculate Gram matrices without diving into indices. Given an \\(n\times n\\) Euclidean distance matrix \\(M\\), its associated Gram matrix \\(G\\) is given by:
-\\[
-G=-\frac{1}{2}CM^{(2)}C
-\\]
-Where \\((M^{(2)})\_{ij}={M\_{ij}}^2\\) and \\(C=I-\frac{1}{n}\mathbf 1^T \mathbf 1\\) is a [centering matrix](https://en.wikipedia.org/wiki/Centering_matrix) (\\(\mathbf 1^T \mathbf 1\\) just gives us a matrix filled with ones). With NumPy, it looks like this:
+Instead of 'centering' our embedding on $ \mathbf r_1 $, it's common practice to **mean-center** the embedding so that $ \sum_i \mathbf r_i=\mathbf 0 $. This centering [provides](https://math.stackexchange.com/questions/1882130/calculating-gramian-matrix-from-euclidean-distance-matrix) an elegant way to calculate Gram matrices without diving into indices. Given an $ n\times n $ Euclidean distance matrix $ M $, its associated Gram matrix $ G $ is given by:
+$$ G=-\frac{1}{2}CM^{(2)}C $$
+Where $ (M^{(2)})\_{ij}={M\_{ij}}^2 $ and $ C=I-\frac{1}{n}\mathbf 1^T \mathbf 1 $ is a [centering matrix](https://en.wikipedia.org/wiki/Centering_matrix) ($ \mathbf 1^T \mathbf 1 $ just gives us a matrix filled with ones). With NumPy, it looks like this:
 <pre><code class="language-python">import numpy as np
 import networkx as nx
 
@@ -207,27 +187,21 @@ def shortest_path_MDS(network, ndims=2):
 ### MDS Results
 The output of MDS on small graphs seems reasonable:
 
-<div class="imblock">
-<img src="comparison.png" class="postim"></img>
-</div>
+![image](comparison.png)
 
 In general, the embeddings are not so different from force-directed layouts. However, the graphs we're viewing here are far from anything we'd see in the real world.
 
 Let's plug in some actual data. I'll be looking at a subgraph of the network I constructed in an [earlier post](https://www.adamlastowka.com/articles/Polyharmonic/), specifically, this region of Philadelphia:
 
-<div class="imblock">
-<img src="rectangle.png" class="postim"></img>
-</div>
+![image](rectangle.png)
 
-The \\(O(V^3)\\) Floyd-Warshall step makes this pretty slow (at least in NetworkX), but the result is interesting:
+The $ O(V^3) $ Floyd-Warshall step makes this pretty slow (at least in NetworkX), but the result is interesting:
 
-<div class="imblock">
-<img src="anim_45.gif" class="postim"></img>
-</div>
+![image](anim_45.gif)
 
 If you're thinking that this looks suboptimal and you could do a better job, remember two things:
 1. This embedding minimizes the shortest-path metric. It doesn't care about visual clarity or usability like we do.
-2. Classical MDS minimizes the *squared error* in distance, and in that way, it's like an average (\\(\overline x := \text{arg min}_y \sum_i (x_i - y)^2\\)). For heavily [skewed distributions](https://en.wikipedia.org/wiki/Skewness), the average isn't always representative of what we care about.
+2. Classical MDS minimizes the *squared error* in distance, and in that way, it's like an average ($ \overline x := \text{arg min}_y \sum_i (x_i - y)^2 $). For heavily [skewed distributions](https://en.wikipedia.org/wiki/Skewness), the average isn't always representative of what we care about.
 
 *Note: if you're wondering how [sklearn's non-classical MDS](https://scikit-learn.org/dev/modules/generated/sklearn.manifold.MDS.html) appears in comparison, the answer is 'bendier', but pretty much the same otherwise. I'd show you how it looks on the network above, but it's *very* slow to run.*
 
@@ -243,12 +217,10 @@ Notice how it 'wiggles' around. This is indicative of something deeper; check ou
 
 See how it forms a saddle? Saddles are a prototypical example of a surface with **negative** [Gaussian curvature](https://en.wikipedia.org/wiki/Gaussian_curvature). Similarly, the 'wiggle' in the previous example is reminiscent of an embedding of the Hyperbolic plane (a surface with constant negative curvature everywhere) into real space:
 
-<div class="imblock">
-<img src="crochet_02.jpg" class="postim"></img>
+![image](crochet_02.jpg)
 Courtesy of Diana Taimina
-</div>
 
-It seems like the trouble with making these shortest-path embeddings is that they *run out of room*; the 3-star graph I showed earlier would be easy to embed, if only triangles worked differently. But in hyperbolic space, triangles *do* work differently. This leads us to the topic of **hyperbolic embeddings**, which don't bother with \\(\mathbb R^n\\) and instead embed in [hyperbolic space](https://en.wikipedia.org/wiki/Hyperbolic_space).
+It seems like the trouble with making these shortest-path embeddings is that they *run out of room*; the 3-star graph I showed earlier would be easy to embed, if only triangles worked differently. But in hyperbolic space, triangles *do* work differently. This leads us to the topic of **hyperbolic embeddings**, which don't bother with $ \mathbb R^n $ and instead embed in [hyperbolic space](https://en.wikipedia.org/wiki/Hyperbolic_space).
 
 I think this article is long enough, so I'll drop a few papers related to shortest-path hyperbolic embeddings:
 * [Geographic Routing Using Hyperbolic Space](https://ieeexplore.ieee.org/abstract/document/4215803), R. Kleinberg (2007)
@@ -257,6 +229,6 @@ I think this article is long enough, so I'll drop a few papers related to shorte
 
 And call it for now.
 ### The Gist
-I think that the conclusion you can pull from this is that **any attempt to improve a Euclidean distance heuristic by 'moving nodes around' or 'adding dimensions' will ultimately be limited by some very fundamental math**. I'm not saying that doing this won't offer performance gains (follow-up post topic?), but any technique using an embedding in \\(\mathbb R^n\\) will eventually hit some pretty hard walls.
+I think that the conclusion you can pull from this is that **any attempt to improve a Euclidean distance heuristic by 'moving nodes around' or 'adding dimensions' will ultimately be limited by some very fundamental math**. I'm not saying that doing this won't offer performance gains (follow-up post topic?), but any technique using an embedding in $ \mathbb R^n $ will eventually hit some pretty hard walls.
 
 Finally, if you liked any of the math in this, I recommend Deza and Laurent's [Geometry of Cuts and Metrics](https://convexoptimization.com/TOOLS/cutbook.pdf) (1996), specifically Part III.

@@ -1,6 +1,6 @@
 ---
 title: PDEs - Listening to Drum Shapes
-layout: post.hbs
+layout: post.html
 date: 2024-06-05
 tags: math, physics, linalg, cs
 iconpath: shape_waves.png
@@ -10,16 +10,12 @@ iconpath: shape_waves.png
 
 Like a string on a guitar, the head of a circular drum can vibrate in [a few (infinitely many) fundamental ways](https://en.wikipedia.org/wiki/Vibrations_of_a_circular_membrane). I say "fundamental" because any physical vibration on the drum can be expressed be a combination of these basic modes.
 
-<div class="imblock">
-<img src="circle.png" class="postim"></img>
+![image](circle.png)
 The first 12 lowest-energy eigenmodes of a circular membrane, counting degenerate states.
-</div>
 
 Well-behaved shapes (circles, rectangles, etc.) have vibrational modes that can be described exactly with mathematical expressions. But for a shape like this, which I drew in MS Paint:
 
-<div class="imblock">
-<img src="shape.png" class="postim"></img>
-</div>
+![image](shape.png)
 
 we need to use computers. If you ask the internet how to do this, you [will find](https://mathematica.stackexchange.com/questions/56305/numerically-solving-helmholtz-equation-in-2d-for-arbitrary-shapes) some good information and tutorials involving the [finite element method (FEM)](https://en.wikipedia.org/wiki/Finite_element_method): the art of breaking your problem down into simple little triangular bits. This works very well, but it is a pain to do, enough so that hardly anyone ever writes their own implementation of it. FEA packages (FEniCS, MOOSE, NASTRAN, etc.) are often powerful, bulky libraries that work well and are much more than we need for this simple problem. Time to take a step back.
 
@@ -27,22 +23,22 @@ we need to use computers. If you ask the internet how to do this, you [will find
 
 We're looking for solutions to the wave equation:
 
-\\[ \nabla^2 u = \frac{1}{c^2}u_{tt} \\]
+$$ \nabla^2 u = \frac{1}{c^2}u_{tt} $$
 
-on a surface \\( \Omega \\) with the function constrained to zero on its boundary (\\( u(\partial \Omega, t) = 0 \\)). Because we're interested in time-independent solutions, we suppose that \\(u(x, y, t)\\) is seperable in time; i.e. that:
+on a surface $ \Omega $ with the function constrained to zero on its boundary ($ u(\partial \Omega, t) = 0 $). Because we're interested in time-independent solutions, we suppose that $ u(x, y, t) $ is seperable in time; i.e. that:
 
-\\[ u(x, y, t)=U(x,y)T(t) \implies \frac{T''}{c^2 T} = \frac{\nabla^2 U}{U} = -\lambda^2\\]
+$$ u(x, y, t)=U(x,y)T(t) \implies \frac{T''}{c^2 T} = \frac{\nabla^2 U}{U} = -\lambda^2 $$
 
-\\(T(t)\\) is just a sinusoid, leaving us with the eigenvalue problem:
+$ T(t) $ is just a sinusoid, leaving us with the eigenvalue problem:
 
-\\[ \nabla^2 U = -\lambda^2 U\\]
+$$ \nabla^2 U = -\lambda^2 U $$
 
-This is called the Helmholtz equation, and solving it amounts to finding the eigenvalues of the Laplacian operator (\\(\nabla^2\\)). This means that in order to find our resonant modes, we only need to:
+This is called the Helmholtz equation, and solving it amounts to finding the eigenvalues of the Laplacian operator ($ \nabla^2 $). This means that in order to find our resonant modes, we only need to:
 1. Find a way to represent functions on our region as vectors.
 1. Represent the Laplace operator (acting on our region) as a matrix.
 2. Find the eigenvectors & eigenvalues of that matrix.
 
-The eigenfunctions \\(\\{U_i\\}\\) will be the resonant mods, while the square roots of the eigenvalues \\(\\{\lambda_i\\}\\) will be proportional to their respective modes' oscillating frequencies.
+The eigenfunctions $ \\{U_i\\} $ will be the resonant mods, while the square roots of the eigenvalues $ \\{\lambda_i\\} $ will be proportional to their respective modes' oscillating frequencies.
 
 ## Digital Frontier
 
@@ -78,17 +74,15 @@ cbar.set_label("Index in vector")
 plt.show()
 </code></pre>
 
-<div class="imblock">
-<img src="indices.png" class="postim"></img>
-</div>
+![image](indices.png)
 Next, we need to figure out what the Laplace operator looks like when applied to one of these 28465-dimensional vectors.
 
 
-Let's think intuitively. The Laplace operator \\(\nabla^2 U = U_{xx}+U_{yy}\\) is a measure of *curvature*. Locally, curvature is how much the average value of a point's neighbors differ from that point. So, to find the curvature at a specific pixel (and thus a specific vector entry), we subtract the average of the values at the pixel's neighbors from the pixel's own value:
+Let's think intuitively. The Laplace operator $ \nabla^2 U = U_{xx}+U_{yy} $ is a measure of *curvature*. Locally, curvature is how much the average value of a point's neighbors differ from that point. So, to find the curvature at a specific pixel (and thus a specific vector entry), we subtract the average of the values at the pixel's neighbors from the pixel's own value:
 
-\\[ \nabla^2 U(x, y) \approx \frac{1}{\epsilon^2}U(x,y) - \frac{1}{4\epsilon^2}\big[U(x+\epsilon, y)+U(x-\epsilon, y)+U(x,y+\epsilon)+U(x, y-\epsilon)\big] \\]
+$$ \nabla^2 U(x, y) \approx \frac{1}{\epsilon^2}U(x,y) - \frac{1}{4\epsilon^2}\big[U(x+\epsilon, y)+U(x-\epsilon, y)+U(x,y+\epsilon)+U(x, y-\epsilon)\big] $$
 
-Where \\( \epsilon \\) is the spacing between adjacent pixels. Wonderfully, this per-pixel operation is linear, and nothing stops us from putting it in matrix form:
+Where $ \epsilon $ is the spacing between adjacent pixels. Wonderfully, this per-pixel operation is linear, and nothing stops us from putting it in matrix form:
 <pre><code class="language-python">epsilon = 1.0/100.0 # A pixel is 1/100th of a... unit? It's all arbitrary.
 
 FD_matrix = np.zeros((interior_index.shape[0], interior_index.shape[0]))
@@ -141,14 +135,10 @@ for vec in vecs.T:
 plt.show()
 </code></pre>
 
-<div class="imblock">
-<img src="twelvemodes.png" class="postim"></img>
-</div>
+![image](twelvemodes.png)
 
 Let's take a closer look at one of these:
-<div class="imblock">
-<img src="amode.png" class="postim"></img>
-</div>
+![image](amode.png)
 
 To test this method's accuracy, I gave it a 256x256 image of a circle and compares the resulting eigenvalues to the zeros of the relevant Bessel functions. For the first few harmonics, the margin of error was consistently less than 0.1%.
 
@@ -156,31 +146,27 @@ To test this method's accuracy, I gave it a 256x256 image of a circle and compar
 
 The solutions we've found assume that our membrane is perfect; i.e. that it does not lose energy. This isn't good: even if it was physically possible, it would imply that we couldn't hear the drum (as it isn't emitting any energy in the form of sound). Thankfully, it isn't that difficult to introduce a damping term into the wave equation:
 
-\\[ \frac{1}{c^2}u_{tt} = \nabla^2 u - \beta u_t \implies T'' + c^2\beta T' + \lambda^2 c^2 T = 0\\]
+$$ \frac{1}{c^2}u_{tt} = \nabla^2 u - \beta u_t \implies T'' + c^2\beta T' + \lambda^2 c^2 T = 0 $$
 
-The resulting equation in \\(t\\) represents a damped harmonic oscillator, and the only real change is that our time-solutions get a shifted natural frequency and an exponential decay term:
-\\[T_\lambda(t)\propto\exp\left(-\frac{\beta c^2}{2} t\right) \cos\left(\frac{c\sqrt{4\lambda^2 - c^2 \beta^2}}{2} t - \phi_\lambda \right) \\]
+The resulting equation in $ t $ represents a damped harmonic oscillator, and the only real change is that our time-solutions get a shifted natural frequency and an exponential decay term:
+$$ T_\lambda(t)\propto\exp\left(-\frac{\beta c^2}{2} t\right) \cos\left(\frac{c\sqrt{4\lambda^2 - c^2 \beta^2}}{2} t - \phi_\lambda \right) $$
 
-Where \\( \phi_\lambda \\) is some phase angle depending on our initial conditions. If we let \\( \alpha = c\beta/2 \\), the final equation cleans up nice:
-\\[T_\lambda(t)\propto e^{-\alpha c t} \cos\left[\sqrt{\lambda^2 - \alpha^2}\\ c t - \phi_\lambda\right] \\]
+Where $ \phi_\lambda $ is some phase angle depending on our initial conditions. If we let $ \alpha = c\beta/2 $, the final equation cleans up nice:
+$$ T_\lambda(t)\propto e^{-\alpha c t} \cos\left[\sqrt{\lambda^2 - \alpha^2}\\ c t - \phi_\lambda\right] $$
 
 ## Striking the Shape
 
-The Laplace operator is symmetric, so its eigenfunctions should be orthogonal. This means that determining the coefficients of some distortion (e.g. one made by a mallet) on our membrane is as simple as performing a series of inner products. Specifically, any state our membrane might take \\( f(x,y) \\) can be written using a Fourier expansion of the membrane's normalized basis modes \\(\\{ U_i\\}\\):
+The Laplace operator is symmetric, so its eigenfunctions should be orthogonal. This means that determining the coefficients of some distortion (e.g. one made by a mallet) on our membrane is as simple as performing a series of inner products. Specifically, any state our membrane might take $ f(x,y) $ can be written using a Fourier expansion of the membrane's normalized basis modes $ \\{ U_i\\} $:
 
-\\[ f(x,y)=\sum_k c_k\\ U_k(x, y),\\ \\ c_k=\int_\Omega U_k(x, y) f(x, y)\\ dx\\ dy \\]
+$$ f(x,y)=\sum_k c_k\\ U_k(x, y),\\ \\ c_k=\int_\Omega U_k(x, y) f(x, y)\\ dx\\ dy $$
 
-If we let our mallet whack the membrane with a Dirac delta function, \\(f(x,y) = \delta(x-x_0,y-y_0)\\), we can avoid computing the integral on the right, and just select values from \\(\\{ U_i\\}\\) at \\((x_0, y_0)\\). Doing this with the first hundred harmonics shows Airy disc-esque patterns on the membrane:
+If we let our mallet whack the membrane with a Dirac delta function, $ f(x,y) = \delta(x-x_0,y-y_0) $, we can avoid computing the integral on the right, and just select values from $ \\{ U_i\\} $ at $ (x_0, y_0) $. Doing this with the first hundred harmonics shows Airy disc-esque patterns on the membrane:
 
-<div class="imblock">
-<img src="airy.png" class="postim"></img>
-</div>
+![image](airy.png)
 
-To remove the (unphysical) ringing artifacts, we can apply a low pass filter to the spectrum (\\(G\propto 1/f \\)):
+To remove the (unphysical) ringing artifacts, we can apply a low pass filter to the spectrum ($ G\propto 1/f $):
 
-<div class="imblock">
-<img src="noairy.png" class="postim"></img>
-</div>
+![image](noairy.png)
 
 Despite feeling a little dirty, this works, and it runs quickly.
 
@@ -219,18 +205,14 @@ write('one_second_hit.wav', rate, scaled)
 
 The nice thing about this approach is that we can vary <code>strike_x</code> and <code>strike_y</code> to get all sorts of interesting sounds out of our drum. For example, if we strike the blob in its 'middle', we get this sound:
 
-<div class="imblock">
-<img src="middle.png" class="postim"></img>
-</div>
+![image](middle.png)
 <audio controls style="width: 90%;">
     <source src="blob_150_100.mp3" type="audio/mp3">
 </audio>
 
 While if we strike it on the nub in the upper-left corner, it sounds like this:
 
-<div class="imblock">
-<img src="upperleft.png" class="postim"></img>
-</div>
+![image](upperleft.png)
 <audio controls style="width: 90%;">
     <source src="blob_50_50.mp3" type="audio/mp3">
 </audio>
@@ -241,9 +223,7 @@ No article about whacking arbitrary shapes would be complete without at least me
 
 Despite all this buzz about the topic, I wasn't able to find much online in the way of actually *listening* to the shape of a drum, which is why I wrote this article. On a related note, here's one of the members of the famous isospectral pair:
 
-<div class="imblock">
-<img src="isospec1.png" class="postim"></img>
-</div>
+![image](isospec1.png)
 
 And here is the glorious, undamped (and low pass filtered) sound of every eigenmode activated simultaneously:
 

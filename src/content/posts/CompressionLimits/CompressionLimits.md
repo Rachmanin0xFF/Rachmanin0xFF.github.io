@@ -1,6 +1,6 @@
 ---
 title: Compression Limits and Understanding
-layout: post.hbs
+layout: post.html
 date: 2023-12-04
 tags: cs, information, compression
 iconpath: universe.png
@@ -13,10 +13,8 @@ I like [raster graphics](https://en.wikipedia.org/wiki/Raster_graphics); let's l
 
 State-of-the-art (SOTA) image compression techniques are moving away from wavelet formats like JPEG XL and HEIF, and instead towards [CNN (Convolutional Neural Network) / GAN (Generative Adversarial Network) autoencoders](https://arxiv.org/abs/1611.01704). Recently, even large language models have been [crushing pixels](https://arxiv.org/abs/2309.10668). The point is: when it comes to compression, SOTA is becoming synonymous with neural machine learning. Actually, this is true for compression in general — even award-winning archivers like [PAQ](https://en.wikipedia.org/wiki/PAQ) are starting to [use neural nets](https://mattmahoney.net/dc/paq.html#neural).
 
-<div class="imblock">
-<img src="gancomp.png" class="postim"></img>
+![image](gancomp.png)
 An illustrative comparison of image compression algorithms (GAN in the top center). Courtesy of <a href="https://arxiv.org/abs/1804.02958">"Generative Adversarial Networks for Extreme Learned Image Compression" by Agustsson et al. (2019).</a>
-</div>
 
 Indulge me for a minute. Suppose we compress a bitmap with a shallow convolutional autoencoder. Its latent space will probably have features corresponding to textures (e.g. "vertical stripes"), low-frequency components ("big dark blob here"), and so on.
 
@@ -34,13 +32,11 @@ Okay, it doesn't seem like we could build this. There's probably not even a way 
 
 *Note: You could argue that the übercompressor doesn't actually need to store anything — if it can simulate everything, it knows when someone will query it, and what item they're asking for. The important part about the machine is really how it interacts with the rest of the universe, but I'll halt this line of reasoning before I encounter a self-referential error.*
 
-<div class="imblock">
-<img src="universe_label2.png" class="postim"></img>
-</div>
+![image](universe_label2.png)
 
-I like this mini-thought experiment because it shows that, at some level, compression is just *indexing*, and questions about maximum compression ratios boil down to the ontological question of 'how large is your equivalence class of objects': if it's of size \\( N \\), then you can squish your data into \\( \lceil\log_2(N)\rceil \\) bits.
+I like this mini-thought experiment because it shows that, at some level, compression is just *indexing*, and questions about maximum compression ratios boil down to the ontological question of 'how large is your equivalence class of objects': if it's of size $ N $, then you can squish your data into $ \lceil\log_2(N)\rceil $ bits.
 
 Better compression algorithms realize smaller equivalence classes by folding away symmetries in data — deciphering the grammar of the input bits. In real-world data, this grammar is often *really, really complicated*: for example, the 'rules' that photos follow are just projections of the 'rules' of reality, which are obviously very messy, and obscured by an [impenetrable wall of noise](https://en.wikipedia.org/wiki/Uncertainty_principle). This means that if you want to do compression well, you'll probably have to do statistics. No surprise there!
 ### Takeaways
-* Compression \\( = \\) finding redundancies \\( \approx \\) identifying abstractions \\( \approx \\) understanding/intelligence
+* Compression $ = $ finding redundancies $ \approx $ identifying abstractions $ \approx $ understanding/intelligence
 * Reality is messy, and Kolmogorov complexity is an uncomputable measure, so there will always be work to do in compression. This is why there's an [open €500,000 prize](http://prize.hutter1.net/) to compress the contents of Wikipedia.

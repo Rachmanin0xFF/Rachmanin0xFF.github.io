@@ -1,6 +1,6 @@
 ---
 title: A Square FFT
-layout: post.hbs
+layout: post.html
 date: 2023-05-08
 tags: cs, math, signals
 iconpath: squareDFT.png
