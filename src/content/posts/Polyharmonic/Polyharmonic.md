@@ -2,7 +2,8 @@
 title: Motivation for Polyharmonic Splines
 layout: post.html
 date: 2025-01-07
-tags: math, cs
+tags: math
+      cs
 iconpath: polyharm.png
 ---
 

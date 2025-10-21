@@ -2,7 +2,9 @@
 title: Binary Universal Approximation & Neural Logic
 layout: post.html
 date: 2024-09-09
-tags: math, ml, cs
+tags: math
+      ml
+      cs
 iconpath: ANNAdders.png
 ---
 ### The Depth Necessary for Addition

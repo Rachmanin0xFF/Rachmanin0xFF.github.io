@@ -98,20 +98,17 @@ class Tribo:
 
         # helpers to clean metadata
         flatten = lambda x: (x[0] if isinstance(x, list) and len(x) == 1 else x)
-        separate_by_comma = lambda x: (
-            x.split(", ") if isinstance(x, str) and len(x.split(", ")) > 1 else x
-        )
         trim_whitespace = lambda x: x.strip() if isinstance(x, str) else x
-        clean = lambda x: trim_whitespace(separate_by_comma(flatten(x)))
+        clean = lambda x: trim_whitespace(flatten(x))
 
         def metadata_contains_required_fields(meta: dict) -> bool:
             required_fields = ["title", "date", "layout"]
             return all(field in meta for field in required_fields)
 
         if input_path.is_dir():
-            paths = input_path.glob(pattern)
+            paths = list(input_path.glob(pattern))
             self.logger.debug(
-                f"Parsing directory {input_path} using pattern {pattern}, found {len(list(paths))} files."
+                f"Parsing directory {input_path} using pattern {pattern}, found {len(paths)} files."
             )
         elif input_path.is_file():
             paths = [input_path]

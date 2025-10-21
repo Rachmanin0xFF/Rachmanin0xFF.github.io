@@ -2,7 +2,9 @@
 title: First Post!
 layout: post.html
 date: 2020-03-16
-tags: meta, personal, fun
+tags: meta
+      personal
+      fun
 iconpath: default.png
 ---
 

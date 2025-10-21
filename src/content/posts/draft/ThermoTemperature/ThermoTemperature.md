@@ -2,7 +2,9 @@
 title: Thermodynamics - Negative Temperatures
 layout: post.html
 date: 2023-12-29
-tags: math, physics, thermodynamics
+tags: math
+      physics
+      thermodynamics
 iconpath: ThermoCircle.png
 ---
 

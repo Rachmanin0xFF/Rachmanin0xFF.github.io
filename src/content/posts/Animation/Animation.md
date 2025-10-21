@@ -2,7 +2,10 @@
 title: Hacking 2D Animation
 layout: post.html
 date: 2022-05-21
-tags: animation, graphics, art, gamedev
+tags: animation
+      graphics
+      art
+      gamedev
 iconpath: Animation.gif
 ---
 

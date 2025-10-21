@@ -2,7 +2,9 @@
 title: Compression Limits and Understanding
 layout: post.html
 date: 2023-12-04
-tags: cs, information, compression
+tags: cs
+      information
+      compression
 iconpath: universe.png
 ---
 If you search "data compression theoretical limit" you'll be referred to [Shannon's Source Coding Theorem](https://en.wikipedia.org/wiki/Shannon%27s_source_coding_theorem), and maybe [Kolmogorov complexity](https://en.wikipedia.org/wiki/Kolmogorov_complexity) if you look a little deeper.

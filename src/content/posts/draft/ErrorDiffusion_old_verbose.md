@@ -2,7 +2,10 @@
 title: Resampling I - The Lost Art of Error Diffusion
 layout: post.html
 date: 2023-08-01
-tags: math, graphics, images, cs
+tags: math
+      graphics
+      images
+      cs
 iconpath: default.png
 ---
 

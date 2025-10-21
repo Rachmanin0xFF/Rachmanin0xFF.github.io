@@ -2,7 +2,10 @@
 title: Upgrading Florida Tech's CAPP Reports (Part 2)
 layout: post.html
 date: 2022-05-17
-tags: cs, visualization, graphics, networks
+tags: cs
+      visualization
+      graphics
+      networks
 iconpath: Coursegraph2.png
 ---
 

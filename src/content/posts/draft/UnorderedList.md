@@ -2,7 +2,9 @@
 title: Order, Multisets, and Language
 layout: post.html
 date: 2024-08-03
-tags: cs, information, math
+tags: cs
+      information
+      math
 iconpath: UnorderedList.png
 ---
 

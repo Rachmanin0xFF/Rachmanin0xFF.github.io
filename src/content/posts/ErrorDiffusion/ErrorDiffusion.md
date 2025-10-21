@@ -2,7 +2,10 @@
 title: Resampling I - The Art of Error Diffusion
 layout: post.html
 date: 2023-09-06
-tags: math, graphics, images, cs
+tags: math
+      graphics
+      images
+      cs
 iconpath: ErrorDiffusion.png
 ---
 

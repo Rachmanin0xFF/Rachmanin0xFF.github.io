@@ -2,7 +2,9 @@
 title: Why You Can't Talk About Color
 layout: post.html
 date: 2024-06-05
-tags: physics, color, graphics
+tags: physics
+      color
+      graphics
 iconpath: bleh.png
 ---
 

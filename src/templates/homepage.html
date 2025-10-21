@@ -13,47 +13,42 @@
   <script defer src="./../../scripts/darkmode.js"></script>
   <link rel="icon" href="./../../favicon.ico" type="image/x-icon"/>
   <link rel="shortcut icon" href="./../../favicon.ico" type="image/x-icon"/>
+
+  <meta name="robots" content="all,follow">
+  <meta property="og:title" content="Adam Lastowka - {{ title }}">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="{{ description }}"
 </head>
 <body>
-  <div id="bkg">
-    <section id="not-background">
-      <section id="sidebar">
-        <div class="sticky">
-          <div class="sb-big onbkg hvr-rotate"><a href="../../index.html">Home</a></div><br>
-          <div class="sb-big onbkg hvr-rotate"><a href="../../about/index.html">About</a></div><br>
-          <div class="sb-big onbkg hvr-rotate"><a href="../../qa/index.html">Q&A</a></div>
-        </div>
-      </section>
-      <section id="header">
-        <div class="null">
-          <div id="spikes" class="vector" alt=""></div>
-        </div>
-        <div id="sitename">
-          <h5><a href="./../../index.html">Adam<br>Lastowka</a></h5>
-        </div>
-      </section>
-      <div id="foreground">
-        <section id="feed">
-          <h1>{{ title|title }}</h1>
-          <div class="date">{% if date %}Published: {{ date }}{% endif %}</div>
-          <div class="tags">
-            Tagged with:
-            {% if tags %}
-              {% if tags is string %}
-                <a href="./../../topics/{{ tags }}/index.html">{{ tags }}</a>
-              {% else %}
-                {% for tag in tags %}
-                  <a href="./../../topics/{{ tag }}/index.html">{{ tag }}</a>{% if not loop.last %}, {% endif %}
-                {% endfor %}
-              {% endif %}
-            {% endif %}
-          </div>
-          <br>
-          {{ html|safe }}
-        </section>
-        <div id="footer"></div>
-      </div>
+
+  <header>
+    <h1><a href="./">Adam Lastowka</a></h1>
+  </header>
+
+  <section id="navmenu">
+      <a href="./posts/">Home</a>
+      <a href="./about/">About</a>
+      <a href="./qa/">Q&A</a>
+  </section>
+
+  <div id="feed">
+    <h2>Posts</h2>
+
+    <section id="content">
+      <h1>{{ title|title }}</h1>
+      {% for post in posts %}
+      <article>
+        <h2>{{ post.meta.title }}</h2>
+        <time>{{ post.meta.date }}</time>
+        <p>{{ post.meta.tags }}</p>
+      </article>
+    {% endfor %}
+      <br>
+      {{ html|safe }}
     </section>
   </div>
+
+  <footer>
+    <p>© Adam Lastowka 2024</p>
 </body>
 </html>

@@ -2,7 +2,9 @@
 title: Embedding the Shortest-Path Metric
 layout: post.html
 date: 2025-01-16
-tags: math, cs, networks
+tags: math
+      cs
+      networks
 iconpath: Embedding.png
 plotly: true
 ---

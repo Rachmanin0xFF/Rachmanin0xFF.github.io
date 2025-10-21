@@ -2,7 +2,10 @@
 title: PDEs - Listening to Drum Shapes
 layout: post.html
 date: 2024-06-05
-tags: math, physics, linalg, cs
+tags: math
+      physics
+      linalg
+      cs
 iconpath: shape_waves.png
 ---
 

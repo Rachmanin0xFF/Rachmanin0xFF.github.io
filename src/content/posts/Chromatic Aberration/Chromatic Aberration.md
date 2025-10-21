@@ -2,7 +2,10 @@
 title: The Chromatic Aberration Rant
 layout: post.html
 date: 2020-03-17
-tags: color, physics, art, graphics
+tags: color
+      physics
+	  art
+	  graphics
 iconpath: Chromatic Abberation.png
 ---
 Which do you prefer? This:

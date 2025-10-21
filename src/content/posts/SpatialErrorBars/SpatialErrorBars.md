@@ -2,7 +2,10 @@
 title: Make Your Averages Better-Than-Average
 layout: post.html
 date: 2025-04-16
-tags: math, stats, cs, gis
+tags: math
+      stats
+	  cs
+	  gis
 iconpath: SpatialErrorBars.png
 ---
 

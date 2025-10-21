@@ -2,7 +2,10 @@
 title: Exploring Iterated Function Systems
 layout: post.html
 date: 2023-08-01
-tags: math, graphics, art, images
+tags: math
+      graphics
+      art
+      images
 iconpath: IFSExploration.png
 ---
 

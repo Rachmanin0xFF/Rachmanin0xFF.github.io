@@ -2,7 +2,10 @@
 title: Optimizing Simplification in Symbolic Circuit Analysis
 layout: post.html
 date: 2024-12-09
-tags: cs, ee, networks, math
+tags: cs
+      ee
+	  networks
+	  math
 iconpath: SymbolicCircuits.png
 ---
 

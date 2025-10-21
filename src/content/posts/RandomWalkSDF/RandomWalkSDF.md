@@ -2,7 +2,10 @@
 title: PDEs - Random Walks and Distance Fields
 layout: post.html
 date: 2024-06-08
-tags: math, physics, cs, graphics
+tags: math
+      physics
+      cs
+      graphics
 iconpath: randomwalk.png
 ---
 
