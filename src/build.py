@@ -1,7 +1,7 @@
 from tribo import *
 import sys
 
-output_dir = sys.argv[1] if len(sys.argv) > 1 else "build"
+output_dir = sys.argv[1] if len(sys.argv) > 1 else "../build"
 
 tribo = Tribo(
     content_root="content",
