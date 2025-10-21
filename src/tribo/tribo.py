@@ -1,0 +1,250 @@
+"""
+Tribo - An incredibly simple static site generator
+
+Get the name? "Tribo"? Like, triboelectric effect? Because triboelectric -> static -> site ...
+Yeah, it's kind of a stretch...
+At least it sounds like a tech product... I feel like ending with a vowel is trendy nowadays.
+
+Built on jinja2 and markdown for adamlastowka.com
+"""
+
+import argparse
+import hashlib
+import logging
+import shutil
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+import coloredlogs
+import jinja2
+import markdown
+import yaml
+
+
+@dataclass
+class Page:
+    """Represents a parsed markdown file with metadata"""
+
+    path: Path  # relative to CONTENT_ROOT
+    html: str
+    meta: dict[str, Any]
+
+
+class Tribo:
+    def __init__(
+        self,
+        content_root: Path | str = "content",
+        output_root: Path | str = "build",
+        template_root: Path | str = "templates",
+        config_path: Path | str = "config.yaml",
+    ):
+        self.logger = logging.getLogger("tribo")
+        logging.basicConfig(level=logging.INFO)
+        coloredlogs.install(level="DEBUG", logger=self.logger)
+
+        self.content_root = Path(content_root)
+        self.output_root = Path(output_root)
+        self.template_root = Path(template_root)
+
+        self.logger.info(f"Building to output directory: {self.output_root.resolve()}")
+
+        # Load config
+        self.global_context = self._load_config(config_path)
+
+        # Setup Jinja2
+        self.template_env = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(self.template_root)
+        )
+
+        # Setup Markdown
+        self.md = markdown.Markdown(
+            extensions=[
+                "fenced_code",
+                "footnotes",
+                "tables",
+                "meta",
+            ],
+        )
+
+    def _load_config(self, config_path: Path | str) -> dict[str, Any]:
+        """Load configuration from YAML file."""
+        config_path = Path(config_path)
+        try:
+            with open(config_path, "r", encoding="utf-8") as f:
+                context = yaml.safe_load(f)
+                self.logger.info(f"Loaded config from {config_path}")
+                return context
+        except FileNotFoundError:
+            self.logger.error(f"Config file not found: {config_path}")
+            sys.exit(1)
+        except Exception as e:
+            self.logger.error(f"Error reading {config_path}: {e}")
+            sys.exit(1)
+
+    def parse_markdown(
+        self,
+        input_path: Path | str,
+        pattern: str = "**/*.md",
+        reverse: bool = True,
+        sort_by: str = "date",
+    ) -> list[Page] | None:
+        """Recursively parses all matching files in the input directory, or a single file."""
+        if isinstance(input_path, str):
+            input_path = Path(input_path)
+
+        input_path = self.content_root / input_path
+
+        # helpers to clean metadata
+        flatten = lambda x: (x[0] if isinstance(x, list) and len(x) == 1 else x)
+        separate_by_comma = lambda x: (
+            x.split(", ") if isinstance(x, str) and len(x.split(", ")) > 1 else x
+        )
+        trim_whitespace = lambda x: x.strip() if isinstance(x, str) else x
+        clean = lambda x: trim_whitespace(separate_by_comma(flatten(x)))
+
+        def metadata_contains_required_fields(meta: dict) -> bool:
+            required_fields = ["title", "date", "layout"]
+            return all(field in meta for field in required_fields)
+
+        if input_path.is_dir():
+            paths = input_path.glob(pattern)
+            self.logger.debug(
+                f"Parsing directory {input_path} using pattern {pattern}, found {len(list(paths))} files."
+            )
+        elif input_path.is_file():
+            paths = [input_path]
+            self.logger.debug(f"Parsing single file {input_path}.")
+        else:
+            self.logger.error(f"Path not found: {input_path}")
+            return None
+
+        # read files, parse markdown, extract metadata & check completeness
+        pages = []
+        for path in paths:
+            with open(path, "r", encoding="utf-8") as f:
+                text = f.read()
+                html_converted = self.md.convert(text)
+                cleaned_metadata = {k: clean(v) for k, v in self.md.Meta.items()}
+                relative_path = path.relative_to(self.content_root)
+                if not metadata_contains_required_fields(cleaned_metadata):
+                    self.logger.warning(
+                        f"File {relative_path} is missing required metadata fields. Skipping!"
+                    )
+                else:
+                    pages.append(
+                        Page(
+                            path=relative_path,
+                            html=html_converted,
+                            meta=cleaned_metadata,
+                        )
+                    )
+                self.md.reset()
+
+        if not pages:
+            if input_path.is_dir():
+                self.logger.info(
+                    f"No files found in {input_path} matching pattern {pattern}"
+                )
+            else:
+                self.logger.info(f"No files found at {input_path}")
+            return None
+
+        self.logger.debug(f"Found {len(pages)} content files, sorting...")
+        sorted_pages = sorted(
+            pages, key=lambda page: page.meta.get(sort_by), reverse=reverse
+        )
+
+        # link adjacent pages
+        for i in range(len(sorted_pages) - 1):
+            sorted_pages[i].meta["next"] = sorted_pages[i + 1].path
+            sorted_pages[i + 1].meta["prev"] = sorted_pages[i].path
+
+        return sorted_pages
+
+    def render_markdown(
+        self,
+        pages: list[Page] | Page | None,
+        layout_override: str | None = None,
+        **kwargs,
+    ) -> None:
+        """
+        Render pages into HTML using the template specified in page.meta["layout"].
+        You can override this by providing a layout argument.
+
+        All page metadata is passed to the template by default.
+        If you want any other context passed to the template, provide it in kwargs.
+        """
+        if pages is None:
+            self.logger.info("No pages to render.")
+            return
+        self.logger.info(f"Rendering {len(pages)} pages...")
+        if isinstance(pages, Page):
+            pages = [pages]
+        for page in pages:
+            layout = layout_override or page.meta["layout"]
+            try:
+                template = self.template_env.get_template(layout)
+            except jinja2.TemplateNotFound:
+                self.logger.error(
+                    f"{page.path} - template not found: {layout}, skipping!"
+                )
+                continue
+            except jinja2.TemplateError as e:
+                self.logger.error(
+                    f"{page.path} - template error in {layout}: {e}, skipping!"
+                )
+                continue
+
+            output_path = self.output_root / page.path.with_suffix(".html")
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+
+            with open(output_path, "w", encoding="utf-8") as f:
+                f.write(
+                    template.render(
+                        html=page.html,
+                        **self.global_context,
+                        **page.meta,
+                        **kwargs,
+                    )
+                )
+
+    def copy_all_static_content(self) -> None:
+        """Copy all static files from content root to output."""
+        self._copy_static_files_recursive(self.content_root)
+
+    def _copy_static_files_recursive(self, input_directory: Path | str) -> None:
+        """Copy static files from input directory to output."""
+        if isinstance(input_directory, str):
+            input_directory = Path(input_directory)
+
+        static_input = self.content_root / input_directory
+        static_output = self.output_root / input_directory
+        file_hash = lambda p: hashlib.sha256(open(p, "rb").read()).hexdigest()
+
+        for path in static_input.glob("**/*.*"):
+            if path.suffix in [".md", ".markdown", ".mdx", ".html", ".htm"]:
+                continue
+            relative_path = path.relative_to(static_input)
+            output_path = static_output / relative_path
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+
+            # copy iff content differs or file doesn't exist
+            if output_path.exists():
+                try:
+                    if file_hash(path) == file_hash(output_path):
+                        continue
+                except Exception as e:
+                    self.logger.warning(
+                        f"Hash comparison failed for {path} and {output_path}: {e}"
+                    )
+            try:
+                shutil.copy2(path, output_path)
+            except Exception as e:
+                self.logger.error(f"Error copying {path} to {output_path}: {e}")
+
+
+if __name__ == "__main__":
+    print("Tribo is intended to be used as a module, not run directly.")
+    exit(1)

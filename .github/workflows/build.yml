@@ -26,7 +26,7 @@ jobs:
     - name: Build site
       run: |
         cd src
-        python build.py
+        python build.py docs
     
     - name: Commit and push built site
       run: |

@@ -11,10 +11,10 @@
   <meta name="MobileOptimized" content="320"/>
   <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
 
-  <title>Adam Lastowka - {{ title }}</title>
-  <meta name="description" content="{{ description }}" />
+  <title>Adam Lastowka - Understanding the Wronskian</title>
+  <meta name="description" content="" />
   <script async defer src="./../../scripts/parallax.js" onload="var loaded=true;"></script>
- {{#if plotly}}<script async defer src="https://cdn.plot.ly/plotly-latest.min.js"></script>{{/if}}
+  
 
   <link rel="stylesheet" id="lightmodehl" href="./../../scripts/highlight/styles/atom-one-light.min.css">
   <link rel="stylesheet" id="darkmodehl" href="./../../scripts/highlight/styles/hybrid.min.css" disabled="true">
@@ -25,15 +25,21 @@
   <script defer src="./../../scripts/darkmode.js"></script>
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
-  <script type="text/x-mathjax-config">
-  MathJax = {
+  <script>
+  window.MathJax = {
     tex: {
       inlineMath: [['$', '$'], ["\\(", "\\)"]],
+      displayMath: [['$$', '$$'], ["\\[", "\\]"]],
       processEscapes: true,
+    },
+    startup: {
+      pageReady: () => {
+        return MathJax.typesetPromise();
+      }
     }
-  }
+  };
   </script>
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
   
   <link rel="icon" href="./../../favicon.ico" type="image/x-icon"/>
   <link rel="shortcut icon" href="./../../favicon.ico" type="image/x-icon"/>
@@ -69,29 +75,51 @@
     <div id="foreground">
 
       <section id="feed">
-        <h1>{{ capitalizeFirst title }}</h1>
+        <h1>Understanding The Wronskian</h1>
         <div class="date">
-          {{#if date}} Published: {{formatDate date}}{{/if}}
+          Published: 2022-05-22
         </div>
         <div class="tags">
           Tagged with:
-          {{#each tags}}
-            <a href="./../../topics/{{ name }}/index.html">{{ name }}</a>
-          {{/each}}
+          
+            
+              <a href="./../../topics/math/index.html">math</a>
+            
+          
         </div>
         <br>
 
-        {{{ contents }}}
+        <p><em>This post assumes familiarity with calculus and linear algebra.</em></p>
+<p>I recently took <em>MTH2201: Differential Equations and Linear Algebra</em> at Florida Tech. The academic demographic of the class was as follows:
+* 5% physics majors (&lt;-- including me!)
+* 10% various other disciplines
+* 85% engineers</p>
+<p>Needless to say, the course was focused more on problem-solving techniques than actual <em>math</em>. I was not fully aware of this when the course began, then this happened:</p>
+<p>Professor: So, you're good with linear independence, right? Guess what, functions can also be linearly independent.</p>
+<p>Class: ...</p>
+<p>Professor: Yeah, you use this thing called the Wronskian to test for linear independence. Here it is:
+\[begin{bmatrix}a &amp; b\c &amp; d\end{bmatrix}\]</p>
+<h2>Linear Independence: A Quick Refresher</h2>
+<p>Two vectors \(\vec{a}\) and \(\vec{b}\) are Linearly independent if and only if
+\[ \vec{a} = c\vec{b}, c\in \mathbb{R} \]
+i.e. if the two vectors are multiples of each other.</p>
+<p>\[ c_1f_1(x) + c_2f_2(x) + ... + c_nf_n(x) = 0 \]</p>
 
-		{{#if this.previous.path}}
-          <a href="./../../{{ toHTML this.previous.path }}" class="button2" style="min-width:47%;">Previous Post:<br>{{ this.previous.title }} {{ rootPath }}</a>
-        {{/if}}
+        
+          <a href="./../../posts\draft\squareDFT\squareDFT.html" class="button2" style="min-width:47%;">Previous Post:<br></a>
+        
 
-        {{#if this.next.path }}
-          <a href="./../../{{ toHTML this.next.path }}" class="button2" style="min-width:47%;">Next Post:<br>{{ this.next.title }} </a>
-        {{/if}}
+        
+          <a href="./../../posts\Animation\Animation.html" class="button2" style="min-width:47%;">Next Post:<br></a>
+        
         
       </section>
+      
+      <script>
+        if (window.MathJax) {
+          MathJax.typesetPromise().catch(err => console.log(err));
+        }
+      </script>
 
       <div id="footer">
 

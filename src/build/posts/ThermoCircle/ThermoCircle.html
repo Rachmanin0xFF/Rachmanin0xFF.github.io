@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no">
+
+  <meta name="HandheldFriendly" content="true"/>
+  <meta name="MobileOptimized" content="320"/>
+  <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
+
+  <title>Adam Lastowka - Thermodynamics - Arbitrary Paths</title>
+  <meta name="description" content="" />
+  <script async defer src="./../../scripts/parallax.js" onload="var loaded=true;"></script>
+  
+
+  <link rel="stylesheet" id="lightmodehl" href="./../../scripts/highlight/styles/atom-one-light.min.css">
+  <link rel="stylesheet" id="darkmodehl" href="./../../scripts/highlight/styles/hybrid.min.css" disabled="true">
+  <script src="./../../scripts/highlight/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+
+  <link rel="stylesheet" href="./../../post.css">
+  <script defer src="./../../scripts/darkmode.js"></script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ["\\(", "\\)"]],
+      displayMath: [['$$', '$$'], ["\\[", "\\]"]],
+      processEscapes: true,
+    },
+    startup: {
+      pageReady: () => {
+        return MathJax.typesetPromise();
+      }
+    }
+  };
+  </script>
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  
+  <link rel="icon" href="./../../favicon.ico" type="image/x-icon"/>
+  <link rel="shortcut icon" href="./../../favicon.ico" type="image/x-icon"/>
+
+</head>
+
+<body>
+  <div id ="bkg">
+
+  <section id="not-background">
+    <section id="sidebar">
+      <div class="sticky">
+        <div class="sb-big onbkg hvr-rotate"><a href="../../index.html">Home</a></div><br>
+        <div class="sb-big onbkg hvr-rotate"><a href="../../about/index.html">About</a></div><br>
+        <div class="sb-big onbkg hvr-rotate"><a href="../../qa/index.html">Q&A</a></div>
+        <!--<br><br><div id="dm-toggle" class="button sb-big hvr-rotate">Lights</button>-->
+      </div>
+    </section>
+
+    <section id="header">
+
+      <div class="null">
+        <div id="spikes" class="vector" alt=""></div>
+      </div>
+
+      <div id="sitename">
+        <h5>
+          <a href="./../../index.html">Adam<br>Lastowka</a>
+        </h5>
+      </div>
+    </section>
+
+    <div id="foreground">
+
+      <section id="feed">
+        <h1>Thermodynamics - Arbitrary Paths</h1>
+        <div class="date">
+          Published: 2023-12-29
+        </div>
+        <div class="tags">
+          Tagged with:
+          
+            
+              
+                <a href="./../../topics/math/index.html">math</a>, 
+              
+                <a href="./../../topics/physics/index.html">physics</a>, 
+              
+                <a href="./../../topics/thermodynamics/index.html">thermodynamics</a>
+              
+            
+          
+        </div>
+        <br>
+
+        <h2>Introduction</h2>
+<p>A month or two into my introductory thermodynamics course, our professor told us to "create your own thermodynamic cycle and find its efficiency". I don't know what compelled me, but I drew a circle on my PV diagram:</p>
+<p><img alt="PV diagram circle" src="loopie.png" />
+It looked like this.</p>
+<p>I then realized I hadn't been equipped to find the efficiency of this frustratingly simple shape. Undergraduate thermodynamics only discusses a few types of processes: isobaric, isochoric, isothermal, adiabatic, and isentropic. And that's good enough for most practical purposes! It's hard to design a mechanism that <em>doesn't</em> approximately realize one of those sorts of paths.</p>
+<p>But I went ahead and did it anyway, and it ended up feeling educational. At any rate, it's a cute problem!</p>
+<h2>The Pressure-Volume (P-V) Plane</h2>
+<p>If a system is in thermodynamic equilibrium (it has homogeneous macroscale thermal properties), we can talk about its pressure (P) and volume (V). These two state variables are not always sufficient to describe a system, but they are <em>useful</em> to consider because they are closely related to <strong>mechanical work</strong>. This is evident with some dimensional analysis:</p>
+<p>$$ [\textrm{Pressure}][\textrm{Volume}]=\left(\frac{\textrm{Newtons}}{\textrm{m}^2}\right)\left(\textrm{m}^3\right) = (\textrm{Newton})(\textrm{m}) = \textrm{Joule} = [\textrm{Work}] $$</p>
+<p>The equivalence above is fairly intuitive; if we compress some gas with constant pressure $ P $ by some amount $ \Delta V $, we must be doing some work $ W=P\Delta V $ on it. However, most of the time, changing a system's volume will also change its pressure, and the relationship between P and V is dependent on the <strong>heat</strong> allowed to flow in or out of the system. To visualize this, we make a parametric plot in P and V of the system as it changes over time:</p>
+<p><img alt="PV diagram example" src="PVplane.png" />
+An example PV diagram of an arbitrary thermodynamic process.</p>
+<p>No practical system/engine is always in thermal equilibrium, and every little part of the system may take a different path (in the PV plane) to its destination. However, the quasi-static (slow-moving) processes that we can draw on the plane are still decent approximations of real systems. The most useful property of these diagrams is that they provide a visual representation of the work done by a process. Recall that $ \Delta W = P\Delta V $ (under constant pressure). We can rewrite this in its differential form:
+$$ dW = P\ dV $$</p>
+<p>And then integrate (the minus is just a sign convention):</p>
+<p>$$ W = -\int P\ dV $$</p>
+<p>In other words, the work done by a process is the negative signed area under the process in the PV plane. Consequently, if our process is a cycle (it ends where it begins), then the work done by the process is the <strong>signed area enclosed by the cycle in the PV plane</strong>. I think this easy result is why PV diagrams are often preferred over diagrams using some other two state variables (e.g. TS diagrams).</p>
+<h2>Heat</h2>
+<p>The first law of thermodynamics states that the change in the total internal energy of a system must be equal to the work done on the system plus the heat gained by the system. Rearranging things in differential form, we find:</p>
+<p>$$ dU = \delta Q - P\ dV \implies \delta Q = dU + P\ dV $$</p>
+<p>Where $ U $ is the total internal energy of the system and $ Q $ is the heat added to the system. Unfortunately, at this point, we need to settle on an equation of state. Without an expression for the total internal energy of our system, we are unable to determine the heat it is receiving or rejecting. Remember, we're trying to find the efficiency of an arbitrary path through PV space, so we need to write U in terms of P and V. I'll keep it simple and use the <a href="https://en.wikipedia.org/wiki/Ideal_gas_law#Common_forms">ideal gas law</a>:</p>
+<p>$$ \delta Q = d\left(\frac{f}{2}PV\right) + P\ dV $$</p>
+<p>Where $ f $ is the number of degrees of freedom of the gas molecules (3 for a monoatomic gas). We can expand this with the product rule:</p>
+<p>$$ \delta Q = \frac{f}{2}(P\ dV + V\ dP) + P\ dV $$</p>
+<p>Recalling that $ \gamma = (f+2)/f $ is the definition of the <a href="https://en.wikipedia.org/wiki/Heat_capacity_ratio">adiabatic index</a> for an ideal gas:</p>
+<p>$$ \delta Q = \frac{f}{2}(\gamma P\ dV + V\ dP) $$</p>
+<p>Now we assume our path can be parameterized by some variable $ \theta $, $ P=P(\theta) $, $ V=V(\theta) $, and we integrate to find $ Q $:</p>
+<p>$$ Q = \frac{f}{2}\int \left[\gamma P(\theta')\frac{dV}{d\theta}\Big|_{\theta'} + V(\theta')\frac{dP}{d\theta}\Big|_{\theta'}\right] d\theta' $$</p>
+<p>Cool! Now we have an integral that can be evaluated (numerically, if we like) to find the heat required by any thermodynamic process.</p>
+<h2>Hot Hot Circle</h2>
+<p>Let's parameterize and integrate our circle. Actually, our axes have arbitrary, independent units, so let's make it an axis-aligned ellipse:</p>
+<p>$$ \begin{pmatrix} P(\theta) \\ V(\theta) \end{pmatrix} = \begin{pmatrix} P_0 - b\sin\theta \\ V_0 + a\cos\theta \end{pmatrix} $$</p>
+<p>And our derivatives are:</p>
+<p>$$ \begin{pmatrix} dP/d\theta \\ dV/d\theta \end{pmatrix} = \begin{pmatrix} -b\cos\theta \\ -a\sin\theta \end{pmatrix} $$</p>
+<p>Plugging this into our integral, we get:</p>
+<p>$$ Q=\frac{f}{2}\int_{\theta_1}^{\theta_2} \left[ \gamma (P_0 - b \sin \theta) (-a \sin\theta) + (V_0 + a \cos\theta) (-b \cos \theta) \right] d \theta $$</p>
+<p>I won't write out the closed form; the integral is simple and the result isn't very enlightening. However, I will note that if $ \theta_1 = \theta_2 \pm 2\pi $, the integral evaluates to $ Q = \pi a b $: the area of the ellipse (yes, Green's theorem is hidden in here)! This is actually exactly what we expect; in a thermodynamic cycle, the internal energy change of the system after a complete cycle must be zero (it ends where it begins). So from the first law, $ Q = -W = \textrm{area enclosed by cycle} $.</p>
+<h2>Efficiency</h2>
+<p>Let's define efficiency (for an engine):</p>
+<p>$$ \eta = \left|\frac{W}{Q_{in}}\right| $$</p>
+<p>You can read this as "the amount of work you get out when you put a unit of heat in". It's a clean, universal definition, and we already have $ W = -\pi a b $. However, Finding $ Q_{in} $ is not so simple.</p>
+<p><img alt="Adiabatic lines" src="heats.png" />
+The magenta lines in this diagram are adiabatic: processes with no heat exchange involved. Running against the grain of these lines means our process must be transferring heat to or from an external source.</p>
+<p>Heat flows into our system wherever the differential element of heat for that section of the path is positive. At points where heat is neither flowing in or out, $ \delta Q = 0 $, and our path must be tangent to an <em>adiabatic</em> (no heat exchange) curve on the plane. If we can find these stationary points on our ellipse, we can determine where to begin and end our integral for $ Q_{in} $. For an ideal gas, the <a href="https://en.wikipedia.org/wiki/Isentropic_process#Derivation_of_the_isentropic_relations">family of adiabatic curves</a> is given by $ PV^\gamma=C,\ C&gt;0 $. Additionally, we can rewrite our elliptic curve as an implicit equation:</p>
+<p>$$ \frac{(P-P_0)^2}{b^2}+\frac{(V-V_0)^2}{a^2}=1 $$</p>
+<p>To find where this curve is tangent to an adiabatic process, we can use implicit differentiation on this formula:</p>
+<p>$$ \frac{dP}{dV}=-\frac{b^2}{a^2}\left(\frac{V-V_0}{P-P_0}\right) $$</p>
+<p>And on $ PV^\gamma=C $:</p>
+<p>$$ \frac{dP}{dV}=-\frac{\gamma P}{V} $$</p>
+<p>Equating the two,</p>
+<p>$$ \frac{b^2}{a^2}\left(\frac{V-V_0}{P-P_0}\right)=\frac{\gamma P}{V} \implies b^2V(V-V_0)=a^2\gamma P(P-P_0) $$</p>
+<p>This equation defines a hyperbola, but we still need to determine where it intersects with our ellipse. Finding the intersection of two conic sections is a <a href="https://math.stackexchange.com/questions/1767225/algorithm-intersection-of-two-conics">messy problem</a> that can be solved via Lagrange multipliers. Ultimately, we expect our solution to be the roots of some univariate polynomial. I handed the problem over to maple <a href="https://www.maplesoft.com/products/Maple/">Maple</a>, which gave me this:</p>
+<p>$$ \begin{align} P_{dQ=0} &amp;= \textrm{Roots}\left[f(y)\right],\ f(y)=\sum_{n=0}^4 c_n y^n \\ c_4 &amp;= a^2\gamma ^{2}+2a^2\gamma +a^2\\ c_3 &amp;= -2a^2P_{0}\gamma ^{2}-6a^2P_{0}\gamma -4a^2P_{0}\\ c_2 &amp;= a^2P_{0}^{2}\gamma ^{2}+6a^2P_{0}^{2}\gamma -2a^2b^2\gamma +6a^2P_{0}^{2}+b^2V_{0}^{2}-2a^2b^2\\ c_1 &amp;= -2a^2P_{0}^{3}\gamma +2a^2b^2P_{0}\gamma -4a^2P_{0}^{3}-2b^2P_{0}V_{0}^{2}+4a^2b^2P_{0}\\ c_0 &amp;= a^2P_{0}^{4}+b^2P_{0}^{2}V_{0}^{2}-2a^2b^2P_{0}^{2}-b^4V_{0}^{2}+a^2b^4 \end{align} $$</p>
+<p>I've checked this (numerically); its complexity is an indication that what we're doing here is somewhat unphysical — more on that later. Once we've found the root of the quartic polynomial above, we can retrieve the necessary 'angles' for our integral for $ Q_{in} $:</p>
+<p>$$ \theta=\textrm{atan2}\left(\frac{-(P-P_0)}{b},\frac{V-V_0}{a}\right) $$</p>
+<p>Interestingly, there are actually conditions in which the sign of $ dQ/d\theta $ changes <em>four</em> times (we are dealing with a quartic, after all), but these only happen when the cycle is very close to one of the axes.</p>
+<h2>Example</h2>
+<p>We choose $ P_0=2 $, $ V_0=3 $, $ a=2 $, $ b=1 $, $ f=3\implies \gamma=\frac{5}{3} $, and $ n=R=1 $. Then our roots are:</p>
+<p>$$ \begin{align} P_{dQ=0}&amp;=\textrm{Roots}\left[ \frac{256}{9}y^4-\frac{1408}{9}y^3 + \frac{2593}{9}y^2 - 212y + 63 \right] = \{1.8342, 2.4950\} \\ \implies (\theta_1, \theta_2) &amp;= (2.9750\ \textrm{rad}, 5.7654\ \textrm{rad}) \end{align} $$</p>
+<p>Using these values, we determine:</p>
+<p>$$ \begin{align} Q_{in}&amp;=\int_{\theta_1}^{\theta_2} \left[\frac{5}{3}(2-\sin\theta)(-2\sin\theta)+(3+2\cos\theta)(-\cos\theta)\right] dt = 25.381 \\ W&amp;=-2\pi=-6.2832 \\ \eta &amp;= \left|\frac{W}{Q_{in}}\right|=0.24756 \end{align} $$</p>
+<p>So the efficiency of this elliptical cycle is about 25%! For reference, the Carnot efficiency of this cycle is roughly 85%.</p>
+<h2>In the Real World</h2>
+<p>There isn't much we can do with an ideal gas. Our options are:
+1. Compress or expand it (with perfect or no insulation)
+2. Heat it up or cool it down (with fixed volume or pressure)
+3. Some combination of 1 and 2</p>
+<p>1 and 2 contain all of the 'classic' quasistatic processes you'll see in a textbook (isothermal, adiabatic, etc.). However, they are practically impossible to do in the real world. Real processes (e.g. those in actual engines) can only be accurately described by 3. Additionally, faster processes are (typically) less quasi-static, and it is difficult to justify approximating them with a single line on a PV diagram.</p>
+<p>This is why introductory thermodynamics classes only concern themselves with those few traditional processes: if your path isn't one of them, you're probably not dealing with a quasi-static system. However, we can still put sensors in an engine and <em>make</em> PV diagrams using the resulting data. And actually, these diagrams tend to resemble elliptical blobs more than their angular, ideal counterparts.</p>
+<p><img alt="Real cycles" src="stirlingreal.png" />
+Real cycles have curves!</p>
+<p>Practically, you can expect these diagrams are analyzed with numeric methods, and that efficiencies can be calculated directly from fuel intake and power output. But it's still fun to consider the analytical side of things occasionally!</p>
+
+        
+          <a href="./../../posts\SquiggleSound\SquiggleSound.html" class="button2" style="min-width:47%;">Previous Post:<br></a>
+        
+
+        
+          <a href="./../../posts\draft\ThermoTemperature\ThermoTemperature.html" class="button2" style="min-width:47%;">Next Post:<br></a>
+        
+        
+      </section>
+      
+      <script>
+        if (window.MathJax) {
+          MathJax.typesetPromise().catch(err => console.log(err));
+        }
+      </script>
+
+      <div id="footer">
+
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+
+</html>
