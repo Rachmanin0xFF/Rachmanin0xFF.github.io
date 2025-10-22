@@ -14,7 +14,7 @@ tribo.copy_all_static_content()
 posts = tribo.parse_markdown("posts")
 tribo.render_markdown(posts, rename_to_index=True)
 
-arts = tribo.parse_markdown("arts")
+arts = tribo.parse_markdown("art", split_markdown_on="## SEPARATOR ##")
 tribo.render_markdown(arts, rename_to_index=True)
 
 homepage = tribo.parse_markdown("index.md")

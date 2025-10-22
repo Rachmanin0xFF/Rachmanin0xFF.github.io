@@ -89,6 +89,7 @@ class Tribo:
         reverse: bool = True,
         sort_by: str = "date",
         required_fields = ["title", "date", "layout"],
+        split_markdown_on: str | None = None,
     ) -> list[Page] | None:
         """Recursively parses all matching files in the input directory, or a single file."""
         if isinstance(input_path, str):
@@ -102,7 +103,6 @@ class Tribo:
         clean = lambda x: trim_whitespace(flatten(x))
 
         def metadata_contains_required_fields(meta: dict) -> bool:
-            self.logger.debug(f"Checking metadata fields: {meta.keys()} against required: {required_fields}")
             return all(field in meta for field in required_fields)
 
         if input_path.is_dir():
@@ -121,23 +121,42 @@ class Tribo:
         pages = []
         for path in paths:
             with open(path, "r", encoding="utf-8") as f:
-                text = f.read()
-                html_converted = self.md.convert(text)
-                cleaned_metadata = {k: clean(v) for k, v in self.md.Meta.items()}
-                relative_path = path.relative_to(self.content_root)
-                if not metadata_contains_required_fields(cleaned_metadata):
-                    self.logger.warning(
-                        f"File {relative_path} is missing required metadata fields. Skipping!"
-                    )
+                full_text = f.read()
+                if split_markdown_on:
+                    parts = full_text.split(split_markdown_on)
+                    parts = [part.strip() for part in parts if part.strip()]
+                    self.logger.debug(f"Splitting {path} on '{split_markdown_on}' into {len(parts)} parts.")
                 else:
-                    pages.append(
-                        Page(
-                            path=relative_path,
-                            html=html_converted,
-                            meta=cleaned_metadata,
+                    parts = [full_text]
+                markdown_was_multipart = len(parts) > 1
+
+                for text in parts:
+                    html_converted = self.md.convert(text)
+                    cleaned_metadata = {k: clean(v) for k, v in self.md.Meta.items()}
+                    relative_path = path.relative_to(self.content_root)
+                    if markdown_was_multipart:
+                        # if the markdown was split into multiple parts, we want seperate folders for each part to be created
+                        # in the output build dir. This means we should append some unique identifier to the path. We will
+                        # get this identifier from the title if it exists, otherwise we will use the index of the part.
+                        if "title" in cleaned_metadata:
+                            identifier = cleaned_metadata["title"].lower().replace(" ", "-")
+                        else:
+                            identifier = f"part-{parts.index(text)+1}"
+                        relative_path = relative_path.parent / identifier / relative_path.name
+                    if not metadata_contains_required_fields(cleaned_metadata):
+                        self.logger.warning(
+                            f"File {relative_path} only had fields {list(cleaned_metadata.keys())}, "
+                            f"required fields are {required_fields}, skipping!"
                         )
-                    )
-                self.md.reset()
+                    else:
+                        pages.append(
+                            Page(
+                                path=relative_path,
+                                html=html_converted,
+                                meta=cleaned_metadata,
+                            )
+                        )
+                    self.md.reset()
 
         if not pages:
             if input_path.is_dir():

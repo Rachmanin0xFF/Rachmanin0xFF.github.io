@@ -33,22 +33,7 @@
         </div>
       </section>
       <div id="foreground">
-        <section id="feed">
-          <h1>{{ title|title }}</h1>
-          <div class="date">{% if date %}Published: {{ date }}{% endif %}</div>
-          <div class="tags">
-            Tagged with:
-            {% if tags %}
-              {% if tags is string %}
-                <a href="./../../topics/{{ tags }}/index.html">{{ tags }}</a>
-              {% else %}
-                {% for tag in tags %}
-                  <a href="./../../topics/{{ tag }}/index.html">{{ tag }}</a>{% if not loop.last %}, {% endif %}
-                {% endfor %}
-              {% endif %}
-            {% endif %}
-          </div>
-          <br>
+        <img src="./../media/{{ artpath }}" alt="{{ title }}" id="artpage-image"/>
           {{ html|safe }}
         </section>
         <div id="footer"></div>
