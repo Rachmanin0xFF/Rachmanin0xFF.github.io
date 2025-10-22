@@ -1,7 +1,7 @@
 ---
 title: Q&A
 description: Frequently (and less-frequently) asked questions.
-layout: stickypage.hbs
+layout: stickypage.html
 ---
 
 ## What is this?

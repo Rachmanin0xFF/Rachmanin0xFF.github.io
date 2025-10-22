@@ -1,7 +1,7 @@
 ---
 title: About
 description: About the website
-layout: stickypage.hbs
+layout: stickypage.html
 ---
 
 <img src="./../solemstrog.png" width=300px class="inline-left">

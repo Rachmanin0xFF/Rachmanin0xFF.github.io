@@ -3,11 +3,17 @@
 import sys
 import time
 import hashlib
+import logging
 from pathlib import Path
 from subprocess import run
+import coloredlogs
 
 WATCH_DIRS = [Path(".")]
 POLL_INTERVAL = 1
+
+logger = logging.getLogger("live_build")
+logging.basicConfig(level=logging.INFO)
+coloredlogs.install(level="DEBUG", logger=logger)
 
 
 def get_file_hashes(directory: Path) -> dict:
@@ -20,16 +26,16 @@ def get_file_hashes(directory: Path) -> dict:
                     file_hash = hashlib.md5(f.read()).hexdigest()
                     hashes[str(file_path)] = file_hash
             except Exception as e:
-                print(f"Error hashing {file_path}: {e}")
+                logger.warning(f"Error hashing {file_path}: {e}")
     return hashes
 
 def run_build_script(output_dir: str) -> int:
     """Run the build script and return the exit code."""
     result = run([sys.executable, "build.py", output_dir])
     if result.returncode == 0:
-        print(f"[{time.strftime('%H:%M:%S')}] Build complete!\n")
+        logger.info("Build complete!")
     else:
-        print(f"[{time.strftime('%H:%M:%S')}] Build failed!\n")
+        logger.error("Build failed!")
     return result.returncode
 
 def main():
@@ -38,14 +44,14 @@ def main():
     # initial build
     result = run_build_script(output_dir)
 
-    print(f"Watching {', '.join(str(d) for d in WATCH_DIRS)} for changes...")
-    print(f"Building to {output_dir}")
-    print("Press Ctrl+C to stop.\n")
+    logger.info(f"Watching {', '.join(str(d) for d in WATCH_DIRS)} for changes...")
+    logger.info(f"Building to {output_dir}")
+    logger.info("Press Ctrl+C to stop.")
     
     file_hashes = {}
     for watch_dir in WATCH_DIRS:
         file_hashes.update(get_file_hashes(watch_dir))
-    print(f"Initial state: {len(file_hashes)} files tracked\n")
+    logger.debug(f"Initial state: {len(file_hashes)} files tracked")
     
     try:
         while True:
@@ -61,21 +67,21 @@ def main():
                 modified = {f for f in file_hashes if f in new_hashes and file_hashes[f] != new_hashes[f]}
                 
                 if added or removed or modified:
-                    print(f"[{time.strftime('%H:%M:%S')}] Changes detected!")
+                    logger.info("Changes detected!")
                     if added:
-                        print(f"  Added: {len(added)} files")
+                        logger.debug(f"Added: {len(added)} files")
                     if removed:
-                        print(f"  Removed: {len(removed)} files")
+                        logger.debug(f"Removed: {len(removed)} files")
                     if modified:
-                        print(f"  Modified: {list(modified)[:3]}")  # Show first 3
-                    print("  Rebuilding...")
+                        logger.debug(f"Modified: {list(modified)[:3]}")  # Show first 3
+                    logger.info("Rebuilding...")
 
                     result = run_build_script(output_dir)
                     
                     file_hashes = new_hashes
     
     except KeyboardInterrupt:
-        print("\nStopping watcher.")
+        logger.info("Stopping watcher.")
 
 
 if __name__ == "__main__":
