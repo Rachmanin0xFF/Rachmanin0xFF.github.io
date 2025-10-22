@@ -8,7 +8,6 @@ At least it sounds like a tech product... I feel like ending with a vowel is tre
 Built on jinja2 and markdown for adamlastowka.com
 """
 
-import argparse
 import hashlib
 import logging
 import shutil
@@ -89,6 +88,7 @@ class Tribo:
         pattern: str = "**/*.md",
         reverse: bool = True,
         sort_by: str = "date",
+        required_fields = ["title", "date", "layout"],
     ) -> list[Page] | None:
         """Recursively parses all matching files in the input directory, or a single file."""
         if isinstance(input_path, str):
@@ -102,7 +102,7 @@ class Tribo:
         clean = lambda x: trim_whitespace(flatten(x))
 
         def metadata_contains_required_fields(meta: dict) -> bool:
-            required_fields = ["title", "date", "layout"]
+            self.logger.debug(f"Checking metadata fields: {meta.keys()} against required: {required_fields}")
             return all(field in meta for field in required_fields)
 
         if input_path.is_dir():
@@ -164,6 +164,7 @@ class Tribo:
         self,
         pages: list[Page] | Page | None,
         layout_override: str | None = None,
+        rename_to_index: bool = False,
         **kwargs,
     ) -> None:
         """
@@ -176,9 +177,9 @@ class Tribo:
         if pages is None:
             self.logger.info("No pages to render.")
             return
-        self.logger.info(f"Rendering {len(pages)} pages...")
         if isinstance(pages, Page):
             pages = [pages]
+        self.logger.info(f"Rendering {len(pages)} pages...")
         for page in pages:
             layout = layout_override or page.meta["layout"]
             try:
@@ -193,8 +194,10 @@ class Tribo:
                     f"{page.path} - template error in {layout}: {e}, skipping!"
                 )
                 continue
-
+            
             output_path = self.output_root / page.path.with_suffix(".html")
+            if rename_to_index:
+                output_path = output_path.parent / "index.html"
             output_path.parent.mkdir(parents=True, exist_ok=True)
 
             with open(output_path, "w", encoding="utf-8") as f:
@@ -207,17 +210,17 @@ class Tribo:
                     )
                 )
 
-    def copy_all_static_content(self) -> None:
+    def copy_all_static_content(self, skip_existing: bool = True) -> None:
         """Copy all static files from content root to output."""
-        self._copy_static_files_recursive(self.content_root)
+        self._copy_static_files_recursive(self.content_root, skip_existing=skip_existing)
 
-    def _copy_static_files_recursive(self, input_directory: Path | str) -> None:
+    def _copy_static_files_recursive(self, input_directory: Path | str, skip_existing: bool = True) -> None:
         """Copy static files from input directory to output."""
         if isinstance(input_directory, str):
             input_directory = Path(input_directory)
 
-        static_input = self.content_root / input_directory
-        static_output = self.output_root / input_directory
+        static_input = input_directory
+        static_output = self.output_root / input_directory.relative_to(self.content_root)
         file_hash = lambda p: hashlib.sha256(open(p, "rb").read()).hexdigest()
 
         for path in static_input.glob("**/*.*"):
@@ -228,7 +231,7 @@ class Tribo:
             output_path.parent.mkdir(parents=True, exist_ok=True)
 
             # copy iff content differs or file doesn't exist
-            if output_path.exists():
+            if output_path.exists() and skip_existing:
                 try:
                     if file_hash(path) == file_hash(output_path):
                         continue

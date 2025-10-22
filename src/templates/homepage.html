@@ -1,54 +1,76 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no">
-  <meta name="HandheldFriendly" content="true"/>
-  <meta name="MobileOptimized" content="320"/>
-  <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-  <title>Adam Lastowka - {{ title }}</title>
-  <meta name="description" content="{{ description }}" />
-  <link rel="stylesheet" href="./../../post.css">
-  <script defer src="./../../scripts/darkmode.js"></script>
-  <link rel="icon" href="./../../favicon.ico" type="image/x-icon"/>
-  <link rel="shortcut icon" href="./../../favicon.ico" type="image/x-icon"/>
+  <meta name="HandheldFriendly" content="true">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="initial-scale=1.0, width=device-width">
 
   <meta name="robots" content="all,follow">
   <meta property="og:title" content="Adam Lastowka - {{ title }}">
   <meta property="og:type" content="website">
-  <meta property="og:description" content="{{ description }}"
-</head>
-<body>
+  <meta property="og:description" content="{{ description }}">
+  <meta name="description" content="{{ description }}">
 
+  <title>Adam Lastowka - {{ title }}</title>
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+
+<body>
   <header>
     <h1><a href="./">Adam Lastowka</a></h1>
   </header>
 
   <section id="navmenu">
-      <a href="./posts/">Home</a>
-      <a href="./about/">About</a>
-      <a href="./qa/">Q&A</a>
+    <a href="./posts/">Home</a>
+    <a href="./about/">About</a>
+    <a href="./qa/">Q&A</a>
   </section>
 
   <div id="feed">
     <h2>Posts</h2>
-
-    <section id="content">
-      <h1>{{ title|title }}</h1>
+    <section id="posts">
       {% for post in posts %}
       <article>
         <h2>{{ post.meta.title }}</h2>
         <time>{{ post.meta.date }}</time>
-        <p>{{ post.meta.tags }}</p>
+        <p>{{ post.meta.tags | join(' ') }}</p>
       </article>
-    {% endfor %}
-      <br>
-      {{ html|safe }}
+      {% endfor %}
+    </section>
+
+    <h2>Art</h2>
+    <section id="art">
+      {% for art in artpieces %}
+      <article>
+        <h2>{{ art.meta.title }}</h2>
+        <time>{{ art.meta.date }}</time>
+        <img src="{{ art.meta.iconpath }}" alt="{{ art.meta.title }} preview image">
+      </article>
+      {% endfor %}
+    </section>
+
+    <h2>Sounds</h2>
+    <section id="sounds">
+      {% for sound in sounds %}
+      <article>
+        <h2>{{ sound.meta.title }}</h2>
+        <time>{{ sound.meta.date }}</time>
+        <audio controls>
+          <source src="{{ sound.meta.soundpath }}" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      </article>
+      {% endfor %}
     </section>
   </div>
 
   <footer>
     <p>© Adam Lastowka 2024</p>
+  </footer>
 </body>
+
 </html>
