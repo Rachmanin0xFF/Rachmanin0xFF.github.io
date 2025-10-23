@@ -40,6 +40,6 @@ I'm not sure why you want to build ***my*** website :woozy_face:, but here you g
    python build.py my_test_build_folder
    ```
 
-There is also [a workflow](.github/workflows/build.yml) that will automatically run all of this on any pushes to the `master` branch.
+There is also [a workflow](.github/workflows/build.yml) that will automatically run all of this on any pushes to the `master` branch, and a `live_build.py` that will attempt to look for updates & automatically rebuild your edits, although I haven't extensively tested the latter.
 
 Possible TODO: Make other branches automatically deploy to their own folders some sort of draft directory on the website?
