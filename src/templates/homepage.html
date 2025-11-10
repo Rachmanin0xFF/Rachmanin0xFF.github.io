@@ -33,7 +33,7 @@
   <div id="feed">
     <h2>Posts</h2>
     <section id="posts">
-      {% for post in posts %}
+      {% for post in posts[:12] %}
       <article>
         <h2>{{ post.meta.title }}</h2>
         <time>{{ post.meta.date }}</time>
@@ -44,11 +44,12 @@
 
     <h2>Art</h2>
     <section id="art">
-      {% for art in artwork %}
+      {% for art in artwork[:12] %}
       <article>
         <h2>{{ art.meta.title }}</h2>
         <time>{{ art.meta.date }}</time>
         <p>{{ art.meta.iconpath }}</p>
+        <p>{{ art.html }}</p>
         <img src="./art/files/{{ art.meta.artpath }}" alt="{{ art.meta.title }} preview image">
       </article>
       {% endfor %}
@@ -56,7 +57,7 @@
 
     <h2>Sounds</h2>
     <section id="sounds">
-      {% for sound in sounds %}
+      {% for sound in sounds[:12] %}
       <article>
         <h2>{{ sound.meta.title }}</h2>
         <time>{{ sound.meta.date }}</time>
