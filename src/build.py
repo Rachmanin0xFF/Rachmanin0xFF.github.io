@@ -14,13 +14,13 @@ tribo.copy_all_static_content()
 posts = tribo.parse_markdown("posts")
 tribo.render_markdown(posts, rename_to_index=True)
 
-arts = tribo.parse_markdown("art", split_markdown_on="## SEPARATOR ##")
-audio = tribo.parse_markdown("audio", split_markdown_on="## SEPARATOR ##")
+artwork = tribo.parse_markdown("art", split_markdown_on="## SEPARATOR ##")
+sounds = tribo.parse_markdown("audio", split_markdown_on="## SEPARATOR ##")
 
 homepage = tribo.parse_markdown("index.md")
 about = tribo.parse_markdown("about/about.md", required_fields=["title"])
 faq = tribo.parse_markdown("faq/faq.md", required_fields=["title"])
 
 
-tribo.render_markdown(homepage, posts=posts, arts=arts, audio=audio)
-tribo.render_markdown(audio + arts + about + faq, rename_to_index=True)
+tribo.render_markdown(homepage, posts=posts, artwork=artwork, sounds=sounds)
+tribo.render_markdown(sounds + artwork + about + faq, rename_to_index=True)

@@ -44,11 +44,12 @@
 
     <h2>Art</h2>
     <section id="art">
-      {% for art in artpieces %}
+      {% for art in artwork %}
       <article>
         <h2>{{ art.meta.title }}</h2>
         <time>{{ art.meta.date }}</time>
-        <img src="{{ art.meta.iconpath }}" alt="{{ art.meta.title }} preview image">
+        <p>{{ art.meta.iconpath }}</p>
+        <img src="./art/files/{{ art.meta.artpath }}" alt="{{ art.meta.title }} preview image">
       </article>
       {% endfor %}
     </section>
