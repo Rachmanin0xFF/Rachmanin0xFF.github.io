@@ -40,7 +40,7 @@
     <div id="content">
       <h2>Posts</h2>
       <section id="posts">
-        {% for post in posts[:8] %}
+        {% for post in posts[:7] %}
         <div class="item-box">
         <article class="post-item">
           <img src="./posts/{{ post.meta.parent_folder }}/{{ post.meta.iconpath }}" alt="{{ post.meta.title }} preview image">
@@ -49,11 +49,16 @@
         </article>
         </div>
         {% endfor %}
+        <div class="item-box">
+        <article class="post-item" style="justify-content: center; align-items: center; height: 100%; padding: 0px;">
+          <h3 style="text-align: center; padding: 0px;">&gt; see more&nbsp;&nbsp;</h3>
+        </article>
+        </div>
       </section>
 
       <h2>Art</h2>
       <section id="art">
-        {% for art in artwork[:12] %}
+        {% for art in artwork[:11] %}
         <div class="item-box">
         <article class="art-item">
           <h3>{{ art.meta.title }}</h3>
@@ -62,11 +67,16 @@
         </article>
         </div>
         {% endfor %}
+        <div class="item-box">
+        <article class="art-item" style="justify-content: center; align-items: center; height: 100%; padding: 0px;">
+          <h3 style="text-align: center; padding: 0px;">&gt; see more&nbsp;&nbsp;</h3>
+        </article>
+        </div>
       </section>
 
       <h2>Sounds</h2>
       <section id="sounds">
-        {% for sound in sounds[:8] %}
+        {% for sound in sounds[:7] %}
         <div class="item-box">
         <article class="sound-item">
           <h3>{{ sound.meta.title }}</h3>
@@ -78,6 +88,11 @@
         </article>
         </div>
         {% endfor %}
+        <div class="item-box">
+        <article class="sound-item" style="justify-content: center; align-items: center; height: 100%; padding: 0px;">
+          <h3 style="text-align: center; padding: 0px;">&gt; see more&nbsp;&nbsp;</h3>
+        </article>
+        </div>
       </section>
 
     </div>
