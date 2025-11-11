@@ -4,11 +4,9 @@ description: About the website
 layout: stickypage.html
 ---
 
-<img src="./../solemstrog.png" width=300px class="inline-left">
-
 Hi! Welcome to my personal website.
 
-I'm **Adam**. I'm currently doing geospatial software engineering for the [Overture Maps Foundation](https://overturemaps.org/). I like to program computers, build things, and do art. The photo is second-grade me in a German salt mine.
+I'm Adam. I'm currently doing geospatial software engineering for the [Overture Maps Foundation](https://overturemaps.org/). I like to program computers, learn, build, and do art.
 
 On this website, you'll find technical/educational blog posts, pictures of things I've worked on, and some ameteur artwork and music I've made.
 

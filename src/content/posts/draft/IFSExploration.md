@@ -7,6 +7,8 @@ tags: math
       art
       images
 iconpath: IFSExploration.png
+draft: true
+hidden: true
 ---
 
 Let's play a game. Grab a sheet of paper and draw three dots on it.

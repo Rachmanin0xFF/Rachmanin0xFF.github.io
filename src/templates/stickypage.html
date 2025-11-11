@@ -1,59 +1,51 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="format-detection" content="telephone=no">
-  <meta name="HandheldFriendly" content="true"/>
-  <meta name="MobileOptimized" content="320"/>
-  <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
+  <meta name="HandheldFriendly" content="true">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="initial-scale=1.0, width=device-width">
+
+  <meta name="robots" content="all,follow">
+  <meta property="og:title" content="Adam Lastowka - {{ title }}">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="{{ description }}">
+  <meta name="description" content="{{ description }}">
+
   <title>Adam Lastowka - {{ title }}</title>
-  <meta name="description" content="{{ description }}" />
-  <link rel="stylesheet" href="./../../post.css">
-  <script defer src="./../../scripts/darkmode.js"></script>
-  <link rel="icon" href="./../../favicon.ico" type="image/x-icon"/>
-  <link rel="shortcut icon" href="./../../favicon.ico" type="image/x-icon"/>
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../homepage.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
+    rel="stylesheet">
 </head>
+
 <body>
-  <div id="bkg">
-    <section id="not-background">
-      <section id="sidebar">
-        <div class="sticky">
-          <div class="sb-big onbkg hvr-rotate"><a href="../../index.html">Home</a></div><br>
-          <div class="sb-big onbkg hvr-rotate"><a href="../../about/index.html">About</a></div><br>
-          <div class="sb-big onbkg hvr-rotate"><a href="../../qa/index.html">Q&A</a></div>
-        </div>
-      </section>
-      <section id="header">
-        <div class="null">
-          <div id="spikes" class="vector" alt=""></div>
-        </div>
-        <div id="sitename">
-          <h5><a href="./../../index.html">Adam<br>Lastowka</a></h5>
-        </div>
-      </section>
-      <div id="foreground">
-        <section id="feed">
-          <h1>{{ title|title }}</h1>
-          <div class="date">{% if date %}Published: {{ date }}{% endif %}</div>
-          <div class="tags">
-            Tagged with:
-            {% if tags %}
-              {% if tags is string %}
-                <a href="./../../topics/{{ tags }}/index.html">{{ tags }}</a>
-              {% else %}
-                {% for tag in tags %}
-                  <a href="./../../topics/{{ tag }}/index.html">{{ tag }}</a>{% if not loop.last %}, {% endif %}
-                {% endfor %}
-              {% endif %}
-            {% endif %}
-          </div>
-          <br>
-          {{ html|safe }}
-        </section>
-        <div id="footer"></div>
-      </div>
+  <main>
+    <header>
+      <h1><a href="./">Adam Lastowka</a></h1>
+    </header>
+    <section id="nav">
+      <a href="../">Home</a>
+      <a href="./">About</a>
+      <a href="../qa/">Q&A</a>
     </section>
-  </div>
+
+    <div id="content" style="display: grid; grid-template-columns: 1fr 200px; gap: 20px; grid-template-rows: auto 1fr;">
+      <h2 style="grid-column: 1/-1;">About Me</h2>
+      <img class="selfie" src="./me_bw.png" alt="some white guy at a computer, very typical stuff" style="grid-column: 2; grid-row: 2;">
+      <div class="stickypagediv" style="grid-column: 1;">{{ html }}</div>
+    </div>
+    <footer>
+      <p>© Adam Lastowka 2025</p>
+    </footer>
+  </main>
 </body>
+
 </html>

@@ -7,6 +7,7 @@ tags: math
       images
       cs
 iconpath: default.png
+draft: true
 ---
 
 <div class="imblock">

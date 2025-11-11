@@ -6,6 +6,7 @@ tags: math
       physics
       thermodynamics
 iconpath: ThermoCircle.png
+draft: true
 ---
 
 ## The Lie

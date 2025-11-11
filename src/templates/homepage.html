@@ -41,28 +41,33 @@
       <h2>Posts</h2>
       <section id="posts">
         {% for post in posts[:12] %}
+        <div class="item-box">
         <article class="post-item">
+          <img src="./posts/{{ post.meta.parent_folder }}/{{ post.meta.iconpath }}" alt="{{ post.meta.title }} preview image">
           <h3>{{ post.meta.title }}</h3>
           <time>{{ post.meta.date }}</time>
-          <p>{{ post.meta.tags | join(' ') }}</p>
         </article>
+        </div>
         {% endfor %}
       </section>
 
       <h2>Art</h2>
       <section id="art">
         {% for art in artwork[:12] %}
+        <div class="item-box">
         <article class="art-item">
           <h3>{{ art.meta.title }}</h3>
           <time>{{ art.meta.date }}</time>
           <img src="./art/files/{{ art.meta.artpath }}" alt="{{ art.meta.title }} preview image">
         </article>
+        </div>
         {% endfor %}
       </section>
 
       <h2>Sounds</h2>
       <section id="sounds">
         {% for sound in sounds[:12] %}
+        <div class="item-box">
         <article class="sound-item">
           <h3>{{ sound.meta.title }}</h3>
           <time>{{ sound.meta.date }}</time>
@@ -71,6 +76,7 @@
             Your browser does not support the audio element.
           </audio>
         </article>
+        </div>
         {% endfor %}
       </section>
 

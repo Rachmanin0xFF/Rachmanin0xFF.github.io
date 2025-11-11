@@ -6,6 +6,8 @@ tags: physics
       color
       graphics
 iconpath: bleh.png
+draft: true
+hidden: true
 ---
 
 ## The Tragedy

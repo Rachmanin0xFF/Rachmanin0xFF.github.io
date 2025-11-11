@@ -134,6 +134,13 @@ class Tribo:
                     html_converted = self.md.convert(text)
                     cleaned_metadata = {k: clean(v) for k, v in self.md.Meta.items()}
                     relative_path = path.relative_to(self.content_root)
+                    cleaned_metadata['parent_folder'] = relative_path.parent.name
+                    
+                    if cleaned_metadata.get('draft', '').lower() == 'true':
+                        self.logger.debug(f"Skipping draft: {relative_path}")
+                        self.md.reset()
+                        continue
+                    
                     if markdown_was_multipart:
                         # if the markdown was split into multiple parts, we want seperate folders for each part to be created
                         # in the output build dir. This means we should append some unique identifier to the path. We will

@@ -51,6 +51,9 @@ h1 * {
 h2 {
   font-size: 1.5rem;
 }
+h3 {
+  font-weight: 400;
+}
 #nav * {
   font-size: 1.5rem;
 }
@@ -66,7 +69,7 @@ main {
   grid-column: 2;
   grid-row: 1;
   display: grid;
-  grid-template-columns: 1fr 100%;
+  grid-template-columns: 1fr 80% 1fr;
   gap: 30px;
 }
 
@@ -80,6 +83,8 @@ main {
 header {
   grid-column: 2/-1;
   grid-row: 1;
+  border-bottom: 1px dashed var(--emph);
+  padding-bottom: 30px;
 }
 
 #content {
@@ -90,6 +95,7 @@ header {
 footer {
   grid-column: 2;
   grid-row: 3;
+  color: var(--neut);
 }
 
 #menu {
@@ -109,7 +115,7 @@ footer {
   grid-row: 2;
   align-self: start;
   position: sticky;
-  top: 0;
+  top: 20px;
 }
 
 #nav * {
@@ -135,22 +141,30 @@ img {
 
 #art {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 
-.post-item p {
-  color: var(--neut);
-}
-.post-item time {
+.post-item p,
+.post-item time,
+.art-item time,
+.sound-item time {
   color: var(--neut);
 }
 
-.art-item time {
-  color: var(--neut);
+.post-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
 }
-.sound-item time {
-  color: var(--neut);
+.post-item * {
+  grid-column: 2;
+  padding-left: 10px;
+}
+.post-item img {
+  max-width: 64px;
+  grid-column: 1;
+  grid-row: span 3;
+  padding: 0px;
 }
 
 #sounds {
@@ -159,8 +173,26 @@ img {
   gap: 20px;
 }
 
-.post-item, .art-item, .sound-item {
-  border: 1px dashed var(--neut);
+.item-box {
+  outline: 1px dashed var(--neut);
   padding: 10px;
-  border-radius: 1px;
+  border-radius: 0px;
+}
+
+.post-item {
+  padding: 8px;
+}
+
+.stickypagediv > * {
+  padding-bottom: 20px;
+}
+.stickypagediv >{
+  padding-bottom: 20px;
+}
+.selfie {
+  max-width: 256px;
+  grid-column: 2;
+  grid-row: 2;
+  object-fit: cover;
+  padding-left: 20px;
 }
