@@ -18,61 +18,69 @@
   <title>Adam Lastowka - {{ title }}</title>
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
   <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="./homepage.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
+    rel="stylesheet">
+</head>
 
 <body>
-  <header>
-    <h1><a href="./">Adam Lastowka</a></h1>
-  </header>
-
-  <section id="navmenu">
-    <a href="./posts/">Home</a>
-    <a href="./about/">About</a>
-    <a href="./qa/">Q&A</a>
-  </section>
-
-  <div id="feed">
-    <h2>Posts</h2>
-    <section id="posts">
-      {% for post in posts[:12] %}
-      <article>
-        <h2>{{ post.meta.title }}</h2>
-        <time>{{ post.meta.date }}</time>
-        <p>{{ post.meta.tags | join(' ') }}</p>
-      </article>
-      {% endfor %}
+  <main>
+    <header>
+      <h1><a href="./">Adam Lastowka</a></h1>
+    </header>
+    <section id="nav">
+      <a href="./posts/">Home</a>
+      <a href="./about/">About</a>
+      <a href="./qa/">Q&A</a>
     </section>
 
-    <h2>Art</h2>
-    <section id="art">
-      {% for art in artwork[:12] %}
-      <article>
-        <h2>{{ art.meta.title }}</h2>
-        <time>{{ art.meta.date }}</time>
-        <p>{{ art.meta.iconpath }}</p>
-        <p>{{ art.html }}</p>
-        <img src="./art/files/{{ art.meta.artpath }}" alt="{{ art.meta.title }} preview image">
-      </article>
-      {% endfor %}
-    </section>
+    <div id="content">
+      <h2>Posts</h2>
+      <section id="posts">
+        {% for post in posts[:12] %}
+        <article class="post-item">
+          <h3>{{ post.meta.title }}</h3>
+          <time>{{ post.meta.date }}</time>
+          <p>{{ post.meta.tags | join(' ') }}</p>
+        </article>
+        {% endfor %}
+      </section>
 
-    <h2>Sounds</h2>
-    <section id="sounds">
-      {% for sound in sounds[:12] %}
-      <article>
-        <h2>{{ sound.meta.title }}</h2>
-        <time>{{ sound.meta.date }}</time>
-        <audio controls>
-          <source src="{{ sound.meta.soundpath }}" type="audio/mpeg">
-          Your browser does not support the audio element.
-        </audio>
-      </article>
-      {% endfor %}
-    </section>
-  </div>
+      <h2>Art</h2>
+      <section id="art">
+        {% for art in artwork[:12] %}
+        <article class="art-item">
+          <h3>{{ art.meta.title }}</h3>
+          <time>{{ art.meta.date }}</time>
+          <p>{{ art.meta.iconpath }}</p>
+          <p>{{ art.html }}</p>
+          <img src="./art/files/{{ art.meta.artpath }}" alt="{{ art.meta.title }} preview image">
+        </article>
+        {% endfor %}
+      </section>
 
-  <footer>
-    <p>© Adam Lastowka 2024</p>
-  </footer>
+      <h2>Sounds</h2>
+      <section id="sounds">
+        {% for sound in sounds[:12] %}
+        <article class="sound-item">
+          <h3>{{ sound.meta.title }}</h3>
+          <time>{{ sound.meta.date }}</time>
+          <audio controls>
+            <source src="./audio/files/{{ sound.meta.audiopath }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+        </article>
+        {% endfor %}
+      </section>
+
+    </div>
+    <footer>
+      <p>© Adam Lastowka 2024</p>
+    </footer>
+  </main>
 </body>
 
 </html>

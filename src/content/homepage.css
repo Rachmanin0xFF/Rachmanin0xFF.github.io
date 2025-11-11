@@ -1,0 +1,152 @@
+@import "fonts.css";
+@import "animations.css";
+
+:root {
+  --emph: #239f95;
+  --background: #fcfcfc;
+  --background-image-color: #fdfdfd;
+  --neut: #c2c2c2;
+  --text: #050505;
+  --dark-disp: hidden;
+  --light-disp: visible;
+  --f2: 'Charter';
+  --fbody: 'Charter';
+  --f2s: 38px;
+}
+
+::selection {
+  background-color: var(--emph, #12e7b9);
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+}
+
+html {
+  scroll-behavior: smooth;
+  box-sizing: border-box;
+  text-rendering: optimizelegibility;
+  background-color: var(--background-image-color, #ffffff);
+  height: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  max-width: 100vw;
+
+  font-family: "Jetbrains Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+header {
+  font-size: 2rem;
+}
+h1 * {
+  font-size: 1.5rem;
+}
+h2 {
+  font-size: 1.5rem;
+}
+#nav * {
+  font-size: 1.5rem;
+}
+
+body {
+  padding: 30px;
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 800px) 1fr;
+  max-width: 100vw;
+}
+
+main {
+  grid-column: 2;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: 1fr 100%;
+  gap: 30px;
+}
+
+#content > * {
+  padding-bottom: 30px;
+}
+#content > h2 {
+  padding-bottom: 10px;
+}
+
+header {
+  grid-column: 2/-1;
+  grid-row: 1;
+}
+
+#content {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+footer {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+#menu {
+  grid-column: 1;
+  grid-row: 1;
+  position: sticky;
+  align-self: start;
+  justify-self: end; /* Align to right edge of column */
+}
+
+#nav {
+  /* 3 elements, space them out vertically with a grid */
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(3, auto);
+  grid-column: 1;
+  grid-row: 2;
+  align-self: start;
+  position: sticky;
+  top: 0;
+}
+
+#nav * {
+  text-align: right;
+  justify-self: end;
+  align-self: start;
+}
+
+a {
+  color: var(--emph);
+  text-decoration: none;
+}
+
+img {
+  max-width: 200px;
+}
+
+#posts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+#art {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+#sounds {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.post-item, .art-item, .sound-item {
+  border: 1px dashed var(--neut);
+  padding: 10px;
+  border-radius: 1px;
+}
