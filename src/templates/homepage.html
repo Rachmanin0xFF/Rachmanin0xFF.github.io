@@ -32,7 +32,7 @@
       <h1><a href="./">Adam Lastowka</a></h1>
     </header>
     <section id="nav">
-      <a href="./posts/">Home</a>
+      <a href="./">Home</a>
       <a href="./about/">About</a>
       <a href="./qa/">Q&A</a>
     </section>
@@ -44,7 +44,7 @@
         <div class="item-box">
         <article class="post-item">
           <img src="./posts/{{ post.meta.parent_folder }}/{{ post.meta.iconpath }}" alt="{{ post.meta.title }} preview image">
-          <h3>{{ post.meta.title }}</h3>
+          <h3><a href="./posts/{{ post.meta.parent_folder }}">{{ post.meta.title }}</a></h3>
           <time>{{ post.meta.date }}</time>
         </article>
         </div>

@@ -1,5 +1,3 @@
-@import "fonts.css";
-@import "animations.css";
 
 :root {
   --emph: #189766;
@@ -157,7 +155,7 @@ img {
   display: grid;
   grid-template-columns: auto 1fr;
 }
-.post-item * {
+.post-item > * {
   grid-column: 2;
   padding-left: 10px;
 }

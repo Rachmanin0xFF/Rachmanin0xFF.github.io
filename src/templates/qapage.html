@@ -17,32 +17,13 @@
 
   <title>Adam Lastowka - {{ title }}</title>
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
-  <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="../../homepage.css">
+  <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../homepage.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
     rel="stylesheet">
-  
-  <script>hljs.highlightAll();</script>
-  <script>
-  window.MathJax = {
-    tex: {
-      inlineMath: [['$', '$'], ["\\(", "\\)"]],
-      displayMath: [['$$', '$$'], ["\\[", "\\]"]],
-      processEscapes: true,
-    },
-    startup: {
-      pageReady: () => {
-        return MathJax.typesetPromise();
-      }
-    }
-  };
-  </script>
-  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
-
-  {% if plotly %}<script async defer src="https://cdn.plot.ly/plotly-latest.min.js"></script>{% endif %}
 </head>
 
 <body>
@@ -51,26 +32,19 @@
       <h1><a href="./">Adam Lastowka</a></h1>
     </header>
     <section id="nav">
-      <a href="../../">Home</a>
-      <a href="../../about/">About</a>
-      <a href="../../qa/">Q&A</a>
+      <a href="../">Home</a>
+      <a href="../about/">About</a>
+      <a href="../qa/">Q&A</a>
     </section>
 
     <div id="content">
-      <h2>{{ title }}</h2>
-      <time>{{ date }}</time>
-      <div class="post-body">
-        {{ html }}
-      </div>
+      <h2>Q&amp;A</h2>
+      {{ html }}
+    </div>
     <footer>
       <p>© Adam Lastowka 2025</p>
     </footer>
   </main>
-   <script>
-      if (window.MathJax) {
-        MathJax.typesetPromise().catch(err => console.log(err));
-      }
-    </script>
 </body>
 
 </html>
