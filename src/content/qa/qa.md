@@ -4,11 +4,8 @@ description: Frequently (and less-frequently) asked questions.
 layout: qapage.html
 ---
 
-## Q&A
-
-
 ## What is this?
-My website! Check out the about page!
+My website! Check out the [about](../about/) page!
 
 ## Why did you make a website?
 It lets me blog and serves as a convenient multimedia portfolio!

@@ -12,7 +12,7 @@ On this website, you'll find technical/educational blog posts, pictures of thing
 
 If you want to get in touch, found a typo / website issue, or anything else, please email me at `adamlastowka@gmail.com`. I'm also on [GitHub](https://github.com/Rachmanin0xFF), [LinkedIn](https://www.linkedin.com/in/adam-lastowka/), and very infrequently on [X/Twitter](https://twitter.com/adamlastowka) and [BlueSky](https://bsky.app/profile/adamlastowka.bsky.social).
 
-Thanks for visiting! ¯\`·.¸¸.·´¯\`·.¸  ><(((º>
+Thanks for visiting! ```¯`·.¸¸.·´¯`·.¸  ><(((º>```
 
 <div hidden>
 <p>
