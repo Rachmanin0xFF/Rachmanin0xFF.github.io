@@ -4,6 +4,9 @@ description: Frequently (and less-frequently) asked questions.
 layout: qapage.html
 ---
 
+## Q&A
+
+
 ## What is this?
 My website! Check out the about page!
 
@@ -34,5 +37,3 @@ This is a [static website](https://en.wikipedia.org/wiki/Static_web_page) built 
 * [Python](https://www.python.org/) for everything and [PIL/Pillow](https://pypi.org/project/Pillow/) for thumbnail gen
 * [Visual Studio Code](https://code.visualstudio.com/) as my general-purpose IDE
 * [GIMP](https://www.gimp.org/) to edit most of the images on the website
-
-The end result is a clean, lightweight, static website with very few dependencies!
