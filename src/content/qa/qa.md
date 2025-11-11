@@ -17,7 +17,7 @@ It lets me blog and serves as a convenient multimedia portfolio!
 **NO!** I am not a web developer! Maybe I could make you something else, though.
 
 ## What are you?
-I'm just a guy. I recently got my B.S. in physics, but I dabble in many things.
+I'm just a guy. I have a bachelor's in physics, but I dabble in many things.
 
 ## Can I see your CV / Resume?
 [Sure!](Adam_Resume_Sep_2024.pdf) This one should be mostly up-to-date, but it's very general. Contact me (adamlastowka@gmail.com) and I can give you a better, specialized one.
