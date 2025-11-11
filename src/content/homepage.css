@@ -1,5 +1,5 @@
 :root {
-  --emph: #189766;
+  --emph: #009e42;
   --background: #ffffff;
   --neut: #c2c2c2;
   --text: #050505;
@@ -83,7 +83,7 @@ main {
 }
 
 header {
-  grid-column: 2/-1;
+  grid-column: 2;
   grid-row: 1;
   border-bottom: 1px dashed var(--emph);
   padding-bottom: 30px;
@@ -92,6 +92,7 @@ header {
 #content {
   grid-column: 2;
   grid-row: 2;
+  max-width: 100%;
 }
 
 footer {
@@ -133,20 +134,24 @@ a {
   text-decoration: none;
 }
 
-img {
-  max-width: 200px;
-}
-
 #posts {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  #posts {
+    grid-template-columns: 1fr;
+  }
 }
 
 #art {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+  min-width: 0;
 }
 
 .post-item p,
@@ -183,17 +188,19 @@ img {
   border-radius: 5px;
 }
 
-/*
 .post-item:hover img {
   filter: grayscale(0%) opacity(100%);
   transition: filter 0.3s ease;
 }
-*/
 
 .art-item img {
   filter: grayscale(100%) contrast(4) opacity(90%);
   transition: filter 0.3s ease;
   border-radius: 5px;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .art-item img:hover {
@@ -230,4 +237,59 @@ img {
   grid-row: 2;
   object-fit: cover;
   padding-left: 20px;
+}
+
+.about-page-content {
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  gap: 20px;
+  grid-template-rows: auto 1fr;
+}
+
+@media (max-width: 800px) {
+  main, body {
+    grid-column: 1;
+    grid-template-columns: 100%;
+  }
+  header, #content, footer {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  #nav {
+    grid-column: 1;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto;
+    gap: 20px;
+    position: static;
+    grid-row: auto;
+  }
+  #nav * {
+    text-align: center;
+    justify-self: center;
+    align-self: center;
+  }
+  #posts {
+    grid-template-columns: 1fr;
+  }
+  #sounds {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .about-page-content {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  #content > .stickypagediv {
+    padding-bottom: 0px;
+  }
+  .selfie {
+    grid-column: 1;
+    grid-row: -1;
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 700px) {
+  #art {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

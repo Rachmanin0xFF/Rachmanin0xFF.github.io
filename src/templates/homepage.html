@@ -40,7 +40,7 @@
     <div id="content">
       <h2>Posts</h2>
       <section id="posts">
-        {% for post in posts[:12] %}
+        {% for post in posts[:8] %}
         <div class="item-box">
         <article class="post-item">
           <img src="./posts/{{ post.meta.parent_folder }}/{{ post.meta.iconpath }}" alt="{{ post.meta.title }} preview image">
@@ -66,7 +66,7 @@
 
       <h2>Sounds</h2>
       <section id="sounds">
-        {% for sound in sounds[:12] %}
+        {% for sound in sounds[:8] %}
         <div class="item-box">
         <article class="sound-item">
           <h3>{{ sound.meta.title }}</h3>
