@@ -31,6 +31,9 @@ html {
   overflow-x: hidden;
   max-width: 100vw;
   scrollbar-gutter: stable;
+  background-image: radial-gradient(var(--neut) 1px, transparent 0);
+  background-size: 40px 40px;
+  background-position: -22px -22px;
 
   font-family: "Jetbrains Mono", monospace;
   font-optical-sizing: auto;
@@ -64,6 +67,7 @@ h3 {
   display: inline-block;
   padding: 10px 15px;
   border-radius: 8px;
+  margin-top: -10px;
 }
 
 #nav a:hover {
@@ -82,7 +86,8 @@ h3 {
 }
 
 body {
-  padding: 30px;
+  padding-left: 30px;
+  padding-right: 30px;
   display: grid;
   grid-template-columns: 1fr minmax(0, 800px) 1fr;
   max-width: 100vw;
@@ -94,10 +99,17 @@ main {
   display: grid;
   grid-template-columns: 1fr 80% 1fr;
   gap: 30px;
+  margin-top: 30px;
   perspective: 1200px;
+  background-color: white;
+  box-shadow: 0 0 40px 20px rgba(255, 255, 255, 0.6), 0 0 80px 40px rgba(255, 255, 255, 0.3);
 }
 
-#content>* {
+#content > p {
+  padding-bottom: 15px;
+}
+
+#content > p:not(:has(+ ul)) {
   padding-bottom: 30px;
 }
 
@@ -178,7 +190,7 @@ a::after {
   height: 2px;
   background: var(--emph);
   margin-bottom: 5px;
-  transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: width 0.3s cubic-bezier(.37,.95,.58,1.01);
 }
 
 a:hover {
@@ -187,6 +199,13 @@ a:hover {
 
 a:hover::after {
   width: 100%;
+}
+
+ul {
+  list-style-position: inside;
+}
+li:not(:last-child) {
+  margin-bottom: 10px;
 }
 
 #posts {
@@ -246,7 +265,7 @@ a:hover::after {
   padding: 0px;
   filter: grayscale(100%) opacity(90%);
   border-radius: 5px;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.4s cubic-bezier(.37,.95,.58,1.01);
   transform-style: preserve-3d;
 }
 
@@ -264,6 +283,16 @@ a:hover::after {
   height: auto;
   display: block;
   transform-style: preserve-3d;
+}
+
+.art-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.sound-item {
+  display: flex;
+  flex-direction: column;
 }
 
 .art-item img:hover {
@@ -357,6 +386,7 @@ a:hover::after {
     text-align: center;
     justify-self: center;
     align-self: center;
+    padding: 0;
   }
 
   #posts {
@@ -387,4 +417,12 @@ a:hover::after {
   #art {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+footer {
+  padding-bottom: 20px;
+}
+
+section + h2 {
+  margin-top: 30px;
 }
