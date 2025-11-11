@@ -6,11 +6,13 @@ layout: aboutpage.html
 
 Hi! Welcome to my personal website.
 
-I'm Adam. I'm currently doing geospatial software engineering for the [Overture Maps Foundation](https://overturemaps.org/). I like to program computers, learn, build, and do art.
+I'm Adam. I'm currently doing geospatial software engineering for the [Overture Maps Foundation](https://overturemaps.org/). I like to solve strange technical problems, learn, build, and make art.
 
 On this website, you'll find technical/educational blog posts, pictures of things I've worked on, and some ameteur artwork and music I've made.
 
-If you want to get in touch, found a typo / website issue, or anything else, please email me at <code>adamlastowka@gmail.com</code>. I'm also on X/Twitter [@adamlastowka](https://twitter.com/adamlastowka), [BlueSky](https://bsky.app/profile/adamlastowka.bsky.social), [GitHub](https://github.com/Rachmanin0xFF) and [LinkedIn](https://www.linkedin.com/in/adam-lastowka/).
+If you want to get in touch, found a typo / website issue, or anything else, please email me at `adamlastowka@gmail.com`. I'm also on [GitHub](https://github.com/Rachmanin0xFF), [LinkedIn](https://www.linkedin.com/in/adam-lastowka/), and very infrequently on [X/Twitter](https://twitter.com/adamlastowka) and [BlueSky](https://bsky.app/profile/adamlastowka.bsky.social).
+
+Thanks for visiting! ¯\`·.¸¸.·´¯\`·.¸  ><(((º>
 
 <div hidden>
 <p>
