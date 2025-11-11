@@ -19,8 +19,8 @@ sounds = tribo.parse_markdown("audio", split_markdown_on="## SEPARATOR ##")
 
 homepage = tribo.parse_markdown("index.md")
 about = tribo.parse_markdown("about/about.md", required_fields=["title"])
-faq = tribo.parse_markdown("faq/faq.md", required_fields=["title"])
+qa = tribo.parse_markdown("qa/qa.md", required_fields=["title"])
 
 
 tribo.render_markdown(homepage, posts=posts, artwork=artwork, sounds=sounds)
-tribo.render_markdown(sounds + artwork + about + faq, rename_to_index=True)
+tribo.render_markdown(sounds + artwork + about + qa, rename_to_index=True)

@@ -1,7 +1,7 @@
 ---
 title: About
 description: About the website
-layout: stickypage.html
+layout: aboutpage.html
 ---
 
 Hi! Welcome to my personal website.
