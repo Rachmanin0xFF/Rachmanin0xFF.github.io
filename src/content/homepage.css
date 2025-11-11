@@ -2,7 +2,7 @@
 @import "animations.css";
 
 :root {
-  --emph: #239f95;
+  --emph: #189766;
   --background: #fcfcfc;
   --background-image-color: #fdfdfd;
   --neut: #c2c2c2;
@@ -137,6 +137,20 @@ img {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
+}
+
+.post-item p {
+  color: var(--neut);
+}
+.post-item time {
+  color: var(--neut);
+}
+
+.art-item time {
+  color: var(--neut);
+}
+.sound-item time {
+  color: var(--neut);
 }
 
 #sounds {
