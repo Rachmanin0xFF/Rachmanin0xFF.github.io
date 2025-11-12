@@ -16,8 +16,13 @@ posts = tribo.parse_markdown("posts")
 tribo.render_markdown(posts, rename_to_index=True)
 
 artwork = tribo.parse_markdown("art", split_markdown_on="## SEPARATOR ##")
-artwork_paths = [f"{tribo.content_root}/art/files/{art.meta['artpath']}" for art in artwork]
-thumbnail_paths = [f"{tribo.content_root}/art/thumbnails/thumb_{art.meta['artpath']}" for art in artwork]
+artwork_paths = [
+    f"{tribo.content_root}/art/files/{art.meta['artpath']}" for art in artwork
+]
+thumbnail_paths = [
+    f"{tribo.content_root}/art/thumbnails/thumb_{art.meta['artpath']}"
+    for art in artwork
+]
 for src, dest in zip(artwork_paths, thumbnail_paths):
     generate_thumbnail(src, dest, (256, 256))
 

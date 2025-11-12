@@ -29,6 +29,7 @@ def get_file_hashes(directory: Path) -> dict:
                 logger.warning(f"Error hashing {file_path}: {e}")
     return hashes
 
+
 def run_build_script(output_dir: str) -> int:
     """Run the build script and return the exit code."""
     result = run([sys.executable, "build.py", output_dir])
@@ -37,6 +38,7 @@ def run_build_script(output_dir: str) -> int:
     else:
         logger.error("Build failed!")
     return result.returncode
+
 
 def main():
     output_dir = sys.argv[1] if len(sys.argv) > 1 else "../build"
@@ -47,25 +49,29 @@ def main():
     logger.info(f"Watching {', '.join(str(d) for d in WATCH_DIRS)} for changes...")
     logger.info(f"Building to {output_dir}")
     logger.info("Press Ctrl+C to stop.")
-    
+
     file_hashes = {}
     for watch_dir in WATCH_DIRS:
         file_hashes.update(get_file_hashes(watch_dir))
     logger.debug(f"Initial state: {len(file_hashes)} files tracked")
-    
+
     try:
         while True:
             time.sleep(POLL_INTERVAL)
             new_hashes = {}
             for watch_dir in WATCH_DIRS:
                 new_hashes.update(get_file_hashes(watch_dir))
-            
+
             if new_hashes != file_hashes:
                 # Find what changed
                 added = set(new_hashes.keys()) - set(file_hashes.keys())
                 removed = set(file_hashes.keys()) - set(new_hashes.keys())
-                modified = {f for f in file_hashes if f in new_hashes and file_hashes[f] != new_hashes[f]}
-                
+                modified = {
+                    f
+                    for f in file_hashes
+                    if f in new_hashes and file_hashes[f] != new_hashes[f]
+                }
+
                 if added or removed or modified:
                     logger.info("Changes detected!")
                     if added:
@@ -77,9 +83,9 @@ def main():
                     logger.info("Rebuilding...")
 
                     result = run_build_script(output_dir)
-                    
+
                     file_hashes = new_hashes
-    
+
     except KeyboardInterrupt:
         logger.info("Stopping watcher.")
 
