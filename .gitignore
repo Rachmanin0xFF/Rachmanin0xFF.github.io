@@ -4,3 +4,5 @@ __pycache__/
 *$py.class
 *.cpython*-*.pyc
 *.pyc
+src/thumbnail_hashes.json
+src/content/art/thumbnails/*
