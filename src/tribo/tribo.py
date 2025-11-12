@@ -204,8 +204,8 @@ class Tribo:
 
         # link adjacent pages
         for i in range(len(sorted_pages) - 1):
-            sorted_pages[i].meta["next"] = sorted_pages[i + 1].path
-            sorted_pages[i + 1].meta["prev"] = sorted_pages[i].path
+            sorted_pages[i].meta["next-path"] = sorted_pages[i + 1].path
+            sorted_pages[i + 1].meta["prev-path"] = sorted_pages[i].path
 
         return sorted_pages
 

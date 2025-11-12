@@ -454,3 +454,11 @@ footer {
 section+h2 {
   margin-top: 30px;
 }
+
+.artwork {
+  border-radius: 8px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin-bottom: 20px;
+}

@@ -26,6 +26,7 @@ thumbnail_paths = [
 for src, dest in zip(artwork_paths, thumbnail_paths):
     generate_thumbnail(src, dest, (256, 256))
 
+
 sounds = tribo.parse_markdown("audio", split_markdown_on="## SEPARATOR ##")
 
 homepage = tribo.parse_markdown("index.md")
