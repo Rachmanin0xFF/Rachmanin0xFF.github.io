@@ -10,6 +10,7 @@ Built on jinja2 and markdown for adamlastowka.com
 
 import hashlib
 import logging
+import re
 import shutil
 import sys
 from dataclasses import dataclass
@@ -29,6 +30,18 @@ class Page:
     path: Path  # relative to CONTENT_ROOT
     html: str
     meta: dict[str, Any]
+
+
+def slugify(text: str) -> str:
+    """
+    Convert text to a URL-safe slug.
+    """
+    text = text.lower()
+    text = re.sub(r"[\s_]+", "-", text)
+    text = re.sub(r"[^a-z0-9\-()]", "", text)
+    text = re.sub(r"-+", "-", text)
+    text = text.strip("-")
+    return text
 
 
 class Tribo:
@@ -88,7 +101,7 @@ class Tribo:
         pattern: str = "**/*.md",
         reverse: bool = True,
         sort_by: str = "date",
-        required_fields = ["title", "date", "layout"],
+        required_fields=["title", "date", "layout"],
         split_markdown_on: str | None = None,
     ) -> list[Page] | None:
         """Recursively parses all matching files in the input directory, or a single file."""
@@ -98,9 +111,14 @@ class Tribo:
         input_path = self.content_root / input_path
 
         # helpers to clean metadata
-        flatten = lambda x: (x[0] if isinstance(x, list) and len(x) == 1 else x)
-        trim_whitespace = lambda x: x.strip() if isinstance(x, str) else x
-        clean = lambda x: trim_whitespace(flatten(x))
+        def flatten(x):
+            return x[0] if isinstance(x, list) and len(x) == 1 else x
+
+        def trim_whitespace(x):
+            return x.strip() if isinstance(x, str) else x
+
+        def clean(x):
+            return trim_whitespace(flatten(x))
 
         def metadata_contains_required_fields(meta: dict) -> bool:
             return all(field in meta for field in required_fields)
@@ -125,7 +143,9 @@ class Tribo:
                 if split_markdown_on:
                     parts = full_text.split(split_markdown_on)
                     parts = [part.strip() for part in parts if part.strip()]
-                    self.logger.debug(f"Splitting {path} on '{split_markdown_on}' into {len(parts)} parts.")
+                    self.logger.debug(
+                        f"Splitting {path} on '{split_markdown_on}' into {len(parts)} parts."
+                    )
                 else:
                     parts = [full_text]
                 markdown_was_multipart = len(parts) > 1
@@ -134,22 +154,25 @@ class Tribo:
                     html_converted = self.md.convert(text)
                     cleaned_metadata = {k: clean(v) for k, v in self.md.Meta.items()}
                     relative_path = path.relative_to(self.content_root)
-                    cleaned_metadata['parent_folder'] = relative_path.parent.name
-                    
-                    if cleaned_metadata.get('draft', '').lower() == 'true':
+                    cleaned_metadata["parent_folder"] = relative_path.parent.name
+
+                    if cleaned_metadata.get("draft", "").lower() == "true":
                         self.logger.debug(f"Skipping draft: {relative_path}")
                         self.md.reset()
                         continue
-                    
+
                     if markdown_was_multipart:
                         # if the markdown was split into multiple parts, we want seperate folders for each part to be created
                         # in the output build dir. This means we should append some unique identifier to the path. We will
                         # get this identifier from the title if it exists, otherwise we will use the index of the part.
                         if "title" in cleaned_metadata:
-                            identifier = cleaned_metadata["title"].lower().replace(" ", "-")
+                            identifier = slugify(cleaned_metadata["title"])
                         else:
-                            identifier = f"part-{parts.index(text)+1}"
-                        relative_path = relative_path.parent / identifier / relative_path.name
+                            identifier = f"part-{parts.index(text) + 1}"
+                        cleaned_metadata["slug"] = identifier
+                        relative_path = (
+                            relative_path.parent / identifier / relative_path.name
+                        )
                     if not metadata_contains_required_fields(cleaned_metadata):
                         self.logger.warning(
                             f"File {relative_path} only had fields {list(cleaned_metadata.keys())}, "
@@ -181,8 +204,8 @@ class Tribo:
 
         # link adjacent pages
         for i in range(len(sorted_pages) - 1):
-            sorted_pages[i].meta["next"] = sorted_pages[i + 1].path
-            sorted_pages[i + 1].meta["prev"] = sorted_pages[i].path
+            sorted_pages[i].meta["next-path"] = sorted_pages[i + 1].path
+            sorted_pages[i + 1].meta["prev-path"] = sorted_pages[i].path
 
         return sorted_pages
 
@@ -220,7 +243,7 @@ class Tribo:
                     f"{page.path} - template error in {layout}: {e}, skipping!"
                 )
                 continue
-            
+
             output_path = self.output_root / page.path.with_suffix(".html")
             if rename_to_index:
                 output_path = output_path.parent / "index.html"
@@ -238,16 +261,23 @@ class Tribo:
 
     def copy_all_static_content(self, skip_existing: bool = True) -> None:
         """Copy all static files from content root to output."""
-        self._copy_static_files_recursive(self.content_root, skip_existing=skip_existing)
+        self._copy_static_files_recursive(
+            self.content_root, skip_existing=skip_existing
+        )
 
-    def _copy_static_files_recursive(self, input_directory: Path | str, skip_existing: bool = True) -> None:
+    def _copy_static_files_recursive(
+        self, input_directory: Path | str, skip_existing: bool = True
+    ) -> None:
         """Copy static files from input directory to output."""
         if isinstance(input_directory, str):
             input_directory = Path(input_directory)
 
         static_input = input_directory
-        static_output = self.output_root / input_directory.relative_to(self.content_root)
-        file_hash = lambda p: hashlib.sha256(open(p, "rb").read()).hexdigest()
+        static_output = self.output_root / input_directory.relative_to(
+            self.content_root
+        )
+        def file_hash(p):
+            return hashlib.sha256(open(p, "rb").read()).hexdigest()
 
         for path in static_input.glob("**/*.*"):
             if path.suffix in [".md", ".markdown", ".mdx", ".html", ".htm"]:

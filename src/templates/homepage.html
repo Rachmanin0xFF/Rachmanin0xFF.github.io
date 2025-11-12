@@ -3,7 +3,7 @@
 {% block favicon_and_stylesheet %}
 <link rel="icon" href="./favicon.ico" type="image/x-icon">
 <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
-<link rel="stylesheet" href="./homepage.css">
+<link rel="stylesheet" href="./style.css">
 {% endblock %}
 
 {% block nav_links %}
@@ -17,18 +17,22 @@
 <section id="posts">
   {% for post in posts[:7] %}
   <div class="item-box">
-    <article class="post-item">
-      <img src="./posts/{{ post.meta.parent_folder }}/{{ post.meta.iconpath }}"
-        alt="{{ post.meta.title }} preview image">
-      <h3><a href="./posts/{{ post.meta.parent_folder }}">{{ post.meta.title }}</a></h3>
-      <time>{{ post.meta.date }}</time>
-    </article>
+    <a class="item-link" href="./posts/{{ post.meta.parent_folder }}">
+      <article class="post-item">
+        <img src="./posts/{{ post.meta.parent_folder }}/{{ post.meta.iconpath }}"
+          alt="{{ post.meta.title }} preview image">
+        <h3>{{ post.meta.title }}</h3>
+        <time>{{ post.meta.date }}</time>
+      </article>
+    </a>
   </div>
   {% endfor %}
   <div class="item-box">
-    <article class="post-item" style="justify-content: center; align-items: center; height: 100%; padding: 0px;">
-      <h3 style="text-align: center; padding: 0px;">&gt; see more&nbsp;&nbsp;</h3>
-    </article>
+    <a class="item-link" href="./posts/all/">
+      <article class="centered-text">
+        <h3>&gt; see more&nbsp;&nbsp;</h3>
+      </article>
+    </a>
   </div>
 </section>
 
@@ -36,17 +40,21 @@
 <section id="art">
   {% for art in artwork[:11] %}
   <div class="item-box">
-    <article class="art-item">
-      <h3>{{ art.meta.title }}</h3>
-      <time>{{ art.meta.date }}</time>
-      <img src="./art/thumbnails/thumb_{{ art.meta.artpath }}" alt="{{ art.meta.title }} preview image">
-    </article>
+    <a class="item-link" href="./art/{{ art.meta.slug }}/">
+      <article class="art-item">
+        <h3>{{ art.meta.title }}</h3>
+        <time>{{ art.meta.date }}</time>
+        <img src="./art/thumbnails/thumb_{{ art.meta.artpath }}" alt="{{ art.meta.title }} preview image">
+      </article>
+    </a>
   </div>
   {% endfor %}
   <div class="item-box">
-    <article class="art-item" style="justify-content: center; align-items: center; height: 100%; padding: 0px;">
-      <h3 style="text-align: center; padding: 0px;">&gt; see more&nbsp;&nbsp;</h3>
-    </article>
+    <a class="item-link" href="./art/all/">
+      <article class="art-item" style="justify-content: center; align-items: center; height: 100%; padding: 0px;">
+        <h3 style="text-align: center; padding: 0px;">&gt; see more&nbsp;&nbsp;</h3>
+      </article>
+    </a>
   </div>
 </section>
 
@@ -54,20 +62,24 @@
 <section id="sounds">
   {% for sound in sounds[:7] %}
   <div class="item-box">
-    <article class="sound-item">
-      <h3>{{ sound.meta.title }}</h3>
-      <time>{{ sound.meta.date }}</time>
-      <audio controls>
-        <source src="./audio/files/{{ sound.meta.audiopath }}" type="audio/mpeg">
-        Your browser does not support the audio element.
-      </audio>
-    </article>
+    <a class="item-link" href="./audio/{{ sound.meta.slug }}/">
+      <article class="sound-item">
+        <h3>{{ sound.meta.title }}</h3>
+        <time>{{ sound.meta.date }}</time>
+        <audio controls>
+          <source src="./audio/files/{{ sound.meta.audiopath }}" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      </article>
+    </a>
   </div>
   {% endfor %}
   <div class="item-box">
-    <article class="sound-item" style="justify-content: center; align-items: center; height: 100%; padding: 0px;">
-      <h3 style="text-align: center; padding: 0px;">&gt; see more&nbsp;&nbsp;</h3>
-    </article>
+    <a class="item-link" href="./audio/all/">
+      <article class="sound-item" style="justify-content: center; align-items: center; height: 100%; padding: 0px;">
+        <h3 style="text-align: center; padding: 0px;">&gt; see more&nbsp;&nbsp;</h3>
+      </article>
+    </a>
   </div>
 </section>
 {% endblock %}
