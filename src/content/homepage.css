@@ -1,15 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Arvo:ital,wght@0,400;0,700;1,400;1,700&family=Domine:wght@400..700&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Roboto+Slab:wght@100..900&display=swap');
+@font-face {
+    font-family: 'Domine';
+    src: url('fonts/Domine-Regular.woff2') format('woff2'),
+        url('fonts/Domine-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'JetBrains Mono';
+    src: url('fonts/JetBrainsMono-Regular.woff2') format('woff2'),
+        url('fonts/JetBrainsMono-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 
 :root {
   --emph: #009e42;
   --background: #ffffff;
+  --background-rgb: 255, 255, 255;
   --neut: #c2c2c2;
   --text: #050505;
-  --dark-disp: hidden;
-  --light-disp: visible;
-  --f2: 'Charter';
-  --fbody: 'Charter';
-  --f2s: 38px;
+  --primary-font: 'Domine';
 }
 
 ::selection {
@@ -45,7 +59,7 @@ html {
   background-size: 40px 40px;
   background-position: -22px -22px;
 
-  font-family: "Domine", monospace;
+  font-family: var(--primary-font, "Domine"), serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
@@ -111,8 +125,8 @@ main {
   gap: 30px;
   margin-top: 30px;
   perspective: 1200px;
-  background-color: white;
-  box-shadow: 0 0 40px 20px rgba(255, 255, 255, 0.6), 0 0 80px 40px rgba(255, 255, 255, 0.3);
+  background-color: var(--background, white);
+  box-shadow: 0 0 40px 20px rgba(var(--background-rgb), 0.6), 0 0 80px 40px rgba(var(--background-rgb), 0.3);
 }
 
 #content>p {
