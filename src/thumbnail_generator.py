@@ -7,7 +7,7 @@ from pathlib import Path
 import logging
 
 
-HASH_CACHE_FILE = Path(".thumbnail_hashes.json")
+HASH_CACHE_FILE = Path("thumbnail_hashes.json")
 
 file_hash = lambda p: hashlib.sha256(open(p, "rb").read()).hexdigest()
 
