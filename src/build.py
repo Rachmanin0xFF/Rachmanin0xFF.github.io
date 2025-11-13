@@ -10,7 +10,6 @@ tribo = Tribo(
     template_root="templates",
     config_path="config.yaml",
 )
-tribo.copy_all_static_content()
 
 posts = tribo.parse_markdown("posts")
 tribo.render_markdown(posts, rename_to_index=True)
@@ -26,6 +25,7 @@ thumbnail_paths = [
 for src, dest in zip(artwork_paths, thumbnail_paths):
     generate_thumbnail(src, dest, (256, 256))
 
+tribo.copy_all_static_content()
 
 sounds = tribo.parse_markdown("audio", split_markdown_on="## SEPARATOR ##")
 
