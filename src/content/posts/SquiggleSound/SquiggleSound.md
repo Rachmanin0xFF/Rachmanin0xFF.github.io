@@ -37,6 +37,7 @@ $ T(t) $ is just a sinusoid, leaving us with the eigenvalue problem:
 $$ \nabla^2 U = -\lambda^2 U $$
 
 This is called the Helmholtz equation, and solving it amounts to finding the eigenvalues of the Laplacian operator ($ \nabla^2 $). This means that in order to find our resonant modes, we only need to:
+
 1. Find a way to represent functions on our region as vectors.
 1. Represent the Laplace operator (acting on our region) as a matrix.
 2. Find the eigenvectors & eigenvalues of that matrix.

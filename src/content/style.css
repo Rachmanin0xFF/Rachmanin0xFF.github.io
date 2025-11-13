@@ -470,6 +470,10 @@ section+h2 {
   color: var(--emph);
 }
 
+.post-body > p > img {
+  padding-top: 20px;
+}
+
 .MathJax {
   max-width: 100%;
   overflow-x: auto;

@@ -61,6 +61,7 @@ So the aforementioned fact that language models [don't really care](https://arxi
 In sum, order matters... except when it comes to text, sometimes. Keep this in mind when writing avant-garde poetry, I guess.
 
 ### Some More Food For Thought:
+
 * How common are sets of words that admit no valid sentences?
 * What is the average number of well-formed word-anagrams of a typical sentence?
 * How close can multiset implementations get to their theoretical maximum space-efficiency?

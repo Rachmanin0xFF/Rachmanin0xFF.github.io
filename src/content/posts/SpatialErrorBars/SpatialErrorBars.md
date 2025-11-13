@@ -15,6 +15,7 @@ Take a look at these two points:
 Think of these points as **repeated measurements of the same thing** — whether it's the coordinates of an ice cream shop in two different datasets, the orientation of a [relativistic jet](https://en.wikipedia.org/wiki/Astrophysical_jet) as inferred from two different telescopes, or my IQ and likability score from two different online quizzes.
 
 Quick: how would you **combine** these two measurements? The red dataset says the ice cream shop is at (0, 0), and the blue one says it's at (2, 2). We often default to a few options:
+
 1. Average the two points
 2. Use the more 'accurate' point and discard the other
 3. Apply some sort of ad-hoc weighted average
@@ -30,6 +31,7 @@ Confused? Let's unpack this.
 Data is meaningless without some guarantee of precision. In most real-world datasets, this guarantee is implicit; hiding in the dataset's implied use case, the [number of decimal digits](https://xkcd.com/2170/), or maybe just a vague collection of industry-specific assumptions. Error bars are awesome because they let you **make that guarantee explicit**. An error bar is just a tag that says "hey, here's how closely I represent the thing I'm measuring". Having that information can save time, effort, and make matching / merging data much easier.
 
 Unfortunately, the real-world situation is as follows (YMMV depending on your industry):
+
 * **Most** datasets: No mention of error whatsoever.
 * **Some** datasets: A global statement about some sort of ill-defined 'accuracy', 'resolution', or 'precision', or maybe per-measurement error bars, but no explanation as to what they mean. Statements like "accurate to within 10 meters" fall in here.
 * **Unicorns / (good) scientists**: Per-measurement error bars with a description of what the error means, covariances, and an explanation of how the error was determined/propagated.  This category includes statements like: "random error in position is approximately Gaussian with a 95% confidence interval of ±10 meters in all directions".
@@ -39,6 +41,7 @@ Part of the problem is that tracking and manipulating error isn't always a strai
 Still, if you're willing to take the plunge (or at least hear about it), keep reading.
 ## Merging Measurements (1-D)
 I'll use a [real-world](https://x.com/adamlastowka/status/1698148223603368314) example: I just took my temperature with two thermometers. One reads 99.1°F, the other 97.7°F. The website for the first one says it's accurate to within ±0.9°F (it's a food thermometer), and the second says it's accurate to ±0.3°F. They're unlabeled, but these ranges are *probably* 95% confidence intervals, which are equivalent to [about 2 standard deviations](https://www.wolframalpha.com/input?i=InverseCDF%5BNormalDistribution%5B0%2C1%5D%2C0.975%5D). So, in sum, the situation is:
+
 * Thermometer A: Measured 99.1°F with a standard deviation of 0.45°F
 * Thermometer B: Measured 97.7°F with a standard deviation of 0.15°F
 
@@ -63,6 +66,7 @@ If you prefer code:
 </code></pre>
 
 A few things about this strategy:
+
 * **It's the "right way" to merge observations**. This is plain-old statistics; there is no better way to combine independent measurements. This operation is the bread-and-butter of scientific reports.
 * **It's not that complicated**. The Greek letters above might seem intimidating to non-mathematicians, but the whole process boils down to just two one-line variable assignments.
 * **It's just a weighted average.** Specifically, it's weighted by the variances (standard deviation squared) of our measurements.
@@ -75,6 +79,7 @@ The key bit of information I left out earlier (apologies) is that these points *
 ![image](twomultivar.png)
 
 The ellipses around each point represent confidence intervals (20%, 40%, 60%, 80%, 95%, and 99%). Interestingly, the point in the upper right has an *asymmetry* in its error: its y-coordinate is much more accurate than its x-coordinate. I can think of a few cases where this might happen (specifically in geospatial data, since that's what I've been up to lately):
+
 1. Oblique aerial imagery — flat features will appear 'squished' along one axis, so any error bars will do the same.
 2. Linearly referenced features — you might know a pothole is *on* a road (±5 meters), but not precisely where along that road (±30 meters).
 3. Lat/lon near the poles: in Norway, "5 decimal places of precision" means two times the accuracy in longitude than in latitude.
@@ -182,6 +187,7 @@ When interpreting the results from these functions, remember that an 'agreement'
 
 One last thing worth noting — [error is not always Gaussian](https://astronomy.stackexchange.com/questions/47539/how-do-you-propagate-asymmetric-errors-on-the-practical-way-to). The real world is not always so simple, and the formulae I've provided here may fail in those cases. Still, this is better than nothing. Good luck!
 ## Further Reading:
+
 * ["Introduction to Error Analysis" by John R. Taylor](https://books.tarbaweya.org/static/documents/uploads/pdf/An%20introduction%20to%20error%20analysis%20.pdf) is an excellent practical handbook.
 * [REPTool](https://pubs.usgs.gov/tm/11c3/) is an ArcGIS toolkit for propagating errors through raster data.
 * Here's an [awesome blog post](https://geostatisticslessons.com/lessons/errorellipses) talking about combining multivariate Gaussians.

@@ -70,10 +70,8 @@ This technique has gained some infamy; I've seen people call it "cheating" or ta
 
 The trick is also used in game development. [Supergiant Games](https://www.supergiantgames.com/) has released four titles that seamlessly mix hand-painted 2D environments with 3D characters:
 
-<div class="imblockfull">
-    ![image](paige_carter_hades.png)
-    Although the top image may look like an illustration, it is actually a 3D model created by <a href=https://www.artstation.com/artwork/aYJLYz>Paige Carter</a>. The model is then used in-game alongside hand-drawn assets, as seen in the bottom screenshot I took of the game.
-</div>
+![image](paige_carter_hades.png)
+Although the top image may look like an illustration, it is actually a 3D model created by [Paige Carter](https://www.artstation.com/artwork/aYJLYz). The model is then used in-game alongside hand-drawn assets, as seen in the bottom screenshot I took of the game.
 
 This is a wonderful use of the 3D-modelling "hack" -- as we've seen, making character animations can be extremely tedious. Why waste time fussing over proportions when you could rig a 3D model to do the same thing? In fact, remember Bill, from earlier?
 

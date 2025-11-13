@@ -20,6 +20,7 @@ When quantizing the values of a signal/image intended for human perception, it i
 Some examples of bad dithering. 1 has anisotropy, 2 has too much low-frequency noise, and 3 is significantly brighter than the original photo.
 
 Good dither is hard to come by, and there is an active (small) field of research in developing new algorithms to create it. Among images (the topic of this article), there are a few dominant strategies employed in most software applications:
+
 1. **Ordered dithering**: A simple method which can be trivially parallelized. Looks very artificial/digital, and typically only employed to give things a "retro" look.
 2. **Thresholding**: An even simpler method, usually employing a premade blue noise texture (computing this texture can be challenging). Very common in realtime graphics applications.
 3. **Error diffusion**: A straightforward (but harder to parallelize) strategy with better detail preservation and a stronger conceptual foundation.
@@ -81,6 +82,7 @@ But I digress; we're not here to waddle around in the history of arbitrary matri
 An image and its 2D Fourier transform. Pixels representing lower frequencies are closer to the center of the periodogram. The lines across the frequency domain correspond to the sharp edges present in the source image. Only log-scaled amplitudes are shown; phase information is discarded. This will remain true for all following periodograms.
 
 To computationally explore the space of kernel matrices, we'll need to assign some sort of cost function to a matrix. How do we judge the quality of a dithered photo? In some respects, this is a matter of taste, so we'll make our test very dry and boring:
+
 1. Dither/quantize a constant-color image using the kernel (like we did above)
 2. Transform the image into its frequency-space representation using a 2D Fourier transform
 3. Check how well this 2D periodogram matches our ideal noise spectrum

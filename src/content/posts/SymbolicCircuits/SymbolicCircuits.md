@@ -31,6 +31,7 @@ Transfer functions are rational functions. Any time we add two rational function
 Unfortunately, factoring is expensive, especially when the size of your numbers is loosely proportional to the degree of your polynomial. This ends up being the bottleneck to our solver: working with huge rational expressions can be slow.
 
 After a lot of playing, I've found two semi-solutions:
+
 1. **Don't simplify anything:**  We'll probably end up with an awful, many-thousand character expression with nested fractions, but we can still *use it*! We lose some elegance and convenience (readily available poles/zeroes). Evaluation may even be easier on the parser because it doesn't have to deal with absurdly-large exponents.
 2. **Be structurally-aware:** If we *are* simplifying, divide-and-conquer approach will limit the amount of large expressions we have to join. Because simplifying expressions is polynomial with their length, this could significantly improve performance. Recall, circuit graphs are *sparse*. Let's use that to our advantage.
 
@@ -142,6 +143,7 @@ To be fair, we are able to compute transfer functions for 50-node networks where
 There's no getting around the factorization bottleneck. Symbolica's performance is fantastic, but my profiling says it's still $ O(n^2m^2) $, where $ m $ is the degree of the input polynomials and $ m $ is the number of digits in their factors. Unfortunately for us, both $ n $ and $ m $ grow rapidly as our network shrinks. What if we try to minimize expression length while simplifying? Maybe there are still optimizations to be made?
 
 I wrestled with this for a while, and I think the answer is 'no'. Greedily minimizing $\Delta E$ seems to implicitly minimize expression complexity, as well. Here are some of the ways I've tried costing nodes:
+
 1. By the estimated complexity of the operations performed when removing them
 2. By the estimated total growth of expression length during removal
 3. By a new edge attribute that accumulates merge operations

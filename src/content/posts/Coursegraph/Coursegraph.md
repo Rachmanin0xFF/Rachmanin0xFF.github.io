@@ -58,7 +58,8 @@ First we'll need Florida Tech's course catalog.
 ## Libraries
 
 I'm managing my environment with Anaconda running Python 3.8. It might be annoying on windows. The Anaconda Navigator can help. <code>distinctipy</code> and <code>pyvis</code> aren't part of Conda, so you'll have to install them manually. Don't get <code>pyvis</code> confused with <code>pyviz</code>, which is an entirely different library (this cost me far too much time).
-<pre><code class="language-python">from os import walk
+```python
+from os import walk
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
@@ -70,7 +71,8 @@ from holoviews import opts
 from pyvis.network import Network
 from distinctipy import distinctipy
 import math
-import json</pre></code>
+import json
+```
 
 ## The Course Class (Class Class?)
 

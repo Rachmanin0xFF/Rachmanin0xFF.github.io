@@ -49,6 +49,7 @@ $$
 \textrm{"Be the average of your neighbors"} \approx (\textrm{Solve }\Delta f = 0)
 $$
 If you want to know *why* this is true, you can [derive it](https://mitchr.dev/2020/03/18/skewedLaplaceSquare.html) by taking a Taylor expansion at each node, but I also encourage you think through things before plugging in symbols. A few ideas to mull over when building intuition:
+
 1. Solutions to the Laplace equation are harmonic, which means they must satisfy [mean value property](https://en.wikipedia.org/wiki/Harmonic_function#The_mean_value_property) (a continuous analog of our rule).
 2. The second derivative of a 1D function answers the question "how much am I different from the average of my neighbors?" at each point.
 3. For the 2D Laplace operator, bending up along one axis cancels bending down along the other.
@@ -157,5 +158,6 @@ For most applications, the one on the left! In fact, it looks so natural that 2-
 
 So, if you're ever trying to [interpolate between values scattered on a grid](https://onlinelibrary.wiley.com/doi/10.1155/2018/3950312) (like I was before I wrote this), use a [biharmonic stencil](http://rodolphe-vaillant.fr/entry/57/2d-biharmonic-stencil-aka-bilaplacian-operator), not a 5-point Laplace.
 ### Sources:
+
 * [Polyharmonic Splines on Wikipedia](https://en.wikipedia.org/wiki/Polyharmonic_spline)
 * [Supplementary Notes: Representation of Thin-Plate Splines](https://www.stat.berkeley.edu/~ryantibs/statlearn-s24/lectures/tps_rkhs.pdf) (from Alden Green's [spring 2024 course at Berkeley](https://www.stat.berkeley.edu/~ryantibs/statlearn-s24/), *Advanced Topics in Statistical Learning*)
