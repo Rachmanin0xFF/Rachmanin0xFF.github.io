@@ -36,3 +36,7 @@ qa = tribo.parse_markdown("qa/qa.md", required_fields=["title"])
 
 tribo.render_markdown(homepage, posts=posts, artwork=artwork, sounds=sounds)
 tribo.render_markdown(sounds + artwork + about + qa, rename_to_index=True)
+
+
+concat_pages = tribo.parse_markdown("concatpages")
+tribo.render_markdown(concat_pages, posts=posts, artwork=artwork, sounds=sounds)
