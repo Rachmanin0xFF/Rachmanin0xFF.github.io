@@ -1,0 +1,6 @@
+python-markdown
+pymdown-extensions
+jinja2
+black
+coloredlogs
+pillow

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block favicon_and_stylesheet %}
+<link rel="icon" href="../../favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../style.css">
+{% endblock %}
+
+{% block nav_links %}
+<a href="../../">Home</a>
+<a href="../../about/">About</a>
+<a href="../../qa/">Q&A</a>
+{% endblock %}
+
+{% block content %}
+<h2>Art</h2>
+<section id="art">
+  {% for art in artwork %}
+  <div class="item-box">
+    <a class="item-link" href="../../art/{{ art.meta.slug }}/">
+      <article class="art-item">
+        <h3>{{ art.meta.title }}</h3>
+        <time>{{ art.meta.date }}</time>
+        <img src="../../art/thumbnails/thumb_{{ art.meta.artpath }}" alt="{{ art.meta.title }} preview image">
+      </article>
+    </a>
+  </div>
+  {% endfor %}
+</section>
+{% endblock %}

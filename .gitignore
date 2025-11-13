@@ -1,0 +1,8 @@
+build/*
+__pycache__/
+*.py[codz]
+*$py.class
+*.cpython*-*.pyc
+*.pyc
+src/thumbnail_hashes.json
+src/content/art/thumbnails/*

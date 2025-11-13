@@ -1,0 +1,88 @@
+
+@import "skeleton.css";
+
+.inline-left {
+	float: left;
+	padding-right: 48px;
+}
+.border {
+	border: 6px dashed var(--neut, #cccccc);
+}
+
+#feed {
+	padding: 0px;
+}
+
+.posts {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+	grid-template-rows: 1;
+	grid-gap: 18px 16px;
+}
+
+h1 {
+	margin-top: 0.5em;
+}
+
+.postim {
+	display: block;
+	max-width: 100%;
+	max-height: 80vh;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 2em;
+}
+
+.postimfull {
+	display: block;
+	max-width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 2em;
+}
+
+.imblock a {
+	text-decoration: solid underline 3px;
+	text-decoration-color: var(--emph, #12e7b9);
+}
+
+.imblockfull a {
+	text-decoration: solid underline 3px;
+	text-decoration-color: var(--emph, #12e7b9);
+}
+
+.imblock > .postim {
+	margin-bottom: 0.8em;
+}
+
+.imblock {
+	text-align: center;
+	display: block;
+	max-width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 2em;
+	padding: 0px;
+	font-size: 75%;
+	font-style: italic;
+}
+
+.imblockfull {
+	text-align: center;
+	display: block;
+	max-width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 2em;
+	padding: 0px;
+	font-size: 75%;
+	font-style: italic;
+}
+
+@media all and (max-width: 1040px) {
+	.inline-left {
+		float: none;
+		display: block;
+		padding-bottom: 1em;
+	}
+}

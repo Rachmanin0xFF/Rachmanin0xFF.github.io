@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="initial-scale=1.0, width=device-width">
+
+    <meta name="robots" content="all,follow">
+    <meta property="og:title" content="Adam Lastowka - {{ title }}">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="{{ description }}">
+    <meta name="description" content="{{ description }}">
+
+    <title>Adam Lastowka - {{ title }}</title>
+    {% block favicon_and_stylesheet %}{% endblock %}
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+    <main>
+        <header>
+            <h1><a href="./">Adam Lastowka</a></h1>
+        </header>
+        <section id="nav">
+            {% block nav_links %}{% endblock %}
+        </section>
+
+        <div id="content" {% block content_classes %}{% endblock %}>
+            {% block content %}{% endblock %}
+        </div>
+
+        <footer>
+            <p>© Adam Lastowka 2025</p>
+        </footer>
+    </main>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+
+</html>

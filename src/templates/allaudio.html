@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block favicon_and_stylesheet %}
+<link rel="icon" href="../../favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../style.css">
+{% endblock %}
+
+{% block nav_links %}
+<a href="../../">Home</a>
+<a href="../../about/">About</a>
+<a href="../../qa/">Q&A</a>
+{% endblock %}
+
+{% block content %}
+<h2>Posts</h2>
+<section id="sounds">
+  {% for sound in sounds %}
+  <div class="item-box">
+    <a class="item-link" href="../../audio/{{ sound.meta.slug }}/">
+      <article class="sound-item">
+        <h3>{{ sound.meta.title }}</h3>
+        <time>{{ sound.meta.date }}</time>
+        <audio controls>
+          <source src="../../audio/files/{{ sound.meta.audiopath }}" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      </article>
+    </a>
+  </div>
+  {% endfor %}
+</section>
+{% endblock %}
