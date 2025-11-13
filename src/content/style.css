@@ -60,7 +60,8 @@ html {
   font-size: 14px;
 }
 
-p,li {
+p,
+li {
   line-height: 2.0;
 }
 
@@ -139,7 +140,8 @@ main {
   box-shadow: 0 0 40px 20px rgba(var(--background-rgb), 0.6), 0 0 80px 40px rgba(var(--background-rgb), 0.3);
 }
 
-.post-body>ol,.post-body>ul {
+.post-body>ol,
+.post-body>ul {
   margin-top: -1em;
 }
 
@@ -160,9 +162,10 @@ header {
   grid-row: 2;
   max-width: 100%;
   display: grid;
-  grid-template-columns: 100% ;
+  grid-template-columns: 100%;
   gap: 10px;
 }
+
 #content.about-page-content {
   grid-column: 2;
   grid-row: 2;
@@ -177,14 +180,22 @@ header {
   display: block;
 }
 
-.post-body p,h1,h2,h3,ul,ol,pre,img {
+.post-body p,
+h1,
+h2,
+h3,
+ul,
+ol,
+pre,
+img {
   max-width: 100%;
 }
+
 #content pre {
   overflow-x: auto;
 }
 
-.post-body ol > li::marker {
+.post-body ol>li::marker {
   font-weight: bold;
 }
 
@@ -258,7 +269,8 @@ a:hover::after {
   width: 100%;
 }
 
-ul, ol {
+ul,
+ol {
   list-style-position: outside;
   padding-left: 2em;
   padding-bottom: 0.5em;
@@ -290,7 +302,8 @@ li:not(:last-child) {
   perspective: 1200px;
 }
 
-.post-item p, time {
+.post-item p,
+time {
   color: var(--neut);
 }
 
@@ -457,11 +470,11 @@ section+h2 {
   display: block;
 }
 
-.post-body * + h2 {
+.post-body *+h2 {
   margin-top: 20px;
 }
 
-.post-body * + h3 {
+.post-body *+h3 {
   margin-top: 20px;
 }
 
@@ -470,7 +483,7 @@ section+h2 {
   color: var(--emph);
 }
 
-.post-body > p > img {
+.post-body>p>img {
   padding-top: 20px;
 }
 
@@ -484,6 +497,10 @@ pre {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.9em;
   outline: 1px dashed var(--neut);
+}
+
+audio {
+  height: auto;
 }
 
 @media (max-width: 800px) {
