@@ -172,7 +172,7 @@ header {
   grid-row: 2;
   max-width: 100%;
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
+  grid-template-columns: 1.618fr 1fr;
   gap: 10px;
 }
 
@@ -420,66 +420,6 @@ time {
   grid-template-rows: auto 1fr;
 }
 
-@media (max-width: 800px) {
-
-  main,
-  body {
-    grid-column: 1;
-    grid-template-columns: 100%;
-  }
-
-  header,
-  #content,
-  footer {
-    grid-column: 1;
-    grid-row: auto;
-  }
-
-  #nav {
-    grid-column: 1;
-    grid-template-columns: auto 1fr auto;
-    grid-template-rows: auto;
-    gap: 20px;
-    position: static;
-    grid-row: auto;
-  }
-
-  #nav * {
-    text-align: center;
-    justify-self: center;
-    align-self: center;
-    padding: 0;
-  }
-
-  #posts {
-    grid-template-columns: 1fr;
-  }
-
-  #sounds {
-    grid-template-columns: repeat(1, 1fr);
-  }
-
-  .about-page-content {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-
-  #content>.stickypagediv {
-    padding-bottom: 0px;
-  }
-
-  .selfie {
-    grid-column: 1;
-    grid-row: -1;
-    max-width: 90%;
-  }
-}
-
-@media (max-width: 700px) {
-  #art {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
 
 footer {
   padding-bottom: 20px;
@@ -523,4 +463,67 @@ section+h2 {
 .post-body h3 {
   font-size: 1.5em;
   color: var(--emph);
+}
+
+@media (max-width: 800px) {
+
+  main,
+  body {
+    grid-column: 1;
+    grid-template-columns: 100%;
+  }
+
+  header,
+  #content,
+  footer {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  #nav {
+    grid-column: 1;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto;
+    gap: 20px;
+    position: static;
+    grid-row: auto;
+  }
+
+  #nav * {
+    text-align: center;
+    justify-self: center;
+    align-self: center;
+    padding: 0;
+  }
+
+  #posts {
+    grid-template-columns: 1fr;
+  }
+
+  #sounds {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  #content.about-page-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    grid-column: 1;
+  }
+
+  #content>.stickypagediv {
+    padding-bottom: 0px;
+  }
+
+  .selfie {
+    grid-column: 1;
+    grid-row: -1;
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 700px) {
+  #art {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
