@@ -49,12 +49,14 @@ I mean, yeah, we were from the start. I've been talking about **undirected** gra
 Still, how common are non-embeddable features? Can we isolate them? How do we numerically identify them? Maybe we could still find *approximate* embeddings?
 
 It's math time. We'll make a few extremely generous assumptions:
+
 1. We have no one-way roads or turn restrictions.
 2. Distances between nodes are $ > 0 $.
 3. Our road network has a single [connected component](https://en.wikipedia.org/wiki/Component_(graph_theory)).
 
 ### Metric Spaces
 The "minimum travel time" function is a **metric**. If we represent the nodes in our network as a finite set $ A=\{a_1, a_2, \ldots, a_n\} $, the shortest path between two nodes $ x, y\in A $ can be written as a function $ d(x, y) $.  We can call $ d(x, y) $ a "metric" if it satisfies:
+
 1. $ d(x, y)\geq0 $
 2. $ d(x, y) = 0\iff x=y $
 3. $ d(x, z)\leq d(x, z) + d(x, y) $
@@ -69,6 +71,7 @@ The task of "embedding a discrete metric space" is what motivates [distance geom
 ### A few lemmas about shortest-path isometric embeddings (with proofs)
 
 Symbols I'll use here include:
+
 * $ \mathbf r_n $: The embedding of node $ a_n $ into Euclidean space.
 * $ P_n $: A [linear graph / path graph](https://en.wikipedia.org/wiki/Path_graph); a chain of $ n $ nodes.
 * $ C_n $: A [cycle graph / circular graph](https://en.wikipedia.org/wiki/Cycle_graph); a ring of $ n $ nodes (no, not that kind of [ring](https://en.wikipedia.org/wiki/Ring_(mathematics))).
@@ -77,6 +80,7 @@ Symbols I'll use here include:
 Additionally, you should append each of these lemmas with **"when no shortcuts are present"**. Obviously, a complete graph contains many cycles, but the presence of shortcuts across these cycles means that the graph might still be able to be isometrically embedded.
 
 **Lemma 1: Linear graphs isometrically embed as straight lines.**
+
 * The embedding of $ P_1 $ is a single point $ \mathbf r_1 $ anywhere (trivial).
 * The embedding of $ P_2 $ includes an additional point $ \mathbf r_2 $ placed $ d(a_1, a_2) $ away from $ \mathbf r_1 $.
 * The embedding of $ P_n $ includes an additional point $ \mathbf r_n $, placed $ d(a_n, a_{n-1}) $ away from $ \mathbf r_{n-1} $, and $ d(a_n, a_{n-2}) $ away from $ \mathbf r_{n-2} $. But by our metric and the structure of the graph, $ d(a_n, a_{n-2})=d(a_n, a_{n-1})+d(a_{n-1},a_{n-2}) $, and the three points form a degenerate triangle, meaning $ \mathbf r_n $, $ \mathbf r_{n-1} $, and $ \mathbf r_{n-2} $ are colinear.
@@ -84,18 +88,21 @@ The collinearity of all points in a path graph follows by induction.
 
 **Lemma 2: Isometric embeddings of linear graphs preserve node ordering.**
 Using the same symbols:
+
 * Let $ x_n $ be the projection of $ \mathbf r_n $ onto the line formed by all points in the embedding, and choose $ x_1 > x_0 $. It should be clear that $ d(a_i,a_j)=|x_i - x_j| $.
 * We assume $ x_{n-1} > x_{n-2} $ . To show that $ x_n > x_{n-1} $ everywhere in the embedding, our metric says it must be the case that $ |x_n - x_{n-2}| = x_{n-1}-x_{n-2} + |x_n - x_{n-1}| $. If $ x_{n}>x_{n-1} $, this expression simplifies to $ x_{n-1}=x_{n-2} $, which contradicts $ x_{n-1}>x_{n-2} $. Because we assume points do not overlap, it must be the case that $ x_n>x_{n-1} $.
 Again, preservation of order follows by induction.
 
 **Lemma 3: Cycles with more than 3 nodes are not isometrically embeddable.**
 By contradiction:
+
 * Assume we can isometrically embed $ C_n $ with the shortest-path metric. $ C_n $ contains $ n $ linear subgraphs of size $ n-1 $, all equivalent to $ P_{n-1} $. We will index them with superscripts: $ \{P_{n-1}^1, P_{n-1}^2,\cdots,P_{n-1}^n\} $.
 * For $ n>3 $, these linear subgraphs have overlapping segments, so they all must be colinear. Consequently, all points in the embedding of $ C_n $ must be colinear, and they share a common projection $ \{x_1, x_2, \cdots, x_n\} $.
 * The first node of $ P_{n-1}^1 $ is embedded at $ \mathbf r_0 $, and its last node is embedded at $ \mathbf r_{n-2} $. From the previous lemma, we know $ x_1 < x_{n-1} \implies x_1 < x_3 $. But from the projection of $ P^3_{n-1} $, $ x_3 < x_1 $, and we have a contradiction.
 
 **Lemma 4: Star graphs with more than 3 nodes are not isometrically embeddable.**
 Also by contradiction:
+
 * The $ (n+1) $-node star graph $ K_{1,n} $ contains $ n(n-1)/2 $ unique copies of length-three linear graphs $ P_3 $.
 * These linear graphs form a connected network of overlapping edges, so they must all be colinear.
 * Like before, we can 'hop around' these colinear subgraphs and display a contradiction. I'll leave this one as an exercise (*hint: odd numbers*).
@@ -132,6 +139,7 @@ $$ G=
 Conveniently, any Gram matrix can be written as the product of the matrix of embedding vectors times its transpose, $ G=R^TR $. This is equivalent to saying that $ G $ must be [positive semidefinite](https://en.wikipedia.org/wiki/Definite_matrix), and it turns out that this is a necessary and sufficient condition for having an embedding in $ \mathbb R^n $, assuming we don't have any sort of degeneracy.
 
 So, in sum, to test if a distance matrix is embeddable:
+
 1. Using the polarization identity, find dot products for all pairs of elements of $ A $ (but you'll need to choose a 'zero' somehow).
 2. Check whether the resulting Gram matrix is positive semidefinite.
 
@@ -161,7 +169,8 @@ Let's give it a shot.
 Instead of 'centering' our embedding on $ \mathbf r_1 $, it's common practice to **mean-center** the embedding so that $ \sum_i \mathbf r_i=\mathbf 0 $. This centering [provides](https://math.stackexchange.com/questions/1882130/calculating-gramian-matrix-from-euclidean-distance-matrix) an elegant way to calculate Gram matrices without diving into indices. Given an $ n\times n $ Euclidean distance matrix $ M $, its associated Gram matrix $ G $ is given by:
 $$ G=-\frac{1}{2}CM^{(2)}C $$
 Where $ (M^{(2)})\_{ij}={M\_{ij}}^2 $ and $ C=I-\frac{1}{n}\mathbf 1^T \mathbf 1 $ is a [centering matrix](https://en.wikipedia.org/wiki/Centering_matrix) ($ \mathbf 1^T \mathbf 1 $ just gives us a matrix filled with ones). With NumPy, it looks like this:
-<pre><code class="language-python">import numpy as np
+```python
+import numpy as np
 import networkx as nx
 
 def distance_to_gram(M):
@@ -184,7 +193,7 @@ def shortest_path_MDS(network, ndims=2):
     sqrt_evals = np.sqrt(positive_evals)
     embedding = evecs[:, :ndims] @ np.diag(sqrt_evals)
     return embedding
-</code></pre>
+```
 
 ### MDS Results
 The output of MDS on small graphs seems reasonable:
@@ -202,6 +211,7 @@ The $ O(V^3) $ Floyd-Warshall step makes this pretty slow (at least in NetworkX)
 ![image](anim_45.gif)
 
 If you're thinking that this looks suboptimal and you could do a better job, remember two things:
+
 1. This embedding minimizes the shortest-path metric. It doesn't care about visual clarity or usability like we do.
 2. Classical MDS minimizes the *squared error* in distance, and in that way, it's like an average ($ \overline x := \text{arg min}_y \sum_i (x_i - y)^2 $). For heavily [skewed distributions](https://en.wikipedia.org/wiki/Skewness), the average isn't always representative of what we care about.
 
@@ -225,6 +235,7 @@ Courtesy of Diana Taimina
 It seems like the trouble with making these shortest-path embeddings is that they *run out of room*; the 3-star graph I showed earlier would be easy to embed, if only triangles worked differently. But in hyperbolic space, triangles *do* work differently. This leads us to the topic of **hyperbolic embeddings**, which don't bother with $ \mathbb R^n $ and instead embed in [hyperbolic space](https://en.wikipedia.org/wiki/Hyperbolic_space).
 
 I think this article is long enough, so I'll drop a few papers related to shortest-path hyperbolic embeddings:
+
 * [Geographic Routing Using Hyperbolic Space](https://ieeexplore.ieee.org/abstract/document/4215803), R. Kleinberg (2007)
 * [Shortest Path Embeddings of Graphs on Surfaces](https://arxiv.org/abs/1602.06778), Hubard et al. (2016) (some nice theory in here)
 * [Finding shortest and nearly shortest path nodes in large substantially incomplete networks by hyperbolic mapping](https://www.nature.com/articles/s41467-022-35181-w), M. Kitask et al. (2023)

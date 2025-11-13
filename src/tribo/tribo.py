@@ -20,6 +20,9 @@ from typing import Any
 import coloredlogs
 import jinja2
 import markdown
+from markdown.extensions import Extension
+from markdown.blockprocessors import BlockProcessor
+import xml.etree.ElementTree as etree
 import yaml
 
 
@@ -42,6 +45,47 @@ def slugify(text: str) -> str:
     text = re.sub(r"-+", "-", text)
     text = text.strip("-")
     return text
+
+
+class MathBlockProcessor(BlockProcessor):
+    """Process display math blocks ($$...$$) to prevent them from being wrapped in <p> tags."""
+    
+    DISPLAY_MATH_PATTERN = re.compile(r'^\$\$\s*\n(.*?)\n\$\$', re.MULTILINE | re.DOTALL)
+    
+    def test(self, parent, block):
+        return bool(self.DISPLAY_MATH_PATTERN.search(block))
+    
+    def run(self, parent, blocks):
+        block = blocks.pop(0)
+        match = self.DISPLAY_MATH_PATTERN.search(block)
+        
+        if match:
+            # Get text before math
+            before = block[:match.start()]
+            if before.strip():
+                self.parser.parseBlocks(parent, [before])
+            
+            # Create a div to hold the math
+            math_div = etree.SubElement(parent, 'div')
+            math_div.set('class', 'math-display')
+            # Store the raw math text directly in the div
+            math_div.text = match.group(0)
+            
+            # Get text after math
+            after = block[match.end():]
+            if after.strip():
+                self.parser.parseBlocks(parent, [after])
+
+
+class MathExtension(Extension):
+    """Extension to handle LaTeX math blocks."""
+    
+    def extendMarkdown(self, md):
+        md.parser.blockprocessors.register(
+            MathBlockProcessor(md.parser),
+            'math-block',
+            27  # Priority: just before paragraph (28)
+        )
 
 
 class Tribo:
@@ -77,6 +121,7 @@ class Tribo:
                 "footnotes",
                 "tables",
                 "meta",
+                MathExtension(),
             ],
         )
 

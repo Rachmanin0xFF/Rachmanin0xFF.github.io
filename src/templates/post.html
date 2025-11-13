@@ -4,7 +4,7 @@
 <link rel="icon" href="../../favicon.ico" type="image/x-icon">
 <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
 <link rel="stylesheet" href="../../style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/lightfair.css">
 <script src="../../highlight.min.js"></script>
 {% endblock %}
 
@@ -22,15 +22,13 @@
       displayMath: [['$$', '$$'], ["\\[", "\\]"]],
       processEscapes: true,
     },
-    startup: {
-      pageReady: () => {
-        return MathJax.typesetPromise();
-      }
+    chtml: {
+      scale: 1,
+      displayAlign: 'center'
     }
   };
 </script>
-<script type="text/javascript" id="MathJax-script" async
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
 
 {% if plotly %}
 <script async defer src="https://cdn.plot.ly/plotly-latest.min.js"></script>{% endif %}
@@ -48,9 +46,6 @@
 <script>
   if (window.hljs) {
     hljs.highlightAll();
-  }
-  if (window.MathJax) {
-    MathJax.typesetPromise().catch(err => console.log(err));
   }
 </script>
 {% endblock %}
