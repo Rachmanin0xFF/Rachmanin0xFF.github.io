@@ -4,6 +4,8 @@
 <link rel="icon" href="../../favicon.ico" type="image/x-icon">
 <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
 <link rel="stylesheet" href="../../style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+<script src="../../highlight.min.js"></script>
 {% endblock %}
 
 {% block nav_links %}
@@ -13,7 +15,6 @@
 {% endblock %}
 
 {% block extra_head %}
-<script>hljs.highlightAll();</script>
 <script>
   window.MathJax = {
     tex: {
@@ -36,7 +37,7 @@
 {% endblock %}
 
 {% block content %}
-<h2>{{ title }}</h2>
+<h1>{{ title }}</h1>
 <time>{{ date }}</time>
 <div class="post-body">
   {{ html }}
@@ -45,6 +46,9 @@
 
 {% block extra_scripts %}
 <script>
+  if (window.hljs) {
+    hljs.highlightAll();
+  }
   if (window.MathJax) {
     MathJax.typesetPromise().catch(err => console.log(err));
   }

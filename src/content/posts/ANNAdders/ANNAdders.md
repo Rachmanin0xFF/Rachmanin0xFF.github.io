@@ -62,5 +62,6 @@ First, neural nets rely heavily on dense layers, where neurons are fully connect
 Second, DNF can't really *be* abstract; it lays everything out on the table, and doesn't permit any clever representation tricks. Densely-connecting a DNF network *might* be a good starting point for understanding grokking, though (or slowly 'activating' additional weights), but probably not on anything of significant size.
 
 ### Takeaways
+
 * Any boolean function can be represented as a constant-depth neural network by writing each output bit as an expression of the input bits in disjunctive normal form, then creating a logical (neural) circuit from that expression.
 * However, these networks are sparsely-connected, and non-polynomial in width, and probably incapable of generalizing.
