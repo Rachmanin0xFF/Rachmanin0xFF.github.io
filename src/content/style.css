@@ -287,13 +287,12 @@ li:not(:last-child) {
   border-radius: 5px;
 }
 
-.item-linke.art-item.dynamic-desaturate img {
-
-  filter: grayscale(100%) opacity(90%) contrast(4);
+.post-item.dynamic-desaturate img {
+  filter: grayscale(100%) opacity(90%);
   transition: all 0.4s cubic-bezier(.37, .95, .58, 1.01);
 }
 
-.item-link:hover.dynamic-desaturate img {
+.post-item.dynamic-desaturate:hover img {
   filter: grayscale(0%) opacity(100%);
   transition: filter 0.3s ease;
 }
@@ -308,8 +307,6 @@ li:not(:last-child) {
 }
 
 .art-item img {
-  display: flex;
-  flex-direction: column;
   border-radius: 5px;
   max-width: 100%;
   width: 100%;
