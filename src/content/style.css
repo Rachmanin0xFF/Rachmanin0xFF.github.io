@@ -525,7 +525,7 @@ audio {
     grid-template-rows: auto;
     gap: 20px;
     position: static;
-    grid-row: auto;
+    grid-row: 2;
   }
 
   #nav * {
@@ -548,6 +548,7 @@ audio {
     grid-template-columns: 1fr;
     gap: 10px;
     grid-column: 1;
+    grid-row: 3;
   }
 
   #content>.stickypagediv {
