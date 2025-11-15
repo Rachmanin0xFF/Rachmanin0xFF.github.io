@@ -32,13 +32,13 @@ jobs:
     - name: Build site
       run: |
         cd src
-        python build.py ../docs
+        python build.py ../build
         cd ..
     
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: 'docs/'
+        path: 'build/'
     
     - name: Deploy to GitHub Pages
       id: deployment
