@@ -338,22 +338,22 @@ time {
 }
 
 .post-item.dynamic-desaturate img {
-  filter: grayscale(100%) opacity(90%);
-  transition: all 0.4s cubic-bezier(.37, .95, .58, 1.01);
+  filter: none;
+  transition: none;
 }
 
 .post-item.dynamic-desaturate:hover img {
-  filter: grayscale(0%) opacity(100%);
-  transition: filter 0.3s ease;
+  filter: none;
+  transition: none;
 }
 
 .art-item.dynamic-desaturate img {
-  filter: grayscale(100%) opacity(90%) contrast(4);
-  transition: all 0.4s cubic-bezier(.37, .95, .58, 1.01);
+  filter: none;
+  transition: none;
 }
 
 .art-item.dynamic-desaturate:hover img {
-  filter: grayscale(0%) opacity(100%);
+  filter: none;
 }
 
 .art-item img {
@@ -502,6 +502,27 @@ pre {
 audio {
   width: 100%;
   display: block;
+}
+
+@media (min-width: 801px) {
+  .post-item.dynamic-desaturate img {
+    filter: grayscale(100%) opacity(90%);
+    transition: all 0.4s cubic-bezier(.37, .95, .58, 1.01);
+  }
+
+  .post-item.dynamic-desaturate:hover img {
+    filter: grayscale(0%) opacity(100%);
+    transition: filter 0.3s ease;
+  }
+
+  .art-item.dynamic-desaturate img {
+    filter: grayscale(100%) opacity(90%) contrast(4);
+    transition: all 0.4s cubic-bezier(.37, .95, .58, 1.01);
+  }
+
+  .art-item.dynamic-desaturate:hover img {
+    filter: grayscale(0%) opacity(100%);
+  }
 }
 
 @media (max-width: 800px) {
