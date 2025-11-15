@@ -471,11 +471,7 @@ section+h2 {
   display: block;
 }
 
-.post-body *+h2 {
-  margin-top: 20px;
-}
-
-.post-body *+h3 {
+.post-body *+h2, .post-body *+h3 {
   margin-top: 20px;
 }
 
