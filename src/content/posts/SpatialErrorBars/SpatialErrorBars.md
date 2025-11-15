@@ -10,6 +10,7 @@ iconpath: SpatialErrorBars.png
 ---
 
 Take a look at these two points:
+
 ![image](twopoints.png)
 
 Think of these points as **repeated measurements of the same thing** — whether it's the coordinates of an ice cream shop in two different datasets, the orientation of a [relativistic jet](https://en.wikipedia.org/wiki/Astrophysical_jet) as inferred from two different telescopes, or my IQ and likability score from two different online quizzes.
@@ -21,9 +22,10 @@ Quick: how would you **combine** these two measurements? The red dataset says th
 3. Apply some sort of ad-hoc weighted average
 
 These methods aren't bad! Number 2 is often a good choice. But for this data, the 'best' merge location is actually right here, in green:
+
 ![image](twopoints_merge.png)
 
-Confused? Let's unpack this.
+Confused? Let's explore this.
 
 
 
@@ -46,9 +48,11 @@ I'll use a [real-world](https://x.com/adamlastowka/status/1698148223603368314) e
 * Thermometer B: Measured 97.7°F with a standard deviation of 0.15°F
 
 If we plot two Gaussians (bell curves, a [very reasonable assumption](https://en.wikipedia.org/wiki/Central_limit_theorem) for our measurement error) with these properties, the graph looks like [this](https://www.desmos.com/calculator/zp2xhlhka3):
+
 ![image](twogauss.png)
 
 Visually, the way to combine these measurements seems pretty obvious: look at where they overlap (this also lets you *validate* measurements, as we'll see later)! Formally, since these are probability densities of independent measurements, we can just *multiply them together*. After normalization, that gives us this curve, which is also a Gaussian (the product of two Gaussians is also a Gaussian):
+
 ![image](twogauss_merge.png)
 
 Which has a mean of 97.8°F and a standard deviation of 0.14°F. I'll write the formulae for the new mean ($ \mu $) and standard deviation ($ \sigma $) below (I won't bore you with the derivation):
@@ -59,11 +63,12 @@ $$ \begin{align}
 \end{align} $$
 
 If you prefer code:
-<pre><code class="language-python">def combine_measurements_1D(meas_1, stdev_1, meas_2, stdev_2):
+```python
+def combine_measurements_1D(meas_1, stdev_1, meas_2, stdev_2):
 	combined_meas = ((stdev_1**2)*meas_2 + (stdev_2**2)*meas_1)/(stdev_1**2 + stdev_2**2)
 	combined_stdev = (stdev_1**-2 + stdev_2**-2)**-0.5
 	return combined_meas, combined_stdev
-</code></pre>
+```
 
 A few things about this strategy:
 
@@ -74,8 +79,11 @@ A few things about this strategy:
 
 ## Merging Measurements (2-D)
 Let's return to the two points from earlier:
+
 ![image](twopoints.png)
+
 The key bit of information I left out earlier (apologies) is that these points *also* have error bars:
+
 ![image](twomultivar.png)
 
 The ellipses around each point represent confidence intervals (20%, 40%, 60%, 80%, 95%, and 99%). Interestingly, the point in the upper right has an *asymmetry* in its error: its y-coordinate is much more accurate than its x-coordinate. I can think of a few cases where this might happen (specifically in geospatial data, since that's what I've been up to lately):
@@ -86,16 +94,16 @@ The ellipses around each point represent confidence intervals (20%, 40%, 60%, 80
 
 
 Actually, we got an easy case here: the direction of greatest/least uncertainty often *isn't even aligned* with the axes; we could've ended up with something like this:
+
 ![image](twomultivar_angle.png)
 
 The 'full treatment' of this sort of error requires knowing not just the standard deviation in x and y, but also whether those uncertainties are correlated. Mathematically, we can accomplish this with a **covariance matrix**. This sounds scary, but it's just a list of four numbers that describe how your uncertainty is smeared out in space. Here are some examples:
-![image](covariance_matrices.png)
 
+![image](covariance_matrices.png)
 If you're someone who likes to learn by playing, check out [this](https://www.infinitecuriosity.org/vizgp/) somewhat-tangential-but-still-really-cool interactive demo.
 
-
-
 Again, to properly merge two measurements in 2D, we just multiply their distributions together:
+
 ![image](twomultivar_merge.png)
 
 The math to recover the resulting (still Gaussian) blob is a little bit trickier; we'll need to know both the means $ \mu_1, \mu_2 $ and the covariance matrices of both points $ \Sigma_1, \Sigma_2 $ (capital $ \Sigma $ instead of lowercase $ \sigma $):

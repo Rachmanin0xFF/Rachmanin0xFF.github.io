@@ -111,11 +111,13 @@ You can see the full source [on my GitHub](https://github.com/Rachmanin0xFF/impe
 The class is CAS-agnostic and can be used with anything with a Python binding. I settled on [Symbolica](https://symbolica.io/), which outperforms the alternative [SymPy](https://www.sympy.org/en/index.html) by over a thousand times (yes, that many — this is from profiling). The results check out against [Falstad's simulator](https://www.falstad.com/circuit/), but how elegantly does our greedy method perform?
 
 First, I'll show the reduction applied to the largest component of a Erdős–Rényi graph ($N=100, p=2.5/(N-1)$):
+
 ![Graph evolution](graph_evolution.png)
 
 You can see that the algorithm starts by removing the 'easy' leaf nodes and isolated cycles. The network grows denser until it reaches full connectedness at $n=5$.
 
 Let's convince ourselves that this approach is better than removing nodes at random. We'll count the number of edges (more edges = more number-crunching) on some denser Watts-Strogatz graphs (they don't have any 'freebie' nodes).
+
 ![Edge log](edgelog.png)
 
 This looks good! Random removal reaches the complete graph limit (shown in gray) very quickly, while greedily minimizing $\Delta E$ manages to keep the graph complexity down. However, this is not a guarantee, and for larger, more dense networks, the 'bump' at the end of the simplification grows. This is a question of 'how long can I delay the inevitable $N(N-1)/2$', and I suspect that improvements on this strategy will only find marginal gains. Additionally, *relative* performance increases with initial graph size because the 'random removal' hump grows even faster.
@@ -131,9 +133,11 @@ Symbolica has a class specifically designed for handling rational expressions, a
     symbolica.S("s").to_rational_polynomial())
 </code></pre>
 Alright! How much does this kill our performance? Here's the simplification time on three Watts-Strogatz ($m=4, p=0.2$) graphs, with the initial edge transfer functions randomly selected from ${1, s, 1/s}$ (resistors, inductors, and capacitors):
+
 ![Reduction times](redtimes.png)
 
 Uh-oh. This trend slows down a little, but it's still bad (y-axis is log-scaled):
+
 ![Performance graph 1](perfgraph1.png)
 
 Of course, these figures are *very* dependent on the graph's structure. But the trend seems unlikely to change unless we're looking at a dead-simple graph.
@@ -149,6 +153,7 @@ I wrestled with this for a while, and I think the answer is 'no'. Greedily minim
 3. By a new edge attribute that accumulates merge operations
 
 Sadly, none of these options were able to boost performance more than ~10%. If I make any headway here, I'll update this article, but for now, it seems like we're up against the wall. Nonetheless, it's important to remember that we're already beating 'random node removal' by a significant margin:
+
 ![Performance graph](perfgraph3.png)
 
 ### The Network
@@ -160,6 +165,7 @@ F(s) =
 (21696+621808*s+8424704*s^2+75189300*s^3+501317064*s^4+2669913242*s^5+11827889794*s^6+44778896020*s^7+147660007455*s^8+430093449201*s^9+1118378802152*s^10+2617704342316*s^11+5551059650842*s^12+10720002858287*s^13+18930620635150*s^14+30669593192397*s^15+45702950778767*s^16+62767664433044*s^17+79564728419931*s^18+93182290462775*s^19+100884227367702*s^20+100986346149594*s^21+93444195711313*s^22+79877020212758*s^23+63012336526151*s^24+45807229399339*s^25+30628095477795*s^26+18790504530192*s^27+10546255544103*s^28+5395400097289*s^29+2504959039272*s^30+1049793305386*s^31+394542349634*s^32+131907886830*s^33+38838709831*s^34+9943046344*s^35+2176742910*s^36+398516178*s^37+59150934*s^38+6801540*s^39+563860*s^40+29624*s^41+728*s^42)
 ```
 And here's the magnitude of that, plotted along the imaginary axis (using Symbolica's `evaluate_complex()`):
+
 ![Bode plot](bodeplot.png)
 
 Mission accomplished!

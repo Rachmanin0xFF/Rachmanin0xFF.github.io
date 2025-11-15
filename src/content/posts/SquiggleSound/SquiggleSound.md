@@ -79,6 +79,7 @@ plt.show()
 </code></pre>
 
 ![image](indices.png)
+
 Next, we need to figure out what the Laplace operator looks like when applied to one of these 28465-dimensional vectors.
 
 
@@ -142,6 +143,7 @@ plt.show()
 ![image](twelvemodes.png)
 
 Let's take a closer look at one of these:
+
 ![image](amode.png)
 
 To test this method's accuracy, I gave it a 256x256 image of a circle and compares the resulting eigenvalues to the zeros of the relevant Bessel functions. For the first few harmonics, the margin of error was consistently less than 0.1%.

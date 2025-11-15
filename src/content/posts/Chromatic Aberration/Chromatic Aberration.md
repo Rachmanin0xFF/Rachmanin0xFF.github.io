@@ -20,7 +20,6 @@ The second photo has an effect applied to it called "chromatic aberration," a vi
 
 ![image](chroma_in_the_wild.png)
 Pictured (from top-left, clockwise): A screenshot from the film *Into the Spider-Verse* (2018), The logo for the video-sharing social network TikTok, a screenshot from the game *Outer Worlds* (2019), detail on artwork by the notoriously popular illustrator Ilya Kuvshinov.
-<br><br>
 
 # Physical Origins
 
@@ -71,7 +70,6 @@ Notice how the edges of every character glow with a white outline? This is a tec
 	Chromatic aberration also targets the edges of its subjects, except it highlights with color instead of light.
 
 ![image](edge-HL-chromab.png)
-	
 Chromatic aberration is similar to backlighting with two colored lamps.
 
 The downside is that you lose a level of control: more than just the silhouette becomes highlighted, and the effect starts eating away at details that should be preserved. To compensate, many artists selectively remove or add chromatic aberration to regions of their piece, or will instead paint in chromatic aberration-like effects manually.

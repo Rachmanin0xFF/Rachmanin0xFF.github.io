@@ -22,16 +22,20 @@ Because neurons have unlimited fan-in, feed-forward neural nets should be able t
 
 ### Neuron Logic
 First, we need to recognize that conventional neural networks can act as binary operators. A single ReLU-activated neuron can act as an AND gate:
+
 ![image](reluand.png)
 
 While it takes two ReLU neurons to make an OR:
+
 ![image](reluor.png)
+
 With a sigmoid activation, you can use a single neuron and saturate it by cranking up the weights.
 
 Making a NOT gate is also easy (weight -1, bias 1). We could call it here and cite some circuit theory textbook, but let's explore a naive way to actually develop a $ O(1) $ (i.e. constant width) $ n $-bit adder.
 
 ### "Coding" an Adder
 Let's consider a 2-bit adder. We can explicitly write out the truth table for one of these:
+
 ![image](2bittruth.png)
 
 There are 16 entries in this truth table, representing each pair of 2-bit numbers that could be added together. The truth table for a 16-bit adder would have $ 2^{32} $, or 4 billion entries.
@@ -45,7 +49,9 @@ $$ (a_1 \land b_1) \oplus (a_2 \oplus b_2) $$
 Which, in DNF, expands to:
 $$ (\lnot a_2 \land \lnot a_1 \land b_2) \lor(\lnot a_2 \land b_2 \land \lnot b_1) \lor \cdots \lor (a_2 \land a_1 \land b_2 \land b_1) $$
 As a circuit, that expression looks like this:
+
 ![image](10splacecircuit.png)
+
 If you're doing this with neurons, you can make things a little more compact by folding the NOTs into the AND gate's weights.
 
 This technique generalizes to *any* arbitrary truth table. However, it's a pretty disgusting way to make a circuit. Addition is a low-entropy operation; it has exploitable symmetries that suggest more efficient constant-depth representations. For $ n $ bits, this one has a width (AND gate count) in $ O(4^n) $. You can get that down to a 3-layer $ O(n^3) $ if you're [clever about it](https://www.csa.iisc.ac.in/~chandan/courses/arithmetic_circuits/notes/lec4.pdf) (remember, addition is in $ AC^0 $, which means polynomial size). That's not too bad! For a 16-bit adder, $ O(n^3) $ puts us on the order of $ 10^4 $ gates, which is reasonable for a neural network.

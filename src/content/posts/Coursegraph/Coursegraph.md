@@ -371,7 +371,9 @@ DG = show_network(CL, saved_pos)
 print('done.')</code></pre>
 ## First Impressions
 Let's see what we're working with:
+
 <img src="full_network_img_2.png" class="postim"></img>
+
 Neat!
 
 Nodes are courses, edges are relationships between them. Colors are based on departament codes. Obviously it's a DAG even though the directions aren't visible here. We've got a lot of isolated vertices, plenty of small components, and one massive one. The dense cluster on the left is an interesting anomaly. We'll explore that later. For now, we need to find a way to handle the logical operators in these prerequisite lists -- stuff like <code>(MTH0000 and MTH0001)</code> or <code>MTH0002</code>.
