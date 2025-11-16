@@ -471,7 +471,8 @@ section+h2 {
   display: block;
 }
 
-.post-body *+h2, .post-body *+h3 {
+.post-body *+h2,
+.post-body *+h3 {
   margin-top: 20px;
 }
 
@@ -507,10 +508,67 @@ audio {
   color: var(--mid);
   font-size: 0.9rem;
 }
+
 .post-body img {
   margin: 0 auto;
   display: block;
   padding-bottom: 0.5rem;
+}
+
+/* Footnote tooltip styles */
+.footnote-ref {
+  position: relative;
+}
+
+.footnote-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  width: max-content;
+  max-width: 300px;
+  transform: translateX(-50%);
+  color: var(--background);
+  background: var(--text);
+  padding: 10px 14px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  z-index: 1000;
+  line-height: 1.8;
+  pointer-events: auto;
+}
+
+.footnote-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--text);
+}
+
+.footnote-tooltip a {
+  color: var(--emph);
+  text-decoration: underline;
+}
+
+.footnote-ref:hover .footnote-tooltip {
+  display: block;
+}
+
+.footnote-tooltip.visible {
+  display: block;
+}
+
+.footnote {
+  color: var(--mid);
+}
+
+hr {
+  border: none;
+  border-top: 1px dashed var(--neut);
+  margin: 30px 0;
 }
 
 @media (min-width: 801px) {

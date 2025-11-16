@@ -22,9 +22,9 @@ Here's some body text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
 
 [this is a link](../..)
 
-Here, have some in-context modifiers: **Lorem ipsum dolor sit amet**, consectetur *adipiscing elit*, sed do eiusmod tempor incididunt ***ut labore et dolore magna*** aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.[^1] Excepteur [sint occaecat cupidatat non proident](../..), sunt in culpa qui officia deserunt mollit anim id est laborum.
+Here, have some in-context modifiers: **Lorem ipsum dolor sit amet**, consectetur *adipiscing elit*, sed do eiusmod tempor incididunt ***ut labore et dolore magna*** aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.[^1] Excepteur [sint occaecat cupidatat non proident](../..), sunt in culpa qui officia deserunt mollit anim id est laborum.[^5]
 
-Here's some `var txt = "inline code"` in-between some other text.
+Here's some `var txt = "inline code"` in-between some other text.[^a]
 
 ```python
 """And here's some block code (in Python)"""
@@ -49,4 +49,6 @@ $$
 
 That's all!
 
-[^1] This is a footnote.
+[^1]: This is a footnote.
+[^5]: I guess this is, too?
+[^a]: This is an incredibly long footnote. I'm even putting a [link](../..) into it. Anyways, I don't really know what to type here. I guess I could put a lorem ipsum, but that seems like a lot. Idk. I wonder if I could make footnotes more visible. Who knows?

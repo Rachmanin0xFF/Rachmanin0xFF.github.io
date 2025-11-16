@@ -205,6 +205,9 @@ class Tribo:
                         self.logger.debug(f"Skipping draft: {relative_path}")
                         self.md.reset()
                         continue
+                    
+                    # Reset markdown parser state for next document
+                    self.md.reset()
 
                     if markdown_was_multipart:
                         # if the markdown was split into multiple parts, we want seperate folders for each part to be created
