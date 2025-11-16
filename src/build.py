@@ -14,6 +14,9 @@ tribo = Tribo(
 posts = tribo.parse_markdown("posts")
 tribo.render_markdown(posts, rename_to_index=True)
 
+posts_draft = tribo.parse_markdown("drafts")
+tribo.render_markdown(posts_draft, rename_to_index=True)
+
 artwork = tribo.parse_markdown("art", split_markdown_on="## SEPARATOR ##")
 artwork_paths = [
     f"{tribo.content_root}/art/files/{art.meta['artpath']}" for art in artwork
