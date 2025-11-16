@@ -61,6 +61,8 @@
   }
 
   // Add footnote tooltips
+  let activeTooltip = null;
+  
   document.querySelectorAll('.footnote-ref').forEach(ref => {
     const fnId = ref.getAttribute('href');
     if (fnId) {
@@ -79,23 +81,67 @@
         tooltip.className = 'footnote-tooltip';
         tooltip.innerHTML = html;
 
-        let hideTimeout;
-
-        const showTooltip = () => {
-          clearTimeout(hideTimeout);
+        // Desktop: hover to show/hide
+        ref.addEventListener('mouseenter', () => {
+          if (activeTooltip && activeTooltip !== tooltip) {
+            activeTooltip.classList.remove('visible');
+          }
           tooltip.classList.add('visible');
-        };
+          activeTooltip = tooltip;
+        });
+        
+        ref.addEventListener('mouseleave', () => {
+          setTimeout(() => {
+            if (!tooltip.matches(':hover')) {
+              tooltip.classList.remove('visible');
+              if (activeTooltip === tooltip) activeTooltip = null;
+            }
+          }, 50);
+        });
+        
+        tooltip.addEventListener('mouseenter', () => {
+          tooltip.classList.add('visible');
+          activeTooltip = tooltip;
+        });
+        
+        tooltip.addEventListener('mouseleave', () => {
+          setTimeout(() => {
+            if (!ref.matches(':hover')) {
+              tooltip.classList.remove('visible');
+              if (activeTooltip === tooltip) activeTooltip = null;
+            }
+          }, 50);
+        });
 
-        const hideTooltip = () => {
-          hideTimeout = setTimeout(() => {
+        // Mobile: click to toggle
+        ref.addEventListener('click', (e) => {
+          // If clicking a link inside the tooltip, allow it
+          if (e.target.tagName === 'A' && tooltip.contains(e.target)) {
+            return;
+          }
+          
+          e.preventDefault();
+          if (tooltip.classList.contains('visible')) {
             tooltip.classList.remove('visible');
-          }, 100); // Small delay to allow moving to tooltip
-        };
-
-        ref.addEventListener('mouseenter', showTooltip);
-        ref.addEventListener('mouseleave', hideTooltip);
-        tooltip.addEventListener('mouseenter', showTooltip);
-        tooltip.addEventListener('mouseleave', hideTooltip);
+            activeTooltip = null;
+          } else {
+            if (activeTooltip && activeTooltip !== tooltip) {
+              activeTooltip.classList.remove('visible');
+            }
+            tooltip.classList.add('visible');
+            activeTooltip = tooltip;
+          }
+        });
+        
+        // Close when clicking elsewhere
+        document.addEventListener('click', (e) => {
+          if (!ref.contains(e.target) && !tooltip.contains(e.target)) {
+            if (tooltip.classList.contains('visible')) {
+              tooltip.classList.remove('visible');
+              if (activeTooltip === tooltip) activeTooltip = null;
+            }
+          }
+        });
 
         ref.appendChild(tooltip);
       }

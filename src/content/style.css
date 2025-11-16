@@ -471,8 +471,7 @@ section+h2 {
   display: block;
 }
 
-.post-body *+h2,
-.post-body *+h3 {
+.post-body *+h2, .post-body *+h3 {
   margin-top: 20px;
 }
 
@@ -508,7 +507,6 @@ audio {
   color: var(--mid);
   font-size: 0.9rem;
 }
-
 .post-body img {
   margin: 0 auto;
   display: block;
