@@ -648,6 +648,33 @@ hr {
   }
 }
 
+.notfound-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 30px;
+}
+
+.notfound-image {
+  max-width: 90%;
+  height: auto;
+}
+
+.notfound-button {
+  padding: 10px 20px;
+  color: var(--text);
+  border-radius: 4px;
+  text-decoration: none;
+  border: 1px dashed var(--text);
+  font-size: 1.1rem;
+}
+
+.notfound-button:hover {
+  color: var(--emph);
+}
+
 @media (max-width: 700px) {
   #art {
     grid-template-columns: repeat(2, 1fr);

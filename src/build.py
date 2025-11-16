@@ -1,5 +1,6 @@
 from tribo import *
 from thumbnail_generator import generate_thumbnail
+from pathlib import Path
 import sys
 
 output_dir = sys.argv[1] if len(sys.argv) > 1 else "../build"
@@ -35,10 +36,15 @@ sounds = tribo.parse_markdown("audio", split_markdown_on="## SEPARATOR ##")
 homepage = tribo.parse_markdown("index.md")
 about = tribo.parse_markdown("about/about.md", required_fields=["title"])
 qa = tribo.parse_markdown("qa/qa.md", required_fields=["title"])
-
+notfound = tribo.parse_markdown("404.md", required_fields=["title"])
 
 tribo.render_markdown(homepage, posts=posts, artwork=artwork, sounds=sounds)
 tribo.render_markdown(sounds + artwork + about + qa, rename_to_index=True)
+
+# Manually set 404 page path to root
+for page in notfound:
+    page.path = Path("404.md")
+tribo.render_markdown(notfound, rename_to_index=False)
 
 
 concat_pages = tribo.parse_markdown("concatpages")
