@@ -1,4 +1,14 @@
 ---
+title: Sketchbook I
+description: Art
+layout: artpage.html
+artpath: doodles_1.png
+date: 2025-11-16
+---
+
+some doodles from the past few months
+## SEPARATOR ##
+---
 title: albany guy
 description: Art
 layout: artpage.html
