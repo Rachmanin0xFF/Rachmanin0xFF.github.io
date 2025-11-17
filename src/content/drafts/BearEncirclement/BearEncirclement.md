@@ -38,9 +38,9 @@ If this was true, it was *terrifying*.
 
 Are you afraid of bears? Not really? You grew up on Care Bears, Yogi, and Winnie the Pooh? I envy your complacency, but you have been sedated, protected from the terrible truth by a webwork of platitudes and propaganda.[^1] Did you know that bears eat their victims alive? Did you know your entire head can fit into a bear's mouth? Did you know that bears can muster ~1000 PSI[^2] of bite pressure? Did you know *you are actually very afraid of bears*?
 
-I sped home and pulled out my laptop, mind racing, monomaniacally determined to answer one question: *was I always surrounded by bears*?
+I sped home and pulled out my laptop, mind racing, monomaniacally determined to answer a single question: *was I really always surrounded by bears*?
 
-## A Distant Panopticon
+## The Global Panopticon
 
 Here are the rules:
 
