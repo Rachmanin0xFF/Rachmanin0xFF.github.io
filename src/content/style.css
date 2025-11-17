@@ -581,7 +581,7 @@ hr {
   }
 
   .art-item.dynamic-desaturate img {
-    filter: grayscale(100%) opacity(90%) contrast(4);
+    filter: grayscale(100%) opacity(90%) blur(0.5px) contrast(4);
     transition: all 0.4s cubic-bezier(.37, .95, .58, 1.01);
   }
 
