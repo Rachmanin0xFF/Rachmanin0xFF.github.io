@@ -1,5 +1,5 @@
 ---
-title: Sketchbook I
+title: sketchbook
 description: Art
 layout: artpage.html
 artpath: doodles_1.png
