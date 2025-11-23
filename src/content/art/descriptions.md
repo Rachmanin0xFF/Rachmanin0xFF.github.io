@@ -1,4 +1,14 @@
 ---
+title: not a raven
+description: Art
+layout: artpage.html
+artpath: not_a_raven.png
+date: 2025-11-22
+---
+
+it's a carrion crow, I think
+## SEPARATOR ##
+---
 title: sketchbook
 description: Art
 layout: artpage.html
