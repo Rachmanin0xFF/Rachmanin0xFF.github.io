@@ -8,7 +8,7 @@ tags: nothing
 
 ## Prologue: Sea Spray, Fear, Bears
 
-[driving picture]
+![image](in_car.png)
 
 Windows down, midday, late July. I'm driving home from the Jersey shore with a friend. Abruptly, he says to me,
 
@@ -59,12 +59,18 @@ We'll optimize the ***heck*** out of this, but that's the gist. Let's get some d
 
 ## Where are the bears?
 
+### 1. iNaturalist Records
+
 Occasionally, a human[^3] will see a bear in person and survive. Within this rare fraction of encounters, an even smaller fraction of humans will log the observation on [iNaturalist](https://www.inaturalist.org/observations?subview=map), a confusingly impressive platform and data hub for observations of all sorts of living flora and fauna. As I write this[^4], there are roughly [100,000 cumulative iNaturalist observations](https://www.inaturalist.org/observations?taxon_id=41636]) of the eight species within the family [*Ursidae*](https://en.wikipedia.org/wiki/Bear)*:*  bears.
 
 ![image](inaturalist_distribution.png)
-Binned iNaturalist observations, visualized with [kepler.gl](https://kepler.gl/).
+Binned iNaturalist observations of *Ursidae*, visualized with [kepler.gl](https://kepler.gl/).
 
-These observations have great coverage in the US, but they are biased towards the Western hemisphere. Additionally, they are obviously incomplete: no human dares wander into the heart of bear territory,[^5] so there will be gaps.
+These observations have great coverage in the US, but they are biased towards the Western hemisphere. Additionally, they are obviously incomplete: no human dares wander into the heart of bear territory,[^5] so there will be gaps. We can accommodate for this by 'buffering' (inflating) our observations; that is, we assume that if a bear was spotted somewhere, there could be a bear anywhere within, say, 50 miles of that location.
+
+### 2. IUCN Region Geometry
+
+
 
 [^1]: Okay, dropping the act for a second, bears are wonderful creatures. The majority of the eight existing bear species are under threat. If you want to help them, consider making a donation to the [WWF](https://www.worldwildlife.org/) or another conservationist charity. That said, they are still *really freaking scary* when they're mad at you.
 

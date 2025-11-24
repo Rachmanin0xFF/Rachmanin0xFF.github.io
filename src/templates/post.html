@@ -12,6 +12,8 @@
 <link rel="stylesheet" href="../../style.css">
 <link rel="stylesheet" href="../../lightfair.css">
 <script src="../../highlight.min.js"></script>
+<script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css">
 {% endblock %}
 
 {% block nav_links %}
@@ -58,11 +60,12 @@
 <script>
   if (window.hljs) {
     hljs.highlightAll();
+    hljs.addPlugin(new CopyButtonPlugin());
   }
 
   // Add footnote tooltips
   let activeTooltip = null;
-  
+
   document.querySelectorAll('.footnote-ref').forEach(ref => {
     const fnId = ref.getAttribute('href');
     if (fnId) {
@@ -89,7 +92,7 @@
           tooltip.classList.add('visible');
           activeTooltip = tooltip;
         });
-        
+
         ref.addEventListener('mouseleave', () => {
           setTimeout(() => {
             if (!tooltip.matches(':hover')) {
@@ -98,12 +101,12 @@
             }
           }, 50);
         });
-        
+
         tooltip.addEventListener('mouseenter', () => {
           tooltip.classList.add('visible');
           activeTooltip = tooltip;
         });
-        
+
         tooltip.addEventListener('mouseleave', () => {
           setTimeout(() => {
             if (!ref.matches(':hover')) {
@@ -119,7 +122,7 @@
           if (e.target.tagName === 'A' && tooltip.contains(e.target)) {
             return;
           }
-          
+
           e.preventDefault();
           if (tooltip.classList.contains('visible')) {
             tooltip.classList.remove('visible');
@@ -132,7 +135,7 @@
             activeTooltip = tooltip;
           }
         });
-        
+
         // Close when clicking elsewhere
         document.addEventListener('click', (e) => {
           if (!ref.contains(e.target) && !tooltip.contains(e.target)) {
