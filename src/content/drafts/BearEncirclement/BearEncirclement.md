@@ -6,33 +6,33 @@ tags: nothing
       lol
 ---
 
-## Prologue: Sea Spray, Fear, Bears
+## Prologue: Sea Spray, Bears, Fear
 
-![image](in_car.png)
+![image](comic_driving.PNG)
 
 Windows down, midday, late July. I'm driving home from the Jersey shore with a friend. Abruptly, he says to me,
 
-[talking picture, neither looking at each other]
+![image](comic_statement.PNG)
 
 "Hey, did you know that, technically, you're always surrounded by bears?"
 
-[same pic, furrowed brow]
+![image](comic_doubt.PNG)
 
 What? That doesn't make sense. No I'm not.
 
-[pic again]
+![image](comic_additionally.PNG)
 
 "Yeah, if you go far enough in any direction, eventually you'll hit a place with bears. So, bears on all sides. Surrounded. Weird, right?"
 
-[confusion pic]
+![image](comic_realization.PNG)
 
 Weird?
 
-[zoom on face]
+![image](comic_zoom.PNG)
 
 No.
 
-[zoom with "hey, was that our exit?" and zoom in on eyes with bear reflection in them]
+![image](comic_surrounded.PNG)
 
 If this was true, it was *terrifying*.
 
