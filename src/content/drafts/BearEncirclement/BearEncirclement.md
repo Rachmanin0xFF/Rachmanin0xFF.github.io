@@ -76,7 +76,7 @@ These observations have great coverage in the US, but they are biased towards th
 
 [^2]: [Polar bears](https://pmc.ncbi.nlm.nih.gov/articles/PMC2974639/), at least. [Brown bears](https://pmc.ncbi.nlm.nih.gov/articles/PMC11083096/) bite closer to 700 PSI.
 
-[^3]: To assure you: despite the tone I take in this post, I am not a salmon.
+[^3]: To assure you: despite the tone I take in this post, I am not a salmon. Salmon can't drive.
 
 [^4]: November 2025... as far as you know.
 
