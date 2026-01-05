@@ -17,7 +17,7 @@ It lets me blog and serves as a convenient multimedia portfolio!
 I'm just a guy. I have a bachelor's in physics, but I dabble in many things.
 
 ## Can I see your CV / Resume?
-[Sure!](Adam_Resume_Sep_2024.pdf) This one should be mostly up-to-date, but it's very general. Contact me (adamlastowka@gmail.com) and I can give you a better, specialized one.
+Yes -- Just contact me (adamlastowka@gmail.com)! In the meantime, you can find me on [LinkedIn](https://www.linkedin.com/in/adam-lastowka/).
 
 ## Can I follow you on [platform]?
 Absolutely: I've got a [X/Twitter](https://twitter.com/adamlastowka), a [GitHub](https://github.com/Rachmanin0xFF), and a [LinkedIn](https://www.linkedin.com/in/adam-lastowka/). I'm also on [BlueSky](https://bsky.app/profile/adamlastowka.bsky.social).
