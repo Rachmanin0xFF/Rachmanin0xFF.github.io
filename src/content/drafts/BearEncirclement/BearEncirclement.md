@@ -42,22 +42,27 @@ I sped home and pulled out my laptop, mind racing, monomaniacally determined to 
 
 ## A Global Panopticon
 
-Here are the rules:
+Okay, following my friend's logic, I want to outline a couple rules:
 
-1. The only "bear-free zones" are places where you are guaranteed to *never* find a bear. "Bear zones" are places where a bear *could* reasonably be.
-2. To be "surrounded" means that walking a straight line (geodesic) in any direction, starting from you, will eventually land you in a "bear zone".
-3. Your line-of-sight circles the planet: a bear a mile to your left counts as a bear 24,900 miles to your right.
+1. **A bear to your left is also a bear to your right.** That's because, on the Earth, if you travel far enough to your left, you *eventually*[^6] end up on your right. If you think that sounds stupid, I encourage you to watch [this video](https://www.youtube.com/watch?v=kccJfnfFLC0) and reconsider your arrogant naivete.
+2. **We don't know where the bears are.** I mean, we kind of know, but they move around. To remedy this, I am simply going to designate regions where bears *could conceivably* as "bear zones". If you are surrounded by bear zones, you might as well be surrounded by bears.
 
-This begets a simple algorithm to determine, approximately, whether or not you are surrounded by bears:
+So, to recap, if there is a direction that you can walk in (i.e. a [great circle](https://en.wikipedia.org/wiki/Great_circle) around the Earth) that doesn't pass through a bear zone, you are **Not Surrounded By Bears**.
 
-1. Pick a random azimuthal direction.
-2. Extend an arc in that direction and let it extend around the entire globe (so, a [great circle](https://en.wikipedia.org/wiki/Great_circle)).
-3. If that arc passes through a bear-free zone, congrats! You are not surrounded by bears.
-4. Otherwise, return to step 1, or give up and accept the fact that you are surrounded by bears.
+This begets a simple process to determine, approximately, whether or not you are surrounded by bears:
 
-We'll optimize the ***heck*** out of this, but that's the gist. Let's get some data.
+1. Pick a random direction.
+2. 'Walk' around the globe (programmatically, of course) in that direction, making a full loop.
+3. If you didn't pass through a bear zone, good! You are not surrounded by bears.
+4. If you did pass through a bear zone, either accept your death or return to step 1 and try again.
+
+We'll come back to this, but for now, we need to tackle an essential question: where *are* the bears, anyway?
 
 ## Where are the bears?
+
+Taxonomically, "bear" means "member of the family *Ursidae*", which you probably shouldn't be saying out loud.[^7] This family has seven s
+
+You don't know what I went through. I queried every database. I lurked on bear forums. I hacked them. I hacked the bears running them. I put on a musky bearskin suit and infiltrated my local bear communities. It cost me eight years of heart-shattering peril and all my grace with God to find my oracle in that mess of fur and blood, and its immense, terrifying paws laid bare two divine sources:
 
 ### 1. iNaturalist Records
 
@@ -66,18 +71,22 @@ Occasionally, a human[^3] will see a bear in person and survive. Within this rar
 ![image](inaturalist_distribution.png)
 Binned iNaturalist observations of *Ursidae*, visualized with [kepler.gl](https://kepler.gl/).
 
-These observations have great coverage in the US, but they are biased towards the Western hemisphere. Additionally, they are obviously incomplete: no human dares wander into the heart of bear territory,[^5] so there will be gaps. We can accommodate for this by 'buffering' (inflating) our observations; that is, we assume that if a bear was spotted somewhere, there could be a bear anywhere within, say, 50 miles of that location.
+These observations have great coverage in the US, but they are biased towards the Western hemisphere. Additionally, they obviously *must* be incomplete: no sane human dares wander into the heart of bear territory,[^5] so there will be gaps. We can accommodate for this by 'buffering' (inflating) our observations; that is, we assume that if a bear was spotted somewhere, there could be a bear anywhere within, say, 50 miles of that location.
 
 ### 2. IUCN Region Geometry
 
-
+Even though its headquarters are in a Swiss city named "Gland", the IUCN is the goto international organization for everything conservation and environmental. They also publish 
 
 [^1]: Okay, dropping the act for a second, bears are wonderful creatures. The majority of the eight existing bear species are under threat. If you want to help them, consider making a donation to the [WWF](https://www.worldwildlife.org/) or another conservationist charity. That said, they are still *really freaking scary* when they're mad at you.
 
 [^2]: [Polar bears](https://pmc.ncbi.nlm.nih.gov/articles/PMC2974639/), at least. [Brown bears](https://pmc.ncbi.nlm.nih.gov/articles/PMC11083096/) bite closer to 700 PSI.
 
-[^3]: To assure you: despite the tone I take in this post, I am not a salmon. Salmon can't drive.
+[^3]: To assure you: despite the tone I take in this post, I am not a salmon. Salmon can't drive cars. At least, not well.
 
 [^4]: November 2025... as far as you know.
 
 [^5]: Bearitory? Bearritory?
+
+[^6]: After roughly 24,900 miles.
+
+[^7]: The word "bear" is likely a taboo avoidance (he-who-must-not-be-named) word that materialized from "brown one" because proto-Germanic tribes were too scared to say "h₂ŕ̥tḱos" out loud. *Ursidae* is a direct descendent of the latter and retains the bulk of its bear-summoning properties.
