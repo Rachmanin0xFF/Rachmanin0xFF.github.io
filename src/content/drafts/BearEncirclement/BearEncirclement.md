@@ -44,8 +44,8 @@ I sped home and pulled out my laptop, mind racing, monomaniacally determined to 
 
 Okay, following my friend's logic, I want to outline a couple rules:
 
-1. **A bear to your left is also a bear to your right.** That's because, on the Earth, if you travel far enough to your left, you *eventually*[^6] end up on your right. If you think that sounds stupid, I encourage you to watch [this video](https://www.youtube.com/watch?v=kccJfnfFLC0) and reconsider your arrogant naivete.
-2. **We don't know where the bears are.** I mean, we kind of know, but they move around. To remedy this, I am simply going to designate regions where bears *could conceivably* as "bear zones". If you are surrounded by bear zones, you might as well be surrounded by bears.
+1. **A bear to your left is also a bear to your right.** This is because, on the Earth, if you travel far enough to your left, you *eventually*[^6] end up on your right. If you think it overcautious to heed this maxim, I encourage you to watch [this video](https://www.youtube.com/watch?v=kccJfnfFLC0) and reconsider your arrogant naivete.
+2. **We don't know where the bears are.** I mean, we kind of know, but they move around. To remedy this, I am simply going to designate regions where bears *could conceivably be* "bear zones". If you are surrounded by bear zones, you might as well be surrounded by bears.
 
 So, to recap, if there is a direction that you can walk in (i.e. a [great circle](https://en.wikipedia.org/wiki/Great_circle) around the Earth) that doesn't pass through a bear zone, you are **Not Surrounded By Bears**.
 
@@ -54,15 +54,15 @@ This begets a simple process to determine, approximately, whether or not you are
 1. Pick a random direction.
 2. 'Walk' around the globe (programmatically, of course) in that direction, making a full loop.
 3. If you didn't pass through a bear zone, good! You are not surrounded by bears.
-4. If you did pass through a bear zone, either accept your death or return to step 1 and try again.
+4. If you did pass through a bear zone, either return to step 1 and try again or make peace your inevitable death.
 
 We'll come back to this, but for now, we need to tackle an essential question: where *are* the bears, anyway?
 
 ## Where are the bears?
 
-Taxonomically, "bear" means "member of the family *Ursidae*", which you probably shouldn't be saying out loud.[^7] This family has seven s
+Taxonomically, "bear" means "member of the family *Ursidae*", which you probably shouldn't say out loud.[^7] This family has seven s
 
-You don't know what I went through. I queried every database. I lurked on bear forums. I hacked them. I hacked the bears running them. I put on a musky bearskin suit and infiltrated my local bear communities. It cost me eight years of heart-shattering peril and all my grace with God to find my oracle in that mess of fur and blood, and its immense, terrifying paws laid bare two divine sources:
+You don't know what I went through. I queried every database. I lurked on bear forums. I hacked them. I hacked the bears running them. I put on a musky bearskin suit and infiltrated my local bear communities. It cost me eight years of heart-shattering peril and all my grace with God to find my oracle in that mess of fur and claws, and its huge, bloody paws laid bare two divine sources:
 
 ### 1. iNaturalist Records
 
