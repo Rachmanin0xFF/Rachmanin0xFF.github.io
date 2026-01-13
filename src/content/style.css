@@ -501,6 +501,11 @@ audio {
   display: block;
 }
 
+video {
+  max-width: 100%;
+  display: block;
+}
+
 .post-body p:has(img) {
   font-style: italic;
   text-align: center;
