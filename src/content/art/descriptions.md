@@ -1,3 +1,15 @@
+## SEPARATOR ##
+---
+title: fishman
+description: Art
+layout: artpage.html
+artpath: fishman.png
+date: 2026-01-27
+---
+
+some painting practice
+## SEPARATOR ##
+
 ---
 title: not a raven
 description: Art
