@@ -1,5 +1,15 @@
 ## SEPARATOR ##
 ---
+title: dankovsky
+description: Art
+layout: artpage.html
+artpath: dankovsky.png
+date: 2026-02-07
+---
+
+more portrait practice (pathologic fanart)
+## SEPARATOR ##
+---
 title: fishman
 description: Art
 layout: artpage.html
