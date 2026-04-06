@@ -114,7 +114,7 @@ If we have an isometric embedding of $ n $ points $ \phi:A\rightarrow\mathbb R^{
 
 Gram matrices have a very nice property that will help us later, so I'd like to set up a correspondence (an invertible map) between them and the Euclidean distance matrices we've been working with. The reason we can't do this right away is that *translation preserves distances, but dot products don't*: Moving a set of points two meters to the right changes their dot products, but not the distances between them.
 
-To remedy this for now, we'll fix $ \phi(a_1)=\mathbf{r}_1=\mathbf 0 $ (so $ ||\mathbf{r}_i||=||\mathbf{r}_i-\mathbf{r}_1|| $), which will make the first row and column of our Gram matrix zero. We'll work with the nonzero $ (n-1)\times (n-1) $ leading principal minor of the original Gram matrix from here on. Keep in mind that this new matrix still contains the 'distance form zero' information along its diagonal.
+To remedy this for now, we'll fix $ \phi(a_1)=\mathbf{r}_1=\mathbf 0 $ (so $ ||\mathbf{r}_i||=||\mathbf{r}_i-\mathbf{r}_1|| $), which will make the first row and column of our Gram matrix zero. We'll work with the nonzero $ (n-1)\times (n-1) $ leading principal minor of the original Gram matrix from here on. Keep in mind that this new matrix still contains the 'distance from zero' information along its diagonal.
 
 The correspondence between Gram matrices and distance matrices is given by the [polarization identity](https://en.wikipedia.org/wiki/Polarization_identity) (parallelogram rule):
 $$ \begin{align}
