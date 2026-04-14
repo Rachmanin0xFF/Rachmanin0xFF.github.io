@@ -10,14 +10,14 @@ date: 2026-02-07
 more portrait practice (pathologic fanart)
 ## SEPARATOR ##
 ---
-title: fishman
+title: sardine
 description: Art
 layout: artpage.html
-artpath: fishman.png
-date: 2026-01-27
+artpath: sardine.png
+date: 2026-04-14
 ---
 
-some painting practice
+first time really trying acrylic paints
 ## SEPARATOR ##
 
 ---
