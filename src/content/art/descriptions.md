@@ -13,7 +13,7 @@ more portrait practice (pathologic fanart)
 title: sardine
 description: Art
 layout: artpage.html
-artpath: sardine.png
+artpath: sardine.jpg
 date: 2026-04-14
 ---
 
