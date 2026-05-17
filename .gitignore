@@ -6,3 +6,4 @@ __pycache__/
 *.pyc
 src/thumbnail_hashes.json
 src/content/art/thumbnails/*
+*.DS_STORE
