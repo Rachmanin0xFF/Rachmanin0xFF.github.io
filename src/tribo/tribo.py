@@ -328,7 +328,7 @@ class Tribo:
             return hashlib.sha256(open(p, "rb").read()).hexdigest()
 
         for path in static_input.glob("**/*.*"):
-            if path.suffix in [".md", ".markdown", ".mdx", ".html", ".htm"]:
+            if path.suffix in [".md", ".markdown", ".mdx"]:
                 continue
             relative_path = path.relative_to(static_input)
             output_path = static_output / relative_path
