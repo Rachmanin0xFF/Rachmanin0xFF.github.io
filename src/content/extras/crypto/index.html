@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sneak-sneak</title>
+</head>
+
+<body>
+    <main>
+        <h1>Secret page</h1>
+    </main>
+
+    <form>
+        <div>
+            <label for="passphrase">Decryption key: </label>
+            <input type="text" id="passphrase" name="passphrase" placeholder="12345 :-]" />
+        </div>
+        <div>
+            <button>Submit</button>
+        </div>
+    </form>
+    <h2 id ="status">Still encrypted...</h2>
+    <div id="content">
+
+    </div>
+
+    <script>
+        let bodycopy = "VyMcw6njoMq2C+Jtcd2ZZClnUxaKd+A+5RA0UvI9pZtG1ykp+GgbDR/BfI+BFijyW7pua+KavY0Azw==";
+        document.getElementById("content").innerHTML = bodycopy;
+        async function deriveKey(passphrase, salt) {
+            const enc = new TextEncoder();
+            const keyMaterial = await crypto.subtle.importKey(
+                "raw", enc.encode(passphrase), "PBKDF2", false, ["deriveKey"]
+            );
+            return crypto.subtle.deriveKey(
+                { name: "PBKDF2", salt, iterations: 600_000, hash: "SHA-256" },
+                keyMaterial,
+                { name: "AES-GCM", length: 256 },
+                false,
+                ["encrypt", "decrypt"]
+            );
+        }
+        async function decrypt(base64, passphrase) {
+            const packed = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+            const salt = packed.slice(0, 16);
+            const iv = packed.slice(16, 28);
+            const ct = packed.slice(28);
+            const key = await deriveKey(passphrase, salt);
+            const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ct);
+            return new TextDecoder().decode(pt);
+        }
+        document.querySelector("button").addEventListener("click", (e) => {
+            e.preventDefault(); // prevent form submission/page reload
+            const passphrase = document.getElementById("passphrase").value;
+            let msg = decrypt(bodycopy, passphrase).then((msg) => {
+                document.getElementById("status").textContent = "Decrypted!";
+                document.getElementById("content").innerHTML = msg;
+            })
+        });
+    </script>
+</body>
+
+<!--
+// --- Shared helpers ---
+async function deriveKey(passphrase, salt) {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw", enc.encode(passphrase), "PBKDF2", false, ["deriveKey"]
+  );
+  return crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt, iterations: 600_000, hash: "SHA-256" },
+    keyMaterial,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt", "decrypt"]
+  );
+}
+
+// --- Encrypt (run this once to produce the ciphertext) ---
+async function encrypt(plaintext, passphrase) {
+  const enc = new TextEncoder();
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv   = crypto.getRandomValues(new Uint8Array(12));
+  const key  = await deriveKey(passphrase, salt);
+  const ct   = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv }, key, enc.encode(plaintext)
+  );
+  // Pack salt + iv + ciphertext into one base64 string
+  const packed = new Uint8Array(salt.length + iv.length + new Uint8Array(ct).length);
+  packed.set(salt, 0);
+  packed.set(iv, 16);
+  packed.set(new Uint8Array(ct), 28);
+  return btoa(String.fromCharCode(...packed));
+}
+-->
+
+</html>
