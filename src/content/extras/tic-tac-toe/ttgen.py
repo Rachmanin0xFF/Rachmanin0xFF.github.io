@@ -1,9 +1,45 @@
 from PIL import Image, ImageDraw
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
+from abc import ABC, abstractmethod
+import copy
 
 # If this is set to true, once the bot is in an absolutely-winning state, it
 # will pick the win path that takes the MOST turns to complete.
 BE_A_DICK = True
+
+# board layout:
+# 0 1 2
+# 3 4 5
+# 6 7 8
+
+# state string is just 01233456789
+# e.g.
+#   X O _
+#   _ X _
+#   _ _ O
+# is recorded as
+# "XO__X___O"
+
+# I considered using bitboards here, but for tictactoe, and in python... ehhhh....
+def is_win(state):
+    # there's not even ten of them lol. just write it out
+    winning_combos = [[0, 1, 2], # horizontal
+                      [3, 4, 5],
+                      [6, 7, 8],
+
+                      [0, 3, 6], # vertical
+                      [1, 4, 7],
+                      [2, 5, 8],
+
+                      [0, 4, 8], # diagonal
+                      [2, 4, 6]]
+    for x, y, z in winning_combos:
+        selection = f"{state[x]}{state[y]}{state[z]}"
+        if selection == "XXX":
+            return "X"
+        elif selection == "OOO":
+            return "O"
+    return "_" # I'm overloading this symbol to mean "nobody wins"... maybe stupid
 
 def validate_state(state):
     if len(state) != 9:
@@ -24,9 +60,7 @@ def draw_board(state_serialized, size=300):
     if not validate_state(state_serialized):
         raise ValueError(f"{state_serialized} is not a valid tic-tac-toe board!")
     
-    state = [[state_serialized[0], state_serialized[1], state_serialized[2]],
-             [state_serialized[3], state_serialized[4], state_serialized[5]],
-             [state_serialized[6], state_serialized[7], state_serialized[8]]]
+    state = [(lambda a, i: [a[k+i] for k in range(3)])(state_serialized, j) for j in range(0, 9, 3)]
     
     img = Image.new("RGB", (size, size), "white")
     d = ImageDraw.Draw(img)
@@ -60,86 +94,55 @@ def state_to_pretty_string(state):
 └───┴───┴───┘
         """
 
-# board layout:
-# 0 1 2
-# 3 4 5
-# 6 7 8
-
-# state string is just 01233456789
-
-# I considered using bitboards here, but for tictactoe, and in python... ehhhh....
-def is_win(state):
-    # there's not even ten of them lol. just write it out
-    winning_combos = [[0, 1, 2], # horizontal
-                      [3, 4, 5],
-                      [6, 7, 8],
-
-                      [0, 3, 6], # vertical
-                      [1, 4, 7],
-                      [2, 5, 8],
-
-                      [0, 4, 8], # diagonal
-                      [2, 4, 6]]
-    for x, y, z in winning_combos:
-        selection = f"{state[x]}{state[y]}{state[z]}"
-        if selection == "XXX":
-            return "X"
-        elif selection == "OOO":
-            return "O"
-    return "_" # I'm overloading this symbol to mean "nobody wins"... maybe stupid
-
-from enum import Enum
-
-class Ternary(Enum):
-    YES = 1
-    MAYBE = 2
-    NO = 3
-
-def ternary_or(a, b):
-    return [Ternary.YES, Ternary.MAYBE, Ternary.NO][min(a.value, b.value) - 1]
-def ternary_and(a, b):
-    return [Ternary.YES, Ternary.MAYBE, Ternary.NO][max(a.value, b.value) - 1]
-def ternary_not(a):
-    return [Ternary.YES, Ternary.MAYBE, Ternary.NO][4 - a.value]
-def ternary_mix(a, b):
-    x = a.value + b.value
-    if x == 2:
-        return Ternary.YES
-    elif x == 6:
-        return Ternary.NO
-    return Ternary.MAYBE
-
-def apply_repeated_binary_operation(func, vals: list):
-    if len(vals) == 0:
-        raise ValueError("Cannot appply operation to empty array!")
-    res = vals[0]
-    for val in vals[1:]:
-        res = func(res, val)
-    return res;
+# Welcome to the well-designed part of the code
 
 @dataclass
-class GamePlayerState:
-    win: Ternary = Ternary.NO
-    tie: Ternary = Ternary.NO
-    time_to_win: int = 0
+class GamePlayerState(ABC):
+    moves_to_end: int = 0
 
-    def get_priority(self) -> float:
-        """This return a score (lower is better) that matches *my* preferences when I play tic-tac-toe."""
-        score = (self.win.value - 1) * 3 + self.tie.value
-        if score == 7:
-            score = 5
-        elif score == 5 or score == 6:
+    @abstractmethod
+    def get_score(self) -> float:
+        """Return a score for this state. Higher is better."""
+        pass
+
+    @staticmethod
+    def from_child(child) -> GamePlayerState:
+        """
+        When the solver is assigning states to the game tree, it initializes parent states by copying their
+        best-scoring children. This function gives you the option to modify the state when this action is
+        performed.
+        
+        The only application I'm using it for here is to keep track of the "time-to-win" for a
+        particular state... this lets us prioritize winning quickly (or winning slowly).
+        """
+        return copy.deepcopy(child)
+
+@dataclass(unsafe_hash=True)
+class TicTacToeState(GamePlayerState):
+    win: bool = False
+    tie: bool = False
+
+    def get_score(self) -> float:
+        """This return a score (higher is better) that matches *my* preferences when I play tic-tac-toe."""
+        score = 0
+        if self.win:
+            score += 2
+        if self.tie:
             score += 1
-        return score - self.time_to_win*0.01 * (1 if BE_A_DICK else -1)
+        return score + self.moves_to_end*0.01 * (1 if BE_A_DICK else -1)
+
+    @staticmethod
+    def from_child(c: TicTacToeState) -> TicTacToeState:
+        return TicTacToeState(
+            win=c.win,
+            tie=c.tie,
+            moves_to_end=c.moves_to_end + 1
+        )
     
-def increment_age(c: GamePlayerState) -> GamePlayerState:
-    return GamePlayerState(c.win, c.tie, c.time_to_win + 1)
-
-from dataclasses import dataclass, field
-import dataclasses
-
+# ...end the well-designed part of the code
+    
 @dataclass(unsafe_hash=True) # frozen so we can make sets
-class RichState:
+class BoardState:
     state: str
     parent_states: str = field(compare=False)
     child_states: str = field(compare=False)
@@ -147,8 +150,8 @@ class RichState:
     level: int
     who_just_went: str
 
-    x_state: GamePlayerState = field(default_factory=GamePlayerState)
-    o_state: GamePlayerState = field(default_factory=GamePlayerState)
+    x_state: TicTacToeState = field(default_factory=TicTacToeState)
+    o_state: TicTacToeState = field(default_factory=TicTacToeState)
 
     suggested_o_choice: str = ""
     suggested_x_choice: str = ""
@@ -156,11 +159,13 @@ class RichState:
     def __repr__(self):
         fields_str = ", ".join(
             f"\n{f.name}={getattr(self, f.name)!r}" 
-            for f in dataclasses.fields(self)
+            for f in fields(self)
         )
         return "---\n" + fields_str + "\n" + state_to_pretty_string(self.state) + "\n---"
 
-boards = [RichState(
+
+def build_board_tree():
+    boards = [BoardState(
             state="_________",
             parent_states="",
             child_states="",
@@ -168,131 +173,112 @@ boards = [RichState(
             level=0,
             who_just_went="O",
         )]
+    current_boards = boards.copy()
+    level = 0
+    turn = 'X'
+    while True:
+        child_states = []
+        j = 0
+        for board in current_boards:
+            # find possible child states for this board
+            children = []
+            for i in range(0, 9):
+                if board.state[i] == "_" and board.win == "_":
+                    updated_state = board.state[:i] + turn + board.state[i+1:]
+                    children.append((updated_state, board.state))
+                    j+=1
+            board.child_states = " ".join([x[0] for x in children])
+            child_states.extend(children)
+        if j==0:
+            break
+        
+        # go through all children for ALL boards (potentially including duped states)
+        # and agg the parents, keyed by child ID
+        family_registry = {}
+        for state, parent_state in child_states:
+            if state in family_registry:
+                family_registry[state].append(parent_state)
+            else:
+                family_registry[state] = [parent_state]
 
-current_boards = boards.copy()
-level = 0
-turn = 'X'
-while True:
-    child_states = []
-    j = 0
-    for board in current_boards:
-        # find possible child states for this board
-        children = []
-        for i in range(0, 9):
-            if board.state[i] == "_" and board.win == "_":
-                updated_state = board.state[:i] + turn + board.state[i+1:]
-                children.append((updated_state, board.state))
-                j+=1
-        board.child_states = " ".join([x[0] for x in children])
-        child_states.extend(children)
-    if j==0:
-        break
-    
-    # go through all children for ALL boards (potentially including duped states)
-    # and agg the parents, keyed by child ID
-    family_registry = {}
-    for state, parent_state in child_states:
-        if state in family_registry:
-            family_registry[state].append(parent_state)
-        else:
-            family_registry[state] = [parent_state]
+        # now we de-dupe the children and include with the aggregated list of parents
+        new_boards = []
+        for state in set([state for state, _ in child_states]):
+            does_it_win = is_win(state)
+            parents = family_registry[state]
+            new_boards.append(BoardState(
+                state=state,
+                parent_states=" ".join(parents),
+                child_states = "",
+                win=does_it_win,
+                level=board.level + 1,
+                who_just_went=turn,
+            ))
+        
+        # toggle
+        if turn == 'O':
+            turn = 'X'
+        elif turn == 'X':
+            turn = 'O'
+        
+        boards.extend(list(new_boards))
+        current_boards = new_boards
 
-    # now we de-dupe the children and include with the aggregated list of parents
-    new_boards = []
-    for state in set([state for state, _ in child_states]):
-        does_it_win = is_win(state)
-        parents = family_registry[state]
-        new_boards.append(RichState(
-            state=state,
-            parent_states=" ".join(parents),
-            child_states = "",
-            win=does_it_win,
-            level=board.level + 1,
-            who_just_went=turn,
-        ))
-    
-    # toggle
-    if turn == 'O':
-        turn = 'X'
-    elif turn == 'X':
-        turn = 'O'
-    
-    boards.extend(list(new_boards))
-    current_boards = new_boards
+    boards_dict = dict(zip([b.state for b in boards], boards))
+    return boards, boards_dict
 
-boards_dict = dict(zip([b.state for b in boards], boards))
+def solve_game(boards, boards_dict):
+    # now we prune it...
+    # specifically, we propagate up the tree level-by-level
 
-# now we prune it...
-# specifically, we propagate up the tree level-by-level
+    # note that n_o_wins and n_x_wins contain the number of *paths* to victory
+    # (which is far higher than the number of actual victory states!)
 
-# note that n_o_wins and n_x_wins contain the number of *paths* to victory
-# (which is far higher than the number of actual victory states!)
+    max_depth = max([b.level for b in boards])
 
-max_depth = max([b.level for b in boards])
-
-win = GamePlayerState(win=Ternary.YES, tie=Ternary.NO)
-lose = GamePlayerState(win=Ternary.NO, tie=Ternary.NO)
-tie = GamePlayerState(win=Ternary.NO, tie=Ternary.YES)
-for board in boards:
-    if board.win == 'X':
-        board.x_state = win
-        board.o_state = lose
-    elif board.win == 'O':
-        board.x_state = lose
-        board.o_state = win
-    elif board.win == '_':
-        board.x_state = tie
-        board.o_state = tie
-
-def join_turntaker_states(states: list[GamePlayerState]):
-    can_win = apply_repeated_binary_operation(ternary_or, [x.win for x in states])
-    can_tie = apply_repeated_binary_operation(ternary_or, [x.tie for x in states])
-    
-    return GamePlayerState(win=can_win, tie=can_tie)
-    
-def join_enemy_states(states):
-    can_win = apply_repeated_binary_operation(ternary_mix, [x.win for x in states])
-    can_tie = apply_repeated_binary_operation(ternary_mix, [x.tie for x in states])
-    
-    return GamePlayerState(win=can_win, tie=can_tie)
-
-for i in range(max_depth, 0, -1):
-    j = 0
+    win = TicTacToeState(win=True, tie=False)
+    lose = TicTacToeState(win=False, tie=False)
+    tie = TicTacToeState(win=False, tie=True)
     for board in boards:
-        if board.level == i and board.child_states:
-            child_names = board.child_states.split(" ")
+        if board.win == 'X':
+            board.x_state = win
+            board.o_state = lose
+        elif board.win == 'O':
+            board.x_state = lose
+            board.o_state = win
+        elif board.win == '_':
+            board.x_state = tie
+            board.o_state = tie
 
-            children_x_states = [boards_dict[key].x_state for key in child_names]
-            children_o_states = [boards_dict[key].o_state for key in child_names]
+    for i in range(max_depth, 0, -1):
+        j = 0
+        for board in boards:
+            if board.level == i and board.child_states:
+                child_names = board.child_states.split(" ")
 
-            children_x_state_scores = [state.get_priority() for state in children_x_states]
-            children_o_state_scores = [state.get_priority() for state in children_o_states]
+                children_x_states = [boards_dict[key].x_state for key in child_names]
+                children_o_states = [boards_dict[key].o_state for key in child_names]
 
-            if board.who_just_went == 'X':
+                children_x_state_scores = [state.get_score() for state in children_x_states]
+                children_o_state_scores = [state.get_score() for state in children_o_states]
 
-                choice_of_o = children_o_state_scores.index(min(children_o_state_scores))
-                board.x_state = increment_age(children_x_states[choice_of_o])
-                board.o_state = increment_age(children_o_states[choice_of_o])
+                if board.who_just_went == 'X':
 
-                board.suggested_o_choice = child_names[choice_of_o]
-            elif board.who_just_went == 'O':
+                    choice_of_o = children_o_state_scores.index(max(children_o_state_scores))
+                    board.x_state = TicTacToeState.from_child(children_x_states[choice_of_o])
+                    board.o_state = TicTacToeState.from_child(children_o_states[choice_of_o])
 
-                choice_of_x = children_x_state_scores.index(min(children_x_state_scores))
-                board.x_state = increment_age(children_x_states[choice_of_x])
-                board.o_state = increment_age(children_o_states[choice_of_x])
+                    board.suggested_o_choice = child_names[choice_of_o]
+                elif board.who_just_went == 'O':
 
-                board.suggested_x_choice = child_names[choice_of_x]
-            
-            if board.state == "OXX_O_X__":
-                print("\n\n\n\n========================")
-                for child in child_names:
-                    print(boards_dict[child])
-                print(board)
-                print(f"{children_o_states}\n{children_o_state_scores}\n{children_o_states}")
-                print(choice_of_x)
-                
-                
-boards_dict = dict(zip([b.state for b in boards], boards))
+                    choice_of_x = children_x_state_scores.index(max(children_x_state_scores))
+                    board.x_state = TicTacToeState.from_child(children_x_states[choice_of_x])
+                    board.o_state = TicTacToeState.from_child(children_o_states[choice_of_x])
+
+                    board.suggested_x_choice = child_names[choice_of_x]
+
+boards, boards_dict = build_board_tree()
+solve_game(boards, boards_dict)
 
 boards_filtered = []
 working_arr = [boards[0]]
@@ -316,8 +302,8 @@ def gen_json(board_list, filename):
         "boards":
         {
             b.state: {
-                "parents": b.parent_states.split(" "),
-                "children": b.child_states.split(" "),
+                "parents": b.parent_states.split(" ") if b.parent_states else [],
+                "children": b.child_states.split(" ") if b.child_states else [],
                 "x_win": b.win == "X",
                 "o_win": b.win == "O",
                 "moves_so_far": b.level,
