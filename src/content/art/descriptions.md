@@ -1,5 +1,16 @@
 ## SEPARATOR ##
 ---
+title: spring sketches
+description: Art
+layout: artpage.html
+artpath: sketches.png
+date: 2026-05-20
+---
+
+sketches and doodles from Spring '26
+
+## SEPARATOR ##
+---
 title: fish 408
 description: Art
 layout: artpage.html
