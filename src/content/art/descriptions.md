@@ -1,5 +1,18 @@
 ## SEPARATOR ##
 ---
+title: fish 408
+description: Art
+layout: artpage.html
+artpath: fish408.png
+date: 2026-06-15
+---
+
+something is very wrong...
+
+drawn on my new iPad (yay)
+
+## SEPARATOR ##
+---
 title: dankovsky
 description: Art
 layout: artpage.html
