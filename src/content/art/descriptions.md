@@ -4,10 +4,10 @@ title: wool sweater
 description: Art
 layout: artpage.html
 artpath: smogger2.png
-date: 2026-05-20
+date: 2026-06-22
 ---
 
-I have smoked a cig just once. I feel like it was enough.
+I smoked a cig just once. I feel like it was enough.
 
 In art (blog) news, I'm really digging ArtStudio Pro's "pigment" brushes.
 
