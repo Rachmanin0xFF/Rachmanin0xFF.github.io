@@ -1,5 +1,18 @@
 ## SEPARATOR ##
 ---
+title: wool sweater
+description: Art
+layout: artpage.html
+artpath: smogger.png
+date: 2026-05-20
+---
+
+I have smoked a cig just once. I feel like it was enough.
+
+In art (blog) news, I'm really digging ArtStudio Pro's "pigment" brushes.
+
+## SEPARATOR ##
+---
 title: spring sketches
 description: Art
 layout: artpage.html
