@@ -3,7 +3,7 @@
 title: wool sweater
 description: Art
 layout: artpage.html
-artpath: smogger.png
+artpath: smogger2.png
 date: 2026-05-20
 ---
 
