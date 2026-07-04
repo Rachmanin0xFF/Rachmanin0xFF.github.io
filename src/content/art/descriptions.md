@@ -1,5 +1,16 @@
 ## SEPARATOR ##
 ---
+title: live in a house
+description: Art
+layout: artpage.html
+artpath: live_in_a_house.png
+date: 2026-06-22
+---
+
+feeling done with portraits for now
+
+## SEPARATOR ##
+---
 title: wool sweater
 description: Art
 layout: artpage.html
