@@ -9,9 +9,11 @@ Built on jinja2 and markdown for adamlastowka.com
 """
 
 import hashlib
+import importlib.util
 import logging
 import re
 import shutil
+import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -24,6 +26,8 @@ from markdown.extensions import Extension
 from markdown.blockprocessors import BlockProcessor
 import xml.etree.ElementTree as etree
 import yaml
+
+BUILD_SCRIPT_NAME = "_build.py"
 
 
 @dataclass
@@ -313,6 +317,50 @@ class Tribo:
             self.content_root, skip_existing=skip_existing
         )
 
+    def run_build_scripts(self) -> None:
+        """Run each content build hook in path order."""
+        for script in sorted(self.content_root.glob(f"**/{BUILD_SCRIPT_NAME}")):
+            source_dir = script.parent
+            output_dir = self.output_root / source_dir.relative_to(self.content_root)
+            output_dir.mkdir(parents=True, exist_ok=True)
+
+            spec = importlib.util.spec_from_file_location(script.stem, script)
+            if spec is None or spec.loader is None:
+                raise ImportError(f"Could not load build script {script}")
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            if not callable(getattr(module, "build", None)):
+                raise AttributeError(f"{script} defines no build() function")
+
+            self.logger.info(f"Running build script {script}")
+            module.build(source_dir, output_dir, self)
+
+    def _gitignored(self, paths: list[Path]) -> set[Path]:
+        """Return paths that git ignores, including nested rules and negations.
+
+        A source tarball has no git repository, so this method treats its files
+        as publishable when `git check-ignore` is unavailable.
+        """
+        if not paths:
+            return set()
+        try:
+            proc = subprocess.run(
+                ["git", "check-ignore", "-z", "--stdin"],
+                input="\0".join(str(p.resolve()) for p in paths),
+                capture_output=True,
+                text=True,
+            )
+        except OSError as e:
+            self.logger.warning(f"Could not consult git about ignored files: {e}")
+            return set()
+        # 0 = some paths ignored, 1 = none ignored, anything else is a real error.
+        if proc.returncode > 1:
+            self.logger.warning(
+                f"git check-ignore failed ({proc.returncode}): {proc.stderr.strip()}"
+            )
+            return set()
+        return {Path(p) for p in proc.stdout.split("\0") if p}
+
     def _copy_static_files_recursive(
         self, input_directory: Path | str, skip_existing: bool = True
     ) -> None:
@@ -327,8 +375,17 @@ class Tribo:
         def file_hash(p):
             return hashlib.sha256(open(p, "rb").read()).hexdigest()
 
-        for path in static_input.glob("**/*.*"):
-            if path.suffix in [".md", ".markdown", ".mdx"]:
+        candidates = [
+            p
+            for p in static_input.glob("**/*.*")
+            if p.suffix not in [".md", ".markdown", ".mdx"]
+            and p.name != BUILD_SCRIPT_NAME
+        ]
+        ignored = self._gitignored(candidates)
+
+        for path in candidates:
+            if path.resolve() in ignored:
+                self.logger.info(f"Skipping git-ignored file {path}")
                 continue
             relative_path = path.relative_to(static_input)
             output_path = static_output / relative_path

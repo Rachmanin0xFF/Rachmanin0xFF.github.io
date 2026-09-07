@@ -52,3 +52,5 @@ tribo.render_markdown(notfound, rename_to_index=False)
 
 concat_pages = tribo.parse_markdown("concatpages")
 tribo.render_markdown(concat_pages, posts=posts, artwork=artwork, sounds=sounds)
+
+tribo.run_build_scripts()
