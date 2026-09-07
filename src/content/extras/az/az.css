@@ -27,12 +27,58 @@ main canvas {
     height: auto;
 }
 
+.az-field {
+    position: relative;
+    display: inline-block;
+    padding: 8px;
+}
+
+.az-sketch {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 0;
+}
+
+.az-sketch-hover {
+    opacity: 0;
+}
+
+.az-field:has(button:focus-visible) .az-sketch-hover,
+.az-field:has(button:active) .az-sketch-hover {
+    opacity: 1;
+}
+
+.az-field:has(button:focus-visible) .az-sketch-normal,
+.az-field:has(button:active) .az-sketch-normal {
+    opacity: 0;
+}
+
+@media (hover: hover) {
+    .az-field:has(button:hover) .az-sketch-hover {
+        opacity: 1;
+    }
+
+    .az-field:has(button:hover) .az-sketch-normal {
+        opacity: 0;
+    }
+}
+
 .az-unlock input,
 .az-unlock button {
+    position: relative;
+    z-index: 1;
+    display: block;
     box-sizing: border-box;
-    border: 1px solid #b0b0b0;
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
     border-radius: 0;
-    background: #000;
+    outline: none;
+    background: transparent;
     color: #b0b0b0;
     font: inherit;
     letter-spacing: inherit;
@@ -47,8 +93,15 @@ main canvas {
     cursor: pointer;
 }
 
-.az-unlock button:hover,
-.az-unlock button:focus-visible {
+.az-unlock button:focus-visible,
+.az-unlock button:active {
     background: #b0b0b0;
     color: #000;
+}
+
+@media (hover: hover) {
+    .az-unlock button:hover {
+        background: #b0b0b0;
+        color: #000;
+    }
 }

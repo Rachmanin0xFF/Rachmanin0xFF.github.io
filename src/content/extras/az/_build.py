@@ -23,14 +23,31 @@ VOID_TAGS = {
 }
 
 RUNTIME = """
+<script>
+if (location.search.includes("debug")) {
+    document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/eruda/3.4.3/eruda.min.js"><\\/script>');
+    document.write('<script>eruda.init();<\\/script>');
+}
+</script>
+<svg style="position:absolute;width:0;height:0" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="az-ink" x="-30%" y="-60%" width="160%" height="220%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="7" result="grain"/>
+      <feComponentTransfer in="grain" result="grainAlpha">
+        <feFuncA type="linear" slope="2.6" intercept="-0.7"/>
+      </feComponentTransfer>
+      <feComposite in="SourceGraphic" in2="grainAlpha" operator="in"/>
+    </filter>
+  </defs>
+</svg>
 <style>
     .az-unlock { display: grid; place-items: center; min-height: 9rem; }
     .az-unlock input { min-width: 18rem; }
     .az-cursor { background: #fff; color: #000; }
 </style>
 <section class="az-unlock">
-    <label><input id="az-key" autocomplete="off" spellcheck="false"></label>
-    <button id="az-unlock-button" type="button">Unlock</button>
+    <label class="az-field"><input id="az-key" autocomplete="off" spellcheck="false"></label>
+    <span class="az-field"><button id="az-unlock-button" type="button">Unlock</button></span>
 </section>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -44,9 +61,142 @@ document.addEventListener("DOMContentLoaded", () => {
     const normalize = key => key.trim().toUpperCase();
     let attempt = 0;
 
+    function mulberry32(seed) {
+        return function () {
+            seed |= 0;
+            seed = (seed + 0x6D2B79F5) | 0;
+            let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+            t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+    }
+
+    // A single wobbly, hand-scrawled stroke around a rectangle: jittered
+    // corners, one gentle bow per edge, and a short pen-lift flick where
+    // the line closes back on itself.
+    function inkRectPath(x, y, w, h, rand) {
+        const jitter = amt => (rand() - 0.5) * 2 * amt;
+        const corner = (cx, cy) => [cx + jitter(1.2), cy + jitter(1.2)];
+        const bow = (p1, p2, amt) => {
+            const mx = (p1[0] + p2[0]) / 2;
+            const my = (p1[1] + p2[1]) / 2;
+            const dx = p2[0] - p1[0];
+            const dy = p2[1] - p1[1];
+            const len = Math.hypot(dx, dy) || 1;
+            const offset = jitter(amt);
+            return [mx + (-dy / len) * offset, my + (dx / len) * offset];
+        };
+        const tl = corner(x, y);
+        const tr = corner(x + w, y);
+        const br = corner(x + w, y + h);
+        const bl = corner(x, y + h);
+        const top = bow(tl, tr, 1.6);
+        const right = bow(tr, br, 1.6);
+        const bottom = bow(br, bl, 1.6);
+        const left = bow(bl, tl, 1.6);
+        let d = `M ${tl[0]} ${tl[1]}`;
+        d += ` Q ${top[0]} ${top[1]} ${tr[0]} ${tr[1]}`;
+        d += ` Q ${right[0]} ${right[1]} ${br[0]} ${br[1]}`;
+        d += ` Q ${bottom[0]} ${bottom[1]} ${bl[0]} ${bl[1]}`;
+        d += ` Q ${left[0]} ${left[1]} ${tl[0]} ${tl[1]}`;
+        return d;
+    }
+
+    function sketchField(field) {
+        const control = field.querySelector("input, button");
+        if (!control) return;
+        field.querySelectorAll(".az-sketch").forEach(svg => svg.remove());
+        const pad = 8;
+        const width = control.offsetWidth;
+        const height = control.offsetHeight;
+        const baseSeed = Math.round(width * 7 + height * 13 + (control.id ? control.id.length : 0) * 101);
+        const draw = (className, stroke, seed) => {
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.classList.add("az-sketch", className);
+            svg.setAttribute("viewBox", `0 0 ${width + pad * 2} ${height + pad * 2}`);
+            field.insertBefore(svg, control);
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", inkRectPath(pad, pad, width, height, mulberry32(seed)));
+            path.setAttribute("fill", "none");
+            path.setAttribute("stroke", stroke);
+            path.setAttribute("stroke-width", "1.75");
+            path.setAttribute("stroke-linecap", "round");
+            path.setAttribute("stroke-linejoin", "round");
+            path.setAttribute("filter", "url(#az-ink)");
+            svg.appendChild(path);
+        };
+        if (control.tagName === "BUTTON") {
+            draw("az-sketch-normal", "#b0b0b0", baseSeed);
+            draw("az-sketch-hover", "#000", baseSeed + 1);
+        } else {
+            draw("az-sketch-normal", "#b0b0b0", baseSeed);
+        }
+    }
+
+    function sketchFields() {
+        document.querySelectorAll(".az-field").forEach(sketchField);
+    }
+
+    // Plain-JS SHA-256 (matches hashlib.sha256 on the build side byte for
+    // byte). crypto.subtle needs a secure context (HTTPS/localhost) and is
+    // simply unavailable over a plain-http LAN address, so we don't rely on
+    // it for what's just puzzle obfuscation, not real security.
+    function rotr(x, n) {
+        return (x >>> n) | (x << (32 - n));
+    }
+
+    function sha256(bytes) {
+        const K = new Uint32Array([
+            0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+            0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+            0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+            0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+            0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+            0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+            0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+            0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
+        ]);
+        let h0 = 0x6a09e667, h1 = 0xbb67ae85, h2 = 0x3c6ef372, h3 = 0xa54ff53a;
+        let h4 = 0x510e527f, h5 = 0x9b05688c, h6 = 0x1f83d9ab, h7 = 0x5be0cd19;
+        const len = bytes.length;
+        const bitLen = len * 8;
+        const padded = new Uint8Array(Math.ceil((len + 9) / 64) * 64);
+        padded.set(bytes);
+        padded[len] = 0x80;
+        const view = new DataView(padded.buffer);
+        view.setUint32(padded.length - 4, bitLen >>> 0, false);
+        view.setUint32(padded.length - 8, Math.floor(bitLen / 0x100000000), false);
+        const w = new Uint32Array(64);
+        for (let offset = 0; offset < padded.length; offset += 64) {
+            for (let i = 0; i < 16; i++) w[i] = view.getUint32(offset + i * 4, false);
+            for (let i = 16; i < 64; i++) {
+                const s0 = rotr(w[i - 15], 7) ^ rotr(w[i - 15], 18) ^ (w[i - 15] >>> 3);
+                const s1 = rotr(w[i - 2], 17) ^ rotr(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+                w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+            }
+            let a = h0, b = h1, c = h2, d = h3, e = h4, f = h5, g = h6, h = h7;
+            for (let i = 0; i < 64; i++) {
+                const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
+                const ch = (e & f) ^ (~e & g);
+                const temp1 = (h + S1 + ch + K[i] + w[i]) | 0;
+                const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
+                const maj = (a & b) ^ (a & c) ^ (b & c);
+                const temp2 = (S0 + maj) | 0;
+                h = g; g = f; f = e; e = (d + temp1) | 0;
+                d = c; c = b; b = a; a = (temp1 + temp2) | 0;
+            }
+            h0 = (h0 + a) | 0; h1 = (h1 + b) | 0; h2 = (h2 + c) | 0; h3 = (h3 + d) | 0;
+            h4 = (h4 + e) | 0; h5 = (h5 + f) | 0; h6 = (h6 + g) | 0; h7 = (h7 + h) | 0;
+        }
+        const out = new Uint8Array(32);
+        const outView = new DataView(out.buffer);
+        [h0, h1, h2, h3, h4, h5, h6, h7].forEach((h, i) => outView.setUint32(i * 4, h >>> 0, false));
+        return out;
+    }
+
     async function keyStream(key) {
         const keyBytes = new TextEncoder().encode(key);
-        const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", keyBytes));
+        const digest = sha256(keyBytes);
         return {
             permutation: digest,
             xor: new TextEncoder().encode(
@@ -126,82 +276,109 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function revealImage(state, hash, permutationHash, currentAttempt) {
-        const { context, locked, width, height } = state;
-        context.putImageData(locked, 0, 0);
-        const unxored = xorPixels(locked.data, hash);
-        const pixels = new ImageData(width, height);
-        const order = shuffledIndices(width * height, permutationHash);
-        for (let destination = 0; destination < order.length; destination++) {
-            const source = order[destination];
-            pixels.data.set(unxored.slice(destination * 4, destination * 4 + 4), source * 4);
-        }
-        const revealOrder = [...Array(width * height).keys()];
-        for (let index = revealOrder.length - 1; index > 0; index--) {
-            const swap = Math.floor(Math.random() * (index + 1));
-            [revealOrder[index], revealOrder[swap]] = [revealOrder[swap], revealOrder[index]];
-        }
-        const visible = new ImageData(new Uint8ClampedArray(locked.data), width, height);
-        let offset = 0;
-        function frame() {
-            if (currentAttempt !== attempt) return;
-            for (const pixel of revealOrder.slice(offset, offset + 5000)) {
-                visible.data.set(pixels.data.slice(pixel * 4, pixel * 4 + 4), pixel * 4);
+        return new Promise(resolve => {
+            const { context, locked, width, height } = state;
+            context.putImageData(locked, 0, 0);
+            const unxored = xorPixels(locked.data, hash);
+            const pixels = new ImageData(width, height);
+            const order = shuffledIndices(width * height, permutationHash);
+            for (let destination = 0; destination < order.length; destination++) {
+                const source = order[destination];
+                pixels.data.set(unxored.slice(destination * 4, destination * 4 + 4), source * 4);
             }
-            context.putImageData(visible, 0, 0);
-            offset += 5000;
-            if (offset < order.length) requestAnimationFrame(frame);
-        }
-        requestAnimationFrame(frame);
+            const revealOrder = [...Array(width * height).keys()];
+            for (let index = revealOrder.length - 1; index > 0; index--) {
+                const swap = Math.floor(Math.random() * (index + 1));
+                [revealOrder[index], revealOrder[swap]] = [revealOrder[swap], revealOrder[index]];
+            }
+            const visible = new ImageData(new Uint8ClampedArray(locked.data), width, height);
+            let offset = 0;
+            function frame() {
+                if (currentAttempt !== attempt) return resolve();
+                for (const pixel of revealOrder.slice(offset, offset + 5000)) {
+                    visible.data.set(pixels.data.slice(pixel * 4, pixel * 4 + 4), pixel * 4);
+                }
+                context.putImageData(visible, 0, 0);
+                offset += 5000;
+                if (offset < order.length) {
+                    requestAnimationFrame(frame);
+                } else {
+                    resolve();
+                }
+            }
+            requestAnimationFrame(frame);
+        });
     }
 
-    async function restoreImages(key, currentAttempt) {
-        const stream = await keyStream(key);
-        for (const image of imageNodes) {
+    function revealText(node, text, currentAttempt) {
+        return new Promise(resolve => {
+            const characters = [...text];
+            function step(characterIndex) {
+                if (currentAttempt !== attempt) return resolve();
+                const visible = [...node.textContent];
+                visible[characterIndex] = characters[characterIndex];
+                const cursor = document.createElement("span");
+                cursor.className = "az-cursor";
+                cursor.textContent = visible[characterIndex];
+                node.replaceChildren(
+                    document.createTextNode(visible.slice(0, characterIndex).join("")),
+                    cursor,
+                    document.createTextNode(visible.slice(characterIndex + 1).join("")),
+                );
+                setTimeout(() => {
+                    if (characterIndex + 1 === characters.length) {
+                        node.textContent = visible.join("");
+                        resolve();
+                    } else {
+                        step(characterIndex + 1);
+                    }
+                }, 15);
+            }
+            step(0);
+        });
+    }
+
+    // Interleaves text and image reveals in the order they appear in the
+    // document, so e.g. text -> image -> text in the HTML decodes in that
+    // same order instead of every text and every image running at once.
+    function documentOrder(a, b) {
+        const position = a.compareDocumentPosition(b);
+        return position & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+    }
+
+    async function revealAll(texts, stream, currentAttempt) {
+        const items = [
+            ...cipherNodes.map((node, index) => ({ node, text: texts[index] })),
+            ...imageNodes.map(entry => ({ image: entry })),
+        ].sort((a, b) => documentOrder(a.node || a.image.image, b.node || b.image.image));
+        for (const item of items) {
             if (currentAttempt !== attempt) return;
-            revealImage(await prepareImage(image), stream.xor, stream.permutation, currentAttempt);
+            if (item.node) {
+                await revealText(item.node, item.text, currentAttempt);
+            } else {
+                await revealImage(await prepareImage(item.image), stream.xor, stream.permutation, currentAttempt);
+            }
         }
-    }
-
-    function reveal(texts, currentAttempt, nodeIndex = 0, characterIndex = 0) {
-        if (currentAttempt !== attempt || nodeIndex === texts.length) return;
-        const characters = [...texts[nodeIndex]];
-        const node = cipherNodes[nodeIndex];
-        const visible = [...node.textContent];
-        visible[characterIndex] = characters[characterIndex];
-        if (nodeIndex + 1 === texts.length && characterIndex + 1 === characters.length) {
-            node.textContent = visible.join("");
-            return;
-        }
-        const cursor = document.createElement("span");
-        cursor.className = "az-cursor";
-        cursor.textContent = visible[characterIndex];
-        node.replaceChildren(
-            document.createTextNode(visible.slice(0, characterIndex).join("")),
-            cursor,
-            document.createTextNode(visible.slice(characterIndex + 1).join("")),
-        );
-        if (characterIndex + 1 === characters.length) {
-            setTimeout(() => {
-                node.textContent = visible.join("");
-                reveal(texts, currentAttempt, nodeIndex + 1);
-            }, 15);
-            return;
-        }
-        setTimeout(() => reveal(texts, currentAttempt, nodeIndex, characterIndex + 1), 15);
     }
 
     async function unlock() {
+        document.getElementById("az-unlock-button").blur();
         const key = normalize(document.getElementById("az-key").value);
         if (!/^[\x21-\x7e]+$/.test(key)) return showGarbage();
         const currentAttempt = ++attempt;
         showGarbage();
-        const texts = await Promise.all(
-            cipherNodes.map(node => decrypt(node.dataset.azCipher, key))
-        );
-        await Promise.all([restoreLinks(key), restoreImages(key, currentAttempt)]);
-        setTimeout(() => {
-            reveal(texts.map(display), currentAttempt);
-        }, 350);
+        try {
+            const [texts, stream] = await Promise.all([
+                Promise.all(cipherNodes.map(node => decrypt(node.dataset.azCipher, key))),
+                keyStream(key),
+            ]);
+            await restoreLinks(key);
+            setTimeout(() => {
+                revealAll(texts.map(display), stream, currentAttempt);
+            }, 350);
+        } catch (error) {
+            console.error("az unlock failed:", error);
+        }
     }
 
     document.getElementById("az-unlock-button").addEventListener("click", unlock);
@@ -209,6 +386,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (event.key === "Enter") unlock();
     });
     showGarbage();
+
+    sketchFields();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(sketchFields);
+    let sketchResizeTimer;
+    window.addEventListener("resize", () => {
+        clearTimeout(sketchResizeTimer);
+        sketchResizeTimer = setTimeout(sketchFields, 150);
+    });
 });
 </script>
 """
