@@ -272,6 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
         state.context.drawImage(image, 0, 0, state.width, state.height);
         state.locked = state.context.getImageData(0, 0, state.width, state.height);
         image.replaceWith(state.canvas);
+        state.image = state.canvas;
         return state;
     }
 
