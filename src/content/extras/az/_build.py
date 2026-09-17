@@ -7,6 +7,7 @@ from html import escape
 from html.parser import HTMLParser
 import mimetypes
 from pathlib import Path
+from typing import NamedTuple
 
 from PIL import Image
 
@@ -16,6 +17,18 @@ LINK_MAGIC = "az-link:"
 IMAGE_MAGIC = b"az-image:"
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp"}
 SKIP_TEXT_TAGS = {"script", "style", "textarea"}
+PLAIN_ATTR = "data-az-plain"
+UNLOCK_ATTR = "data-az-unlock"
+FIELDS_TOKEN = "<!--az-fields-->"
+UNLOCK_TOKEN = "<!--az-unlock-here-->"
+
+
+class Frame(NamedTuple):
+    """One open element: whether it turned cleartext on, and whether it vanished."""
+
+    tag: str
+    opened_plain: bool
+    swallowed: bool
 GARBAGE_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#$%*+=?"
 VOID_TAGS = {
     "area", "base", "br", "col", "embed", "hr", "img", "input", "link",
@@ -41,12 +54,13 @@ if (location.search.includes("debug")) {
   </defs>
 </svg>
 <style>
-    .az-unlock { display: grid; place-items: center; min-height: 9rem; }
-    .az-unlock input { min-width: 18rem; }
+    .az-unlock { display: grid; place-items: center; gap: 0.35rem; min-height: 9rem; padding: 2rem 0; }
+    .az-unlock input { min-width: 18rem; text-align: center; }
+    .az-prompt { display: block; text-align: center; font-size: 0.8rem; opacity: 0.65; }
     .az-cursor { background: #fff; color: #000; }
 </style>
 <section class="az-unlock">
-    <label class="az-field"><input id="az-key" autocomplete="off" spellcheck="false"></label>
+<!--az-fields-->
     <span class="az-field"><button id="az-unlock-button" type="button">Unlock</button></span>
 </section>
 <script>
@@ -58,7 +72,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const linkNodes = [...document.querySelectorAll("[data-az-href]")];
     const imageNodes = [...document.querySelectorAll("[data-az-image]")].map(image => ({ image }));
     const bytes = encoded => Uint8Array.from(atob(encoded), char => char.charCodeAt(0));
-    const normalize = key => key.trim().toUpperCase();
+    const keyInputs = [...document.querySelectorAll("[data-az-field]")];
+    // Forgiving on purpose: this gets typed one-handed on a phone in the sun,
+    // so case, spaces and punctuation are all thrown away before hashing. The
+    // build side folds the authored answer exactly the same way.
+    const normalize = value => value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    const composedKey = () => keyInputs.map(input => normalize(input.value)).join("");
     let attempt = 0;
 
     function mulberry32(seed) {
@@ -109,7 +128,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const pad = 8;
         const width = control.offsetWidth;
         const height = control.offsetHeight;
-        const baseSeed = Math.round(width * 7 + height * 13 + (control.id ? control.id.length : 0) * 101);
+        const seedSalt = Number(control.dataset.azSeed || 0);
+        const baseSeed = Math.round(width * 7 + height * 13 + seedSalt * 101);
         const draw = (className, stroke, seed) => {
             const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             svg.classList.add("az-sketch", className);
@@ -364,8 +384,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function unlock() {
         document.getElementById("az-unlock-button").blur();
-        const key = normalize(document.getElementById("az-key").value);
-        if (!/^[\x21-\x7e]+$/.test(key)) return showGarbage();
+        const key = composedKey();
+        if (!key || keyInputs.some(input => !normalize(input.value))) return showGarbage();
         const currentAttempt = ++attempt;
         showGarbage();
         try {
@@ -383,9 +403,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.getElementById("az-unlock-button").addEventListener("click", unlock);
-    document.getElementById("az-key").addEventListener("keydown", event => {
-        if (event.key === "Enter") unlock();
-    });
+    for (const input of keyInputs) {
+        input.addEventListener("keydown", event => {
+            if (event.key === "Enter") unlock();
+        });
+    }
     showGarbage();
 
     sketchFields();
@@ -401,56 +423,86 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 class TextEncryptor(HTMLParser):
-    """Copy HTML while replacing visible text nodes with encrypted spans."""
+    """Copy HTML while replacing visible text nodes with encrypted spans.
+
+    Anything inside an element marked `data-az-plain` is copied through
+    untouched, so a page can ask its question in the open and keep only the
+    answer encrypted. An element marked `data-az-unlock` is replaced by the
+    unlock box, which otherwise lands at the top of the body.
+    """
 
     def __init__(self, key: bytes, images: dict[str, tuple[str, str, str]]):
         super().__init__(convert_charrefs=True)
         self.key = key
         self.images = images
         self.parts: list[str] = []
-        self.open_tags: list[str] = []
+        self.open_tags: list[Frame] = []
+        self.plain_depth = 0
+        self.unlock_slots = 0
 
-    def handle_starttag(self, tag: str, attrs) -> None:
-        if tag == "img" and (source := dict(attrs).get("src")) in self.images:
+    @property
+    def plain(self) -> bool:
+        return self.plain_depth > 0
+
+    def _render(self, tag: str, attrs) -> str:
+        """Rewrite the one attribute that would otherwise leak, then serialize."""
+        lookup = dict(attrs)
+        replacement = None
+        if tag == "img" and (source := lookup.get("src")) in self.images:
             preview, encrypted, mime_type = self.images[source]
-            safe_attrs = [(name, value) for name, value in attrs if name != "src"]
-            safe_attrs.extend([
+            replacement = ("src", [
                 ("src", preview),
                 ("data-az-image", encrypted),
                 ("data-az-type", mime_type),
             ])
-            rendered = " ".join(
-                name if value is None else f'{name}="{escape(value, quote=True)}"'
-                for name, value in safe_attrs
-            )
-            self.parts.append(f"<{tag} {rendered}>")
-            return
-        href = dict(attrs).get("href") if tag == "a" else None
-        if href is None:
-            self.parts.append(self.get_starttag_text())
+        elif tag == "a" and (href := lookup.get("href")) is not None:
+            replacement = ("href", [("data-az-href", encrypt(LINK_MAGIC + href, self.key))])
+        if replacement is None:
+            return self.get_starttag_text()
+        dropped, added = replacement
+        safe_attrs = [(name, value) for name, value in attrs if name != dropped] + added
+        rendered = " ".join(
+            name if value is None else f'{name}="{escape(value, quote=True)}"'
+            for name, value in safe_attrs
+        )
+        return f"<{tag} {rendered}>"
+
+    def handle_starttag(self, tag: str, attrs) -> None:
+        lookup = dict(attrs)
+        swallow = UNLOCK_ATTR in lookup
+        if swallow:
+            self.parts.append(UNLOCK_TOKEN)
+            self.unlock_slots += 1
         else:
-            safe_attrs = [
-                (name, value) for name, value in attrs if name != "href"
-            ]
-            safe_attrs.append(("data-az-href", encrypt(LINK_MAGIC + href, self.key)))
-            rendered = " ".join(
-                name if value is None else f'{name}="{escape(value, quote=True)}"'
-                for name, value in safe_attrs
+            self.parts.append(
+                self.get_starttag_text() if self.plain else self._render(tag, attrs)
             )
-            self.parts.append(f"<{tag} {rendered}>")
+        opens_plain = PLAIN_ATTR in lookup and not swallow
+        if opens_plain:
+            self.plain_depth += 1
         if tag not in VOID_TAGS:
-            self.open_tags.append(tag)
+            self.open_tags.append(Frame(tag, opens_plain, swallow))
 
     def handle_startendtag(self, tag: str, attrs) -> None:
-        self.parts.append(self.get_starttag_text())
+        lookup = dict(attrs)
+        if UNLOCK_ATTR in lookup:
+            self.parts.append(UNLOCK_TOKEN)
+            self.unlock_slots += 1
+            return
+        self.parts.append(self.get_starttag_text() if self.plain else self._render(tag, attrs))
 
     def handle_endtag(self, tag: str) -> None:
-        self.parts.append(f"</{tag}>")
-        if self.open_tags and self.open_tags[-1] == tag:
-            self.open_tags.pop()
+        frame = self.open_tags.pop() if self.open_tags and self.open_tags[-1].tag == tag else None
+        if frame is None or not frame.swallowed:
+            self.parts.append(f"</{tag}>")
+        if frame is not None and frame.opened_plain:
+            self.plain_depth -= 1
 
     def handle_data(self, data: str) -> None:
-        if not data.strip() or any(tag in SKIP_TEXT_TAGS for tag in self.open_tags):
+        skip = self.plain or not data.strip() or any(
+            frame.tag in SKIP_TEXT_TAGS for frame in self.open_tags
+        )
+        if skip:
             self.parts.append(data)
             return
         cipher = encrypt(data, self.key)
@@ -463,6 +515,41 @@ class TextEncryptor(HTMLParser):
 
     def handle_decl(self, decl: str) -> None:
         self.parts.append(f"<!{decl}>")
+
+
+def fold(answer: str) -> str:
+    """Fold an authored answer the way the page folds what a player types."""
+    return "".join(
+        character for character in answer.upper() if character.isascii() and character.isalnum()
+    )
+
+
+def unlock_fields(secret: dict) -> tuple[bytes, str]:
+    """Return the page key and the markup for the inputs that compose it.
+
+    A puzzle either has one `key`, or an `answers` list whose folded values are
+    concatenated -- that is how a page can ask two separate questions (the post
+    count and the animal) and still decrypt against a single stream. `prompts`
+    labels the boxes for the player.
+    """
+    answers = secret.get("answers") or [secret["key"]]
+    prompts = secret.get("prompts") or [None] * len(answers)
+    if len(prompts) != len(answers):
+        raise ValueError("a puzzle needs one prompt per answer, or none at all")
+
+    folded = [fold(str(answer)) for answer in answers]
+    if not all(folded):
+        raise ValueError("every puzzle answer needs at least one letter or digit")
+
+    rows = []
+    for index, prompt in enumerate(prompts):
+        label = f'<span class="az-prompt">{escape(prompt)}</span>' if prompt else ""
+        rows.append(
+            f'    {label}<label class="az-field">'
+            f'<input data-az-field data-az-seed="{index}" autocomplete="off" spellcheck="false">'
+            f"</label>"
+        )
+    return "".join(folded).encode("ascii"), "\n".join(rows)
 
 
 def encrypt(text: str, key: bytes) -> str:
@@ -524,7 +611,9 @@ def garbage(text: str, key: bytes) -> str:
     return "".join(output)
 
 
-def encrypt_page(page: str, key: bytes, images: dict[str, tuple[str, str, str]]) -> str:
+def encrypt_page(
+    page: str, key: bytes, images: dict[str, tuple[str, str, str]], fields: str
+) -> str:
     """Preserve the document and replace visible body text with encrypted spans."""
     body_start = page.lower().find("<body")
     body_end = page.lower().rfind("</body>")
@@ -537,7 +626,14 @@ def encrypt_page(page: str, key: bytes, images: dict[str, tuple[str, str, str]])
     encryptor = TextEncryptor(key, images)
     encryptor.feed(page[body_open_end:body_end])
     encryptor.close()
-    return page[:body_open_end] + RUNTIME + "".join(encryptor.parts) + page[body_end:]
+    if encryptor.unlock_slots > 1:
+        raise ValueError("a puzzle page can hold at most one data-az-unlock slot")
+
+    runtime = RUNTIME.replace(FIELDS_TOKEN, fields)
+    body = "".join(encryptor.parts)
+    # The box sits wherever the page marked it, and at the top when it didn't.
+    body = body.replace(UNLOCK_TOKEN, runtime) if encryptor.unlock_slots else runtime + body
+    return page[:body_open_end] + body + page[body_end:]
 
 
 def encrypt_images(source_dir: Path, output_dir: Path, key: bytes) -> dict[str, tuple[str, str, str]]:
@@ -575,17 +671,17 @@ def build(source_dir: Path, output_dir: Path, site) -> None:
             continue
 
         secret = json.loads(secret_path.read_text(encoding="utf-8"))
-        key_text = secret["key"].strip().upper()
-        if not key_text or not key_text.isascii() or not key_text.isprintable():
-            raise ValueError(f"{secret_path} key must use printable ASCII characters")
-        key = key_text.encode("ascii")
+        try:
+            key, fields = unlock_fields(secret)
+        except (KeyError, ValueError) as error:
+            raise ValueError(f"{secret_path}: {error}") from error
 
         page_path = output_dir / puzzle_dir.name / PAGE_FILE
         if not page_path.exists():
             raise FileNotFoundError(f"missing puzzle page {page_path}")
         images = encrypt_images(puzzle_dir, page_path.parent, key)
         page_path.write_text(
-            encrypt_page(page_path.read_text(encoding="utf-8"), key, images),
+            encrypt_page(page_path.read_text(encoding="utf-8"), key, images, fields),
             encoding="utf-8",
         )
         site.logger.info(f"Encrypted puzzle page {puzzle_dir.name}")

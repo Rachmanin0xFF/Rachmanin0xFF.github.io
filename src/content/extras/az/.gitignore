@@ -1,1 +1,6 @@
 **/secret.json
+KEYS.md
+scratch/
+
+# camera originals; final.mp4 is the compressed copy that ships
+*.AVI
