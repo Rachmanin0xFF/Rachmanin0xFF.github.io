@@ -1,5 +1,14 @@
 ## SEPARATOR ##
 ---
+title: ortega
+description: Art
+layout: artpage.html
+artpath: ortega.png
+date: 2026-09-18
+---
+
+## SEPARATOR ##
+---
 title: live in a house
 description: Art
 layout: artpage.html
