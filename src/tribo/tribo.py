@@ -14,6 +14,7 @@ import re
 import shutil
 import sys
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -112,6 +113,7 @@ class Tribo:
 
         # Load config
         self.global_context = self._load_config(config_path)
+        self.global_context["year"] = date.today().year
 
         # Setup Jinja2
         self.template_env = jinja2.Environment(
@@ -339,7 +341,7 @@ class Tribo:
             return hashlib.sha256(open(p, "rb").read()).hexdigest()
 
         for path in static_input.glob("**/*.*"):
-            if path.suffix in [".md", ".markdown", ".mdx"]:
+            if path.is_dir() or path.suffix in [".md", ".markdown", ".mdx"]:
                 continue
             relative_path = path.relative_to(static_input)
             output_path = static_output / relative_path

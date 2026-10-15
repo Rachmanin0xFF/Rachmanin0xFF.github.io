@@ -21,15 +21,25 @@
     {% endif %}
 
     <title>Adam Lastowka - {{ title }}</title>
-    {% block favicon_and_stylesheet %}{% endblock %}
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/style.css">
     {% block extra_head %}{% endblock %}
 </head>
 
 <body>
     <main>
-        {% block header %}{% endblock %}
+        {% block header %}
+        <header>
+            <h1><a href="/">Adam Lastowka</a></h1>
+        </header>
+        {% endblock %}
         <section id="nav">
-            {% block nav_links %}{% endblock %}
+            {% block nav_links %}
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/qa/">Q&A</a>
+            {% endblock %}
         </section>
 
         <div id="content" {% block content_classes %}{% endblock %}>
@@ -37,7 +47,7 @@
         </div>
 
         <footer>
-            <p>© Adam Lastowka 2025</p>
+            <p>© Adam Lastowka {{ year }}</p>
         </footer>
     </main>
 
