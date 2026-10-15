@@ -121,8 +121,10 @@ class Tribo:
                 "footnotes",
                 "tables",
                 "meta",
+                "toc",
                 MathExtension(),
             ],
+            extension_configs={"toc": {"permalink": "#", "permalink_title": "Link to this section"}},
         )
 
     def _load_config(self, config_path: Path | str) -> dict[str, Any]:

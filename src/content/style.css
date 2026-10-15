@@ -476,6 +476,25 @@ section+h2 {
   margin-top: 1.25rem;
 }
 
+.post-body :is(h1, h2, h3, h4, h5, h6) {
+  position: relative;
+}
+
+.headerlink {
+  position: absolute;
+  right: 100%;
+  padding-right: 0.5rem;
+  color: var(--neut);
+  text-decoration: none;
+  opacity: 0.5;
+}
+
+.post-body :is(h1, h2, h3, h4, h5, h6):hover > .headerlink,
+.headerlink:focus {
+  opacity: 1;
+  color: var(--emph);
+}
+
 .post-body h3 {
   font-size: 1.5em;
   color: var(--emph);
