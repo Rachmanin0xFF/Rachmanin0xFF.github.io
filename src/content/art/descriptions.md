@@ -9,6 +9,15 @@ date: 2026-09-18
 
 ## SEPARATOR ##
 ---
+title: koskulitz
+description: Art
+layout: artpage.html
+artpath: koskulitz.png
+date: 2026-10-15
+---
+
+## SEPARATOR ##
+---
 title: live in a house
 description: Art
 layout: artpage.html
