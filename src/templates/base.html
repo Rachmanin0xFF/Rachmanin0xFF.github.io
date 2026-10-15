@@ -15,8 +15,8 @@
     <meta property="og:description" content="{{ description }}">
     <meta name="description" content="{{ description }}">
     <meta property="og:site_name" content="{{ site_title }}">
-    {% if iconpath %}
-    <meta property="og:image" content="{{ site_url }}/posts/{{ parent_folder }}/{{ iconpath }}">
+    {% if preview_image %}
+    <meta property="og:image" content="{{ site_url }}/{{ preview_image | urlencode }}">
     <meta name="twitter:card" content="summary">
     {% endif %}
 

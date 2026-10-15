@@ -26,6 +26,10 @@ import xml.etree.ElementTree as etree
 import yaml
 
 
+# Formats link-preview crawlers (Discord, Twitter) render.
+PREVIEW_IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".webp"}
+
+
 @dataclass
 class Page:
     """Represents a parsed markdown file with metadata"""
@@ -202,6 +206,11 @@ class Tribo:
                     cleaned_metadata = {k: clean(v) for k, v in self.md.Meta.items()}
                     relative_path = path.relative_to(self.content_root)
                     cleaned_metadata["parent_folder"] = relative_path.parent.name
+                    icon = relative_path.parent / cleaned_metadata.get("iconpath", "")
+                    if icon.suffix.lower() in PREVIEW_IMAGE_SUFFIXES and (
+                        self.content_root / icon
+                    ).is_file():
+                        cleaned_metadata["preview_image"] = icon.as_posix()
 
                     if cleaned_metadata.get("draft", "").lower() == "true":
                         self.logger.debug(f"Skipping draft: {relative_path}")
