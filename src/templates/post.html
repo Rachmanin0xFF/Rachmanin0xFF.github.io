@@ -66,6 +66,19 @@
   // Add footnote tooltips
   let activeTooltip = null;
 
+  // Shift the tooltip horizontally so it stays inside the viewport.
+  const VIEWPORT_MARGIN = 8;
+  function showTooltip(tooltip) {
+    tooltip.style.setProperty('--shift', '0px');
+    tooltip.classList.add('visible');
+    const rect = tooltip.getBoundingClientRect();
+    const right = document.documentElement.clientWidth - VIEWPORT_MARGIN;
+    let shift = 0;
+    if (rect.left < VIEWPORT_MARGIN) shift = VIEWPORT_MARGIN - rect.left;
+    else if (rect.right > right) shift = right - rect.right;
+    tooltip.style.setProperty('--shift', shift + 'px');
+  }
+
   document.querySelectorAll('.footnote-ref').forEach(ref => {
     const fnId = ref.getAttribute('href');
     if (fnId) {
@@ -89,7 +102,7 @@
           if (activeTooltip && activeTooltip !== tooltip) {
             activeTooltip.classList.remove('visible');
           }
-          tooltip.classList.add('visible');
+          showTooltip(tooltip);
           activeTooltip = tooltip;
         });
 
@@ -103,7 +116,7 @@
         });
 
         tooltip.addEventListener('mouseenter', () => {
-          tooltip.classList.add('visible');
+          showTooltip(tooltip);
           activeTooltip = tooltip;
         });
 
@@ -131,7 +144,7 @@
             if (activeTooltip && activeTooltip !== tooltip) {
               activeTooltip.classList.remove('visible');
             }
-            tooltip.classList.add('visible');
+            showTooltip(tooltip);
             activeTooltip = tooltip;
           }
         });
