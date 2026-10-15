@@ -482,8 +482,7 @@ section+h2 {
 
 .headerlink {
   position: absolute;
-  right: 100%;
-  padding-right: 0.5rem;
+  right: calc(100% + 0.5rem);
   color: var(--neut);
   text-decoration: none;
   opacity: 0.5;
