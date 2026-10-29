@@ -24,12 +24,12 @@ During my drive down, I listened to Kendrick Llamar's "United in Grief". "I grie
 
 This urn is difficult to clean. Is that his dust? Rust? Oh gosh, a little metal spike from the weld job on the inside. That's probably why there are ashes in the bottom. Mom says this was his favorite place in the whole world: that's why he wanted us to do this. I didn't know that. It's not the most pleasing place. There are flies, the seagulls scream at you, the muck smells, and the grass cuts your feet and legs. But still, I understand. Maybe I agree. His ashes will probably fertilize the plants here. Actually, I don't know, I don't know how plants work. I tell mom all of this.
 
-As I hold the urn, I realize it makes a deep whistling noise in the wind. I show mom, and I relay one of my favorite thoughts regarding holes, wind, and humans (no, it's nothing dirty). She is still sad, but bemused, and I regret I learned this beautiful lesson via a long-lost 4koma from the author of the now-mediocre webcomic *Dresden Kodak*.
+As I hold the urn, I realize it makes a deep whistling noise in the wind. I show mom, and I relay one of my favorite thoughts regarding holes, wind, and humans (no, it's nothing dirty). She is still sad, but bemused, and I regret I learned this beautiful lesson via a long-lost 4koma from the author of the now-mediocre webcomic *Dresden Kodak*:
 
 ![image](codak.png)
 The wetlands are alive. On par with rainforests and reefs, but murkier, more primal. Credit to Senna Diaz.
 
-Over dinner, I try to read "Zap-O-Rama," and Daniel left the room after the first paragraph. Mom called him back in, we finished eating, and I didn't read the rest.
+Over dinner, I try to read "Zap-O-Rama," and Daniel leaves the room after the first paragraph. Mom called him back in, we finished eating, and I didn't read the rest.
 
 I don't know why he didn't want to hear it.
 
