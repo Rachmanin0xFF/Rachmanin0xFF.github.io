@@ -40,3 +40,4 @@ The events of the day?
 That it revealed a side of Dad that made him uncomfortable?
 
 Or something entirely different?
+
