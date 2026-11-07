@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>GERS ID pages (static)</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css"
+      integrity="sha384-uTttxo/aOKbdE5RlD/SPzSDoDmNvGlUYPjONi2MN/b7c9HPSvW07OIuyP7uL6jxK" crossorigin="anonymous">
+<script type="importmap">
+{
+  "imports": {
+    "hyparquet": "https://cdn.jsdelivr.net/npm/hyparquet@1.31.5/+esm",
+    "hyparquet-compressors": "https://cdn.jsdelivr.net/npm/hyparquet-compressors@1.1.2/+esm",
+    "qrcode-generator": "https://cdn.jsdelivr.net/npm/qrcode-generator@2.0.4/dist/qrcode.mjs"
+  }
+}
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="./">GERS ID pages</a>
+  <span class="badge">Unofficial</span>
+  <span class="badge">Static</span>
+  <form class="lookup" action="./" method="get" role="search">
+    <input name="id" placeholder="Paste a GERS ID" aria-label="GERS ID" autocomplete="off" spellcheck="false" required>
+    <button type="submit">Look up</button>
+  </form>
+</header>
+<main id="main">
+<noscript>
+<section class="card">
+  <h2>Reading this page without JavaScript</h2>
+  <p>
+    This page is static: the same HTML for every <code>?id=</code>. Feature details are fetched by JavaScript in the
+    browser, so a plain HTTP fetch sees only this text. To look up a GERS ID yourself (for example, the
+    <code>id</code> query parameter of this URL), run these three steps with DuckDB or any parquet reader.
+    All reads are anonymous HTTPS against Overture's public bucket.
+  </p>
+  <ol class="steps">
+    <li>Fetch <code>https://stac.overturemaps.org/catalog.json</code>. <code>latest</code> is the current release.
+      <code>registry.manifest</code> is a list of <code>[file, max_id]</code> pairs sorted by ID; pick the first
+      file whose <code>max_id</code> is greater than or equal to the ID.</li>
+    <li>Read the registry row:
+      <pre><code>SELECT * FROM 'https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/registry/&lt;file&gt;' WHERE id = '&lt;id&gt;';</code></pre>
+      No row means the ID isn't in GERS. A null <code>path</code> means the feature was removed after release
+      <code>last_seen</code>.</li>
+    <li>If <code>path</code> is set, read the feature from release <code>last_seen</code>. The bbox filter lets
+      the reader skip all but one row group:
+      <pre><code>SELECT * FROM read_parquet('https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/&lt;last_seen&gt;/&lt;path&gt;')
+WHERE id = '&lt;id&gt;' AND bbox.xmin = &lt;bbox.xmin&gt; AND bbox.ymin = &lt;bbox.ymin&gt;;</code></pre></li>
+  </ol>
+  <p>
+    History is in <code>…/changelog/&lt;release&gt;/theme=&lt;theme&gt;/type=&lt;type&gt;/change_type=&lt;added|data_changed|removed&gt;/</code>,
+    partitioned the same way as the release, so the file with the same <code>part-NNNNN</code> number as
+    <code>path</code> holds the ID's row. See <a href="https://docs.overturemaps.org/gers/registry/">the GERS registry docs</a>.
+  </p>
+</section>
+</noscript>
+<section class="hero">
+  <h1>A page for every GERS ID</h1>
+  <p class="subtitle">
+    Paste a <a href="https://docs.overturemaps.org/gers/">GERS ID</a> from Overture Maps data to see what the
+    feature is, where it is, where its data came from and how it changed between releases.
+    Every page has a permanent link and a QR code.
+  </p>
+  <form class="lookup big" action="./" method="get" role="search">
+    <input name="id" value="" placeholder="e.g. 3fa85f64-5717-4562-b3fc-2c963f66afa6"
+           aria-label="GERS ID" autocomplete="off" spellcheck="false" required autofocus>
+    <button type="submit">Look up</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Examples</h2>
+  <ul class="examples">
+    <li><a href="?id=3b115ca6-ca2e-4704-9d05-941563714caf">A place: Dope Design Agency, Seattle</a> <code>3b115ca6-ca2e-4704-9d05-941563714caf</code></li>
+    <li><a href="?id=320d5630-0ea2-4d17-bff9-57c253f6410d">A building: Seattle Housing Authority</a> <code>320d5630-0ea2-4d17-bff9-57c253f6410d</code></li>
+    <li><a href="?id=eb854654-fd47-44ce-ae6e-b0a19058d23a">A road segment: Western Avenue West</a> <code>eb854654-fd47-44ce-ae6e-b0a19058d23a</code></li>
+    <li><a href="?id=f195dba2-33a7-4585-ba9e-79fd7417b950">A division: Seattle</a> <code>f195dba2-33a7-4585-ba9e-79fd7417b950</code></li>
+    <li><a href="?id=3b101815-7c5b-408a-b428-5b1073921889">A removed place: Timo Feldmann Automobile, Bremen</a> <code>3b101815-7c5b-408a-b428-5b1073921889</code></li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>What's covered</h2>
+  <p>
+    IDs in Overture's public <a href="https://docs.overturemaps.org/gers/registry/">GERS registry</a>:
+    buildings, places, transportation segments and connectors, and divisions (divisions, areas and boundaries).
+    Base-theme features, building parts and addresses have IDs too, but they aren't in the registry, so they don't
+    get pages here.
+  </p>
+  <p>
+    Pages always show the latest release. IDs that have been removed keep a page that says when they left,
+    and history comes from Overture's public <a href="https://docs.overturemaps.org/gers/changelog/">GERS changelog</a>.
+  </p>
+</section>
+
+<section class="card">
+  <h2>How this works</h2>
+  <p>
+    This is a static copy of <a href="https://gers.page/">gers.page</a>. There is no server: your browser reads
+    Overture's parquet files straight from their public S3 bucket with HTTP range requests, using
+    <a href="https://github.com/hyparam/hyparquet">hyparquet</a>.
+  </p>
+  <ol class="steps">
+    <li>The <a href="https://stac.overturemaps.org/catalog.json">STAC catalog</a> names the latest release and lists
+      each registry file's highest ID, which picks the one file that can hold yours.</li>
+    <li>That file's page index narrows the search to a single page of about a megabyte.</li>
+    <li>The registry row gives the release file and bounding box; the file's row-group bbox statistics narrow
+      the read to one row group.</li>
+    <li>The changelog shares the release's spatial partitioning, so history reads one file per release and change type.</li>
+  </ol>
+</section>
+</main>
+<footer class="site">
+  <p>
+    A personal, unofficial project. Not affiliated with or endorsed by the Overture Maps Foundation.
+    Feature data comes from Overture's public releases, read anonymously from their public buckets;
+    each feature lists its sources and licences, and
+    <a href="https://docs.overturemaps.org/attribution/">Overture's attribution guide</a> covers the rest.
+  </p>
+  <p>Design and idea from <a href="https://gers.page/">gers.page</a>.</p>
+</footer>
+<script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"
+        integrity="sha384-5+cfbwT0iiub6VsQAdn6yz16nr6sDiQoHx6tm4O8OVYXHYOxcffFmCJBL0dgdvGp" crossorigin="anonymous" defer></script>
+<script src="https://unpkg.com/pmtiles@4.5.0/dist/pmtiles.js"
+        integrity="sha384-pbKNZbDshUsLnZMIVsn/t+j3xEY9PGfuX5Z22l5rcy/obXz3EwaMx1F5d9sRsJMn" crossorigin="anonymous" defer></script>
+<script type="module" src="page.js"></script>
+</body>
+</html>
