@@ -29,35 +29,6 @@
   </form>
 </header>
 <main id="main">
-<noscript>
-<section class="card">
-  <h2>Reading this page without JavaScript</h2>
-  <p>
-    This page is static: the same HTML for every <code>?id=</code>. Feature details are fetched by JavaScript in the
-    browser, so a plain HTTP fetch sees only this text. To look up a GERS ID yourself (for example, the
-    <code>id</code> query parameter of this URL), run these three steps with DuckDB or any parquet reader.
-    All reads are anonymous HTTPS against Overture's public bucket.
-  </p>
-  <ol class="steps">
-    <li>Fetch <code>https://stac.overturemaps.org/catalog.json</code>. <code>latest</code> is the current release.
-      <code>registry.manifest</code> is a list of <code>[file, max_id]</code> pairs sorted by ID; pick the first
-      file whose <code>max_id</code> is greater than or equal to the ID.</li>
-    <li>Read the registry row:
-      <pre><code>SELECT * FROM 'https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/registry/&lt;file&gt;' WHERE id = '&lt;id&gt;';</code></pre>
-      No row means the ID isn't in GERS. A null <code>path</code> means the feature was removed after release
-      <code>last_seen</code>.</li>
-    <li>If <code>path</code> is set, read the feature from release <code>last_seen</code>. The bbox filter lets
-      the reader skip all but one row group:
-      <pre><code>SELECT * FROM read_parquet('https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/&lt;last_seen&gt;/&lt;path&gt;')
-WHERE id = '&lt;id&gt;' AND bbox.xmin = &lt;bbox.xmin&gt; AND bbox.ymin = &lt;bbox.ymin&gt;;</code></pre></li>
-  </ol>
-  <p>
-    History is in <code>…/changelog/&lt;release&gt;/theme=&lt;theme&gt;/type=&lt;type&gt;/change_type=&lt;added|data_changed|removed&gt;/</code>,
-    partitioned the same way as the release, so the file with the same <code>part-NNNNN</code> number as
-    <code>path</code> holds the ID's row. See <a href="https://docs.overturemaps.org/gers/registry/">the GERS registry docs</a>.
-  </p>
-</section>
-</noscript>
 <section class="hero">
   <h1>A page for every GERS ID</h1>
   <p class="subtitle">
@@ -112,6 +83,34 @@ WHERE id = '&lt;id&gt;' AND bbox.xmin = &lt;bbox.xmin&gt; AND bbox.ymin = &lt;bb
       the read to one row group.</li>
     <li>The changelog shares the release's spatial partitioning, so history reads one file per release and change type.</li>
   </ol>
+</section>
+
+<section class="card" id="without-js">
+  <h2>Looking up an ID without a browser</h2>
+  <p>
+    This page is static: the same HTML for every <code>?id=</code>. Feature details are fetched by JavaScript in the
+    browser, so a plain HTTP fetch sees only this text. To look up a GERS ID yourself (for example, the
+    <code>id</code> query parameter of this URL), run these three steps with DuckDB or any parquet reader.
+    All reads are anonymous HTTPS against Overture's public bucket.
+  </p>
+  <ol class="steps">
+    <li>Fetch <code>https://stac.overturemaps.org/catalog.json</code>. <code>latest</code> is the current release.
+      <code>registry.manifest</code> is a list of <code>[file, max_id]</code> pairs sorted by ID; pick the first
+      file whose <code>max_id</code> is greater than or equal to the ID.</li>
+    <li>Read the registry row:
+      <pre><code>SELECT * FROM 'https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/registry/&lt;file&gt;' WHERE id = '&lt;id&gt;';</code></pre>
+      No row means the ID isn't in GERS. A null <code>path</code> means the feature was removed after release
+      <code>last_seen</code>.</li>
+    <li>If <code>path</code> is set, read the feature from release <code>last_seen</code>. The bbox filter lets
+      the reader skip all but one row group:
+      <pre><code>SELECT * FROM read_parquet('https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/&lt;last_seen&gt;/&lt;path&gt;')
+WHERE id = '&lt;id&gt;' AND bbox.xmin = &lt;bbox.xmin&gt; AND bbox.ymin = &lt;bbox.ymin&gt;;</code></pre></li>
+  </ol>
+  <p>
+    History is in <code>…/changelog/&lt;release&gt;/theme=&lt;theme&gt;/type=&lt;type&gt;/change_type=&lt;added|data_changed|removed&gt;/</code>,
+    partitioned the same way as the release, so the file with the same <code>part-NNNNN</code> number as
+    <code>path</code> holds the ID's row. See <a href="https://docs.overturemaps.org/gers/registry/">the GERS registry docs</a>.
+  </p>
 </section>
 </main>
 <footer class="site">
