@@ -6,6 +6,7 @@
 <meta name="robots" content="noindex">
 <title>GERS ID pages (static)</title>
 <link rel="stylesheet" href="style.css">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css"
       integrity="sha384-uTttxo/aOKbdE5RlD/SPzSDoDmNvGlUYPjONi2MN/b7c9HPSvW07OIuyP7uL6jxK" crossorigin="anonymous">
 <script type="importmap">
@@ -23,50 +24,75 @@
   <a class="brand" href="./">GERS ID pages</a>
   <span class="badge">Unofficial</span>
   <span class="badge">Static</span>
-  <form class="lookup" action="./" method="get" role="search">
+  <form class="lookup" action="./" method="get" role="search" id="header-lookup" hidden>
     <input name="id" placeholder="Paste a GERS ID" aria-label="GERS ID" autocomplete="off" spellcheck="false" required>
     <button type="submit">Look up</button>
   </form>
 </header>
+<section class="home-hero" id="home-hero">
+  <div class="inner">
+    <h1>A page for every GERS ID</h1>
+    <p class="lede">
+      Paste a <a href="https://docs.overturemaps.org/gers/">GERS ID</a> from Overture Maps data to see what the
+      feature is, where it is, where its data came from and how it changed between releases.
+    </p>
+    <form class="lookup big" action="./" method="get" role="search">
+      <input name="id" value="" placeholder="e.g. 3fa85f64-5717-4562-b3fc-2c963f66afa6"
+             aria-label="GERS ID" autocomplete="off" spellcheck="false" required autofocus>
+      <button type="submit">Look up</button>
+    </form>
+    <p class="find">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 4-6 2v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14"/><path d="M15 6v14"/></svg>
+      <span>Don't have an ID? Find a feature on the map in the
+      <a href="https://explore.overturemaps.org/">Overture Explorer</a> and copy its ID from there.</span>
+    </p>
+    <p class="try">
+      <span>Try one:</span>
+      <a href="?id=3b115ca6-ca2e-4704-9d05-941563714caf"><b>Place</b> Dope Design Agency</a>
+      <a href="?id=320d5630-0ea2-4d17-bff9-57c253f6410d"><b>Building</b> Seattle Housing Authority</a>
+      <a href="?id=eb854654-fd47-44ce-ae6e-b0a19058d23a"><b>Road</b> Western Avenue West</a>
+      <a href="?id=f195dba2-33a7-4585-ba9e-79fd7417b950"><b>Division</b> Seattle</a>
+      <a href="?id=3b101815-7c5b-408a-b428-5b1073921889"><b>Removed place</b> Timo Feldmann Automobile</a>
+    </p>
+  </div>
+</section>
 <main id="main">
-<section class="hero">
-  <h1>A page for every GERS ID</h1>
-  <p class="subtitle">
-    Paste a <a href="https://docs.overturemaps.org/gers/">GERS ID</a> from Overture Maps data to see what the
-    feature is, where it is, where its data came from and how it changed between releases.
-    Every page has a permanent link and a QR code.
-  </p>
-  <form class="lookup big" action="./" method="get" role="search">
-    <input name="id" value="" placeholder="e.g. 3fa85f64-5717-4562-b3fc-2c963f66afa6"
-           aria-label="GERS ID" autocomplete="off" spellcheck="false" required autofocus>
-    <button type="submit">Look up</button>
-  </form>
-</section>
+<div class="popular single" id="recent" hidden>
+  <section class="card">
+    <h2>Your recent lookups</h2>
+    <div class="ranked"><ul class="recent" id="recent-list"></ul></div>
+  </section>
+  <p class="muted note">Kept in this browser only. Nothing about your lookups leaves your machine except the reads from Overture's bucket.</p>
+</div>
 
-<section class="card">
-  <h2>Examples</h2>
-  <ul class="examples">
-    <li><a href="?id=3b115ca6-ca2e-4704-9d05-941563714caf">A place: Dope Design Agency, Seattle</a> <code>3b115ca6-ca2e-4704-9d05-941563714caf</code></li>
-    <li><a href="?id=320d5630-0ea2-4d17-bff9-57c253f6410d">A building: Seattle Housing Authority</a> <code>320d5630-0ea2-4d17-bff9-57c253f6410d</code></li>
-    <li><a href="?id=eb854654-fd47-44ce-ae6e-b0a19058d23a">A road segment: Western Avenue West</a> <code>eb854654-fd47-44ce-ae6e-b0a19058d23a</code></li>
-    <li><a href="?id=f195dba2-33a7-4585-ba9e-79fd7417b950">A division: Seattle</a> <code>f195dba2-33a7-4585-ba9e-79fd7417b950</code></li>
-    <li><a href="?id=3b101815-7c5b-408a-b428-5b1073921889">A removed place: Timo Feldmann Automobile, Bremen</a> <code>3b101815-7c5b-408a-b428-5b1073921889</code></li>
-  </ul>
-</section>
-
-<section class="card">
-  <h2>What's covered</h2>
-  <p>
-    IDs in Overture's public <a href="https://docs.overturemaps.org/gers/registry/">GERS registry</a>:
-    buildings, places, transportation segments and connectors, and divisions (divisions, areas and boundaries).
-    Base-theme features, building parts and addresses have IDs too, but they aren't in the registry, so they don't
-    get pages here.
-  </p>
-  <p>
-    Pages always show the latest release. IDs that have been removed keep a page that says when they left,
-    and history comes from Overture's public <a href="https://docs.overturemaps.org/gers/changelog/">GERS changelog</a>.
-  </p>
-</section>
+<div class="about">
+  <section class="card">
+    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+    <h2>What a page shows</h2>
+    <p>
+      The feature's name, type and key attributes, where it is on a map, its sources and licences, and how it
+      changed between releases. Every page has a permanent link and a QR code.
+    </p>
+  </section>
+  <section class="card">
+    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5z"/><path d="m3 13 9 5 9-5"/></svg></span>
+    <h2>What's covered</h2>
+    <p>
+      IDs in Overture's public <a href="https://docs.overturemaps.org/gers/registry/">GERS registry</a>:
+      buildings, places, transportation segments and connectors, and divisions (divisions, areas and boundaries).
+      Base-theme features, building parts and addresses have IDs too, but they aren't in the registry, so they
+      don't get pages here.
+    </p>
+  </section>
+  <section class="card">
+    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+    <h2>Removed IDs</h2>
+    <p>
+      Pages always show the latest release. IDs that have been removed keep a page that says when they left,
+      and history comes from Overture's public <a href="https://docs.overturemaps.org/gers/changelog/">GERS changelog</a>.
+    </p>
+  </section>
+</div>
 
 <section class="card">
   <h2>How this works</h2>
@@ -120,7 +146,8 @@ WHERE id = '&lt;id&gt;' AND bbox.xmin = &lt;bbox.xmin&gt; AND bbox.ymin = &lt;bb
     each feature lists its sources and licences, and
     <a href="https://docs.overturemaps.org/attribution/">Overture's attribution guide</a> covers the rest.
   </p>
-  <p>Design and idea from <a href="https://gers.page/">gers.page</a>.</p>
+  <p class="footer-links">Design and idea from <a href="https://gers.page/">gers.page</a> ·
+    <a href="https://github.com/OvertureMaps/data/issues/new/choose">Report a map data problem to Overture</a></p>
 </footer>
 <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"
         integrity="sha384-5+cfbwT0iiub6VsQAdn6yz16nr6sDiQoHx6tm4O8OVYXHYOxcffFmCJBL0dgdvGp" crossorigin="anonymous" defer></script>

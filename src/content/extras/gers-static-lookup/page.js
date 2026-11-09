@@ -13,6 +13,23 @@ const TYPE_LABEL = {
 }
 const THEME_LABEL = { places: 'Places', buildings: 'Buildings', transportation: 'Transportation', divisions: 'Divisions' }
 const CHANGE_LABEL = { added: 'Added', data_changed: 'Changed', removed: 'Removed' }
+const DATASET_URL = {
+  BrightQuery: 'https://brightquery.com/',
+  'Esri Community Maps': 'https://communitymaps.arcgis.com/home/',
+  'Microsoft ML Buildings': 'https://github.com/microsoft/GlobalMLBuildingFootprints',
+  OpenStreetMap: 'https://www.openstreetmap.org/',
+  Overture: 'https://docs.overturemaps.org/',
+}
+const LICENSE_URL = {
+  'CC-BY-4.0': 'https://creativecommons.org/licenses/by/4.0/',
+  'CDLA-Permissive-2.0': 'https://cdla.dev/permissive-2-0/',
+  'ODbL-1.0': 'https://opendatacommons.org/licenses/odbl/1-0/',
+}
+const OSM_TYPE = { n: 'node', w: 'way', r: 'relation' }
+const ICON_COPY = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"/></svg>'
+const ICON_LINK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13.5a4.5 4.5 0 0 0 6.4.5l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4l-1.4 1.4"/><path d="M14 10.5a4.5 4.5 0 0 0-6.4-.5l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.4-1.4"/></svg>'
+const RECENT_KEY = 'gers-static-lookup:recent'
+const RECENT_MAX = 10
 
 const esc = v => String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const humanize = s => s ? s[0].toUpperCase() + s.slice(1).replaceAll('_', ' ') : ''
@@ -22,6 +39,10 @@ const pageUrl = id => `${location.origin}${location.pathname}?id=${id}`
 const idLink = id => `<a href="?id=${esc(id)}"><code>${esc(id)}</code></a>`
 const extLink = url => `<a href="${esc(url)}" rel="nofollow noopener noreferrer">${esc(url)}</a>`
 const copyButton = (text, label) => `<button type="button" class="copy" data-copy="${esc(text)}">${label}</button>`
+const iconCopyButton = (text, label, icon) =>
+  `<button type="button" class="copy icon" data-copy="${esc(text)}" aria-label="${label}">${icon}</button>`
+const linkTo = (url, text) => url ? `<a href="${esc(url)}">${esc(text)}</a>` : esc(text)
+const humanEsc = s => esc(humanize(s ?? ''))
 const jsonText = v => JSON.stringify(v, (k, x) => typeof x === 'bigint' ? Number(x) : x, 2)
 const isEmpty = v => v === null || v === undefined || (Array.isArray(v) && !v.length)
 
@@ -42,21 +63,21 @@ function formatAddress(a) {
 }
 
 function taxonomyPath(hierarchy) {
-  return `<span class="path">${hierarchy.map(esc).map(s => `<span>${s}</span>`)
+  return `<span class="path">${hierarchy.map(humanEsc).map(s => `<span>${s}</span>`)
     .join('<span class="sep" aria-hidden="true">›</span>')}</span>`
 }
 
 /** Hero subtitle and [label, html] key-attribute rows for each registry type. */
 function describe(type, p) {
   const division = () => [
-    ['Subtype', esc(p.subtype ?? '')], ['Class', esc(p.class ?? '')],
+    ['Subtype', humanEsc(p.subtype)], ['Class', humanEsc(p.class)],
     ['Country', esc(p.country ?? '')], ['Region', esc(p.region ?? '')],
   ]
   switch (type) {
     case 'place': return {
       subtitle: [humanize(p.basic_category ?? p.categories?.primary), formatAddress(p.addresses?.[0])],
       rows: [
-        ['Category', esc(p.basic_category ?? p.categories?.primary ?? '')],
+        ['Category', humanEsc(p.basic_category ?? p.categories?.primary)],
         ['Taxonomy', p.taxonomy?.hierarchy ? taxonomyPath(p.taxonomy.hierarchy) : ''],
         ['Address', esc(formatAddress(p.addresses?.[0]))],
         ['Brand', esc(p.brand?.names?.primary ?? '')],
@@ -64,14 +85,14 @@ function describe(type, p) {
         ['Socials', (p.socials ?? []).map(extLink).join('<br>')],
         ['Emails', esc((p.emails ?? []).join(', '))],
         ['Phones', esc((p.phones ?? []).join(', '))],
-        ['Operating status', esc(p.operating_status ?? '')],
+        ['Operating status', humanEsc(p.operating_status)],
         ['Confidence', fixed2(p.confidence)],
       ],
     }
     case 'building': return {
       subtitle: [humanize(p.class ?? p.subtype) || 'Building', p.height ? `${p.height.toFixed(1)} m tall` : ''],
       rows: [
-        ['Subtype', esc(p.subtype ?? '')], ['Class', esc(p.class ?? '')],
+        ['Subtype', humanEsc(p.subtype)], ['Class', humanEsc(p.class)],
         ['Height', p.height ? `${p.height.toFixed(1)} m` : ''],
         ['Floors', esc(p.num_floors ?? '')],
         ['Underground', yesNo(p.is_underground)], ['Has parts', yesNo(p.has_parts)],
@@ -80,7 +101,7 @@ function describe(type, p) {
     case 'segment': return {
       subtitle: [humanize(p.subtype), humanize(p.class)],
       rows: [
-        ['Subtype', esc(p.subtype ?? '')], ['Class', esc(p.class ?? '')], ['Subclass', esc(p.subclass ?? '')],
+        ['Subtype', humanEsc(p.subtype)], ['Class', humanEsc(p.class)], ['Subclass', humanEsc(p.subclass)],
         ['Surface', isEmpty(p.road_surface) ? '' : renderValue(p.road_surface)],
         ['Speed limits', isEmpty(p.speed_limits) ? '' : renderValue(p.speed_limits)],
       ],
@@ -125,8 +146,10 @@ function sectionHero(r) {
       ? `The details below come from release ${esc(record.release)}, the last one that contained it.`
       : `Release ${esc(registry.last_seen)} is no longer published, so its details aren't available.`
     const removed = r.removedIn ? ` and was removed in release <strong>${esc(r.removedIn)}</strong>` : ''
-    banner = `<div class="banner retired" role="status"><strong>Removed.</strong>
-      This GERS ID was last in release <strong>${esc(registry.last_seen)}</strong>${removed}. ${detail}</div>`
+    banner = `<div class="banner retired" role="status">
+    <strong class="pill">Removed</strong>
+    <span>This GERS ID was last in release <strong>${esc(registry.last_seen)}</strong>${removed}. ${detail}</span>
+  </div>`
   }
   const kind = where ? `<p class="kind">${label} · <span>${THEME_LABEL[where.theme]}</span></p>` : ''
   const subtitleText = subtitle.filter(Boolean).join(' · ')
@@ -182,21 +205,31 @@ function sectionIdAndMap(r) {
   const url = pageUrl(r.id)
   const explorer = explorerUrl(r)
   const gone = r.status === 'removed'
-    ? ' <span class="muted">(the Explorer shows the latest release, which no longer has this feature)</span>' : ''
+    ? ' <span class="muted small">The Explorer shows the latest release, which no longer has this feature.</span>' : ''
   return `<div class="grid">
   <section class="card id-card" aria-labelledby="id-h">
     <h2 id="id-h">GERS ID</h2>
-    <p class="gers-id"><code id="gers-id">${esc(r.id)}</code> ${copyButton(r.id, 'Copy ID')}</p>
-    <div class="qr" aria-label="QR code for this page">${qrSvg(url)}</div>
-    <p class="permalink"><a href="${esc(url)}">${esc(url)}</a> ${copyButton(url, 'Copy link')}</p>
-    <p class="muted">QR code: <a id="qr-svg" download="gers-${esc(r.id)}.svg">SVG</a> ·
-      <a id="qr-png" download="gers-${esc(r.id)}.png">PNG</a></p>
+    <div class="gers-id">
+      <code id="gers-id">${esc(r.id)}</code>
+      ${iconCopyButton(r.id, 'Copy ID', ICON_COPY)}
+      ${iconCopyButton(url, 'Copy permanent link', ICON_LINK)}
+    </div>
+    <p class="visually-hidden" role="status" aria-live="polite" data-copy-status></p>
+    <div class="share">
+      <div class="qr" aria-label="QR code for this page">${qrSvg(url)}</div>
+      <div class="share-text">
+        <p class="label">QR code</p>
+        <p class="muted small">Scan it to open this page.</p>
+        <p class="small">Download <a id="qr-svg" download="gers-${esc(r.id)}.svg">SVG</a> ·
+          <a id="qr-png" download="gers-${esc(r.id)}.png">PNG</a></p>
+      </div>
+    </div>
   </section>
   <section class="card map-card" aria-labelledby="map-h">
     <h2 id="map-h" class="visually-hidden">Map</h2>
     ${r.bbox ? `<div id="map" class="map" role="img" aria-label="Map showing where this feature is" title="Open in the Overture Explorer"></div>
-    <p><a href="${esc(explorer)}">Open in the Overture Explorer ↗</a>${gone}</p>`
-      : '<p class="muted">No location is recorded for this ID.</p>'}
+    <p class="map-foot"><a href="${esc(explorer)}">Open in the Overture Explorer ↗</a>${gone}</p>`
+      : '<p class="map map-empty muted">No location is recorded for this ID.</p>'}
   </section>
 </div>`
 }
@@ -222,6 +255,19 @@ function attributionName(s) {
   return s.dataset === 'OpenStreetMap' ? '© OpenStreetMap contributors' : s.dataset
 }
 
+function sourceOrigin(s) {
+  return s.provider === s.resource ? s.provider ?? '' : `${s.provider ?? ''} / ${s.resource ?? ''}`
+}
+
+/** Record id, linked to the exact OSM version for OpenStreetMap ids like "w428248878@7". */
+function recordCell(s) {
+  if (!s.record_id) return ''
+  const osm = s.dataset === 'OpenStreetMap' && s.record_id.match(/^([nwr])(\d+)@(\d+)$/)
+  if (!osm) return `<code>${esc(s.record_id)}</code>`
+  const url = `https://www.openstreetmap.org/${OSM_TYPE[osm[1]]}/${osm[2]}/history/${osm[3]}`
+  return `<a href="${url}" title="View this version on OpenStreetMap" rel="nofollow noopener noreferrer"><code>${esc(s.record_id)}</code></a>`
+}
+
 function sectionSources(r) {
   const sources = r.record?.properties.sources
   if (isEmpty(sources)) return ''
@@ -233,12 +279,12 @@ function sectionSources(r) {
     <thead><tr><th>Dataset</th><th>Property</th><th>Record</th><th>Updated</th><th>Confidence</th><th>Licence</th></tr></thead>
     <tbody>${sources.map(s => `
       <tr>
-        <td>${esc(s.dataset ?? '')}<br><span class="muted">${esc(s.provider ?? '')} / ${esc(s.resource ?? '')}</span></td>
+        <td>${linkTo(DATASET_URL[s.dataset], s.dataset ?? '')}<br><span class="muted">${esc(sourceOrigin(s))}</span></td>
         <td><code>${esc(s.property || '(whole feature)')}</code></td>
-        <td>${s.record_id ? `<code>${esc(s.record_id)}</code>` : ''}</td>
-        <td>${esc(s.update_time ?? '')}</td>
+        <td>${recordCell(s)}</td>
+        <td class="nowrap">${s.update_time ? `<time datetime="${esc(s.update_time)}" title="${esc(s.update_time)}">${esc(s.update_time.slice(0, 10))}</time>` : ''}</td>
         <td>${fixed2(s.confidence)}</td>
-        <td>${esc(s.license ?? '')}</td>
+        <td class="nowrap">${linkTo(LICENSE_URL[s.license], s.license ?? '')}</td>
       </tr>`).join('')}
     </tbody>
   </table>
@@ -255,7 +301,10 @@ function duckdbQuery(url, id, b, pad) {
 }
 
 function querySnippet(query) {
-  return `<pre><code>${esc(query)}</code></pre>${copyButton(query, 'Copy query')}`
+  return `<div class="code">
+  <div class="code-bar"><span>DuckDB</span>${copyButton(query, 'Copy query')}</div>
+  <pre><code>${esc(query)}</code></pre>
+</div>`
 }
 
 function sectionHistoryShell(r) {
@@ -266,10 +315,10 @@ function sectionHistoryShell(r) {
   return `<section class="card" aria-labelledby="hist-h">
   <h2 id="hist-h">History</h2>
   <dl class="dates">
-    <dt>First seen</dt><dd>${esc(registry.first_seen)}</dd>
-    <dt>Last changed</dt><dd>${esc(registry.last_changed)}</dd>
-    <dt>Last seen</dt><dd>${esc(registry.last_seen)}</dd>
-    <dt>Registry version</dt><dd>${esc(registry.version)}</dd>
+    <div><dt>First seen</dt><dd>${esc(registry.first_seen)}</dd></div>
+    <div><dt>Last changed</dt><dd>${esc(registry.last_changed)}</dd></div>
+    <div><dt>Last seen</dt><dd>${esc(registry.last_seen)}</dd></div>
+    <div><dt>Registry version</dt><dd>${esc(registry.version)}</dd></div>
   </dl>
   ${epoch}
   <div id="history-events"><p class="loading"><span class="spinner" aria-hidden="true"></span><span id="history-progress">Reading the changelog</span></p></div>
@@ -393,7 +442,7 @@ function drawMap(r) {
   if (!el || !window.maplibregl || !window.pmtiles) return
   maplibregl.addProtocol('pmtiles', new pmtiles.Protocol().tile)
 
-  const HIGHLIGHT = '#d9480f'
+  const HIGHLIGHT = '#4051cc'
   const POLY = ['match', ['geometry-type'], ['Polygon', 'MultiPolygon'], true, false]
   const LINE = ['match', ['geometry-type'], ['LineString', 'MultiLineString'], true, false]
   const POINT = ['match', ['geometry-type'], ['Point', 'MultiPoint'], true, false]
@@ -413,17 +462,17 @@ function drawMap(r) {
         feature: { type: 'geojson', data: { type: 'Feature', geometry, properties: {} } },
       },
       layers: [
-        { id: 'background', type: 'background', paint: { 'background-color': '#f3f0e8' } },
-        { id: 'land', type: 'fill', source: 'base', 'source-layer': 'land', filter: POLY, paint: { 'fill-color': '#ebe7dc' } },
-        { id: 'water', type: 'fill', source: 'base', 'source-layer': 'water', filter: POLY, paint: { 'fill-color': '#b9d3e6' } },
+        { id: 'background', type: 'background', paint: { 'background-color': '#eef2f7' } },
+        { id: 'land', type: 'fill', source: 'base', 'source-layer': 'land', filter: POLY, paint: { 'fill-color': '#e7ecf3' } },
+        { id: 'water', type: 'fill', source: 'base', 'source-layer': 'water', filter: POLY, paint: { 'fill-color': '#bfe6e8' } },
         { id: 'roads', type: 'line', source: 'transportation', 'source-layer': 'segment',
           filter: ['==', ['get', 'subtype'], 'road'],
           paint: { 'line-color': '#ffffff', 'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.5, 16, 6] } },
         { id: 'rail', type: 'line', source: 'transportation', 'source-layer': 'segment',
           filter: ['==', ['get', 'subtype'], 'rail'],
-          paint: { 'line-color': '#a8a29a', 'line-width': 1, 'line-dasharray': [3, 2] } },
+          paint: { 'line-color': '#a3acbd', 'line-width': 1, 'line-dasharray': [3, 2] } },
         { id: 'buildings', type: 'fill', source: 'buildings', 'source-layer': 'building', minzoom: 13,
-          paint: { 'fill-color': '#ddd7cb', 'fill-outline-color': '#c9c1b2' } },
+          paint: { 'fill-color': '#d9dfea', 'fill-outline-color': '#c3cbdb' } },
         { id: 'hl-fill', type: 'fill', source: 'feature', filter: POLY, paint: { 'fill-color': HIGHLIGHT, 'fill-opacity': 0.25 } },
         { id: 'hl-line', type: 'line', source: 'feature', filter: ['any', POLY, LINE], paint: { 'line-color': HIGHLIGHT, 'line-width': 3 } },
         { id: 'hl-point', type: 'circle', source: 'feature', filter: POINT,
@@ -453,9 +502,44 @@ async function setQrDownloads(id) {
 }
 
 function flash(btn, text) {
+  const status = document.querySelector('[data-copy-status]')
+  if (status) status.textContent = text
+  if (btn.classList.contains('icon')) {
+    btn.dataset.flash = text
+    setTimeout(() => { delete btn.dataset.flash }, 1500)
+    return
+  }
   btn.dataset.label ??= btn.textContent
   btn.textContent = text
   setTimeout(() => { btn.textContent = btn.dataset.label }, 1500)
+}
+
+// Per-browser stand-in for gers.page's server-side "Recently looked up" list.
+function readRecent() {
+  try {
+    return JSON.parse(localStorage.getItem(RECENT_KEY)) ?? []
+  } catch {
+    return []
+  }
+}
+
+function rememberLookup(entry) {
+  const recent = [entry, ...readRecent().filter(e => e.id !== entry.id)].slice(0, RECENT_MAX)
+  try {
+    localStorage.setItem(RECENT_KEY, JSON.stringify(recent))
+  } catch {
+    // Storage can be blocked (private mode); the list is a convenience.
+  }
+}
+
+function renderRecent() {
+  const recent = readRecent()
+  if (!recent.length) return
+  document.getElementById('recent-list').innerHTML = recent.map(e => `<li><a href="?id=${esc(e.id)}">
+  <span class="name">${esc(e.name)}</span>
+  <span class="meta">${esc(e.label)}${e.removed ? ' <span class="tag">Removed</span>' : ''}</span>
+</a></li>`).join('')
+  document.getElementById('recent').hidden = false
 }
 
 document.addEventListener('click', ev => {
@@ -465,6 +549,8 @@ document.addEventListener('click', ev => {
 })
 
 async function show(raw) {
+  document.getElementById('home-hero').hidden = true
+  document.getElementById('header-lookup').hidden = false
   const id = raw.trim().toLowerCase()
   for (const input of document.querySelectorAll('form.lookup input')) input.value = id
   if (!UUID_RE.test(id)) return renderInvalid(raw)
@@ -485,6 +571,7 @@ async function show(raw) {
 
   const name = r.record?.properties.names?.primary ?? `Unnamed ${(TYPE_LABEL[r.where?.type] ?? 'feature').toLowerCase()}`
   document.title = `${name} · GERS ID ${id}`
+  rememberLookup({ id, name, label: TYPE_LABEL[r.where?.type] ?? 'Feature', removed: r.status === 'removed' })
   main.innerHTML = sectionHero(r) + sectionIdAndMap(r) + sectionAttributes(r) + sectionSources(r)
     + sectionHistoryShell(r) + sectionDevelopers(r)
   setJsonLink(r, null)
@@ -506,3 +593,4 @@ async function show(raw) {
 
 const requested = new URLSearchParams(location.search).get('id')
 if (requested) show(requested)
+else renderRecent()
